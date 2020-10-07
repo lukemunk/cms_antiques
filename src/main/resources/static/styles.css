@@ -1,0 +1,29 @@
+body
+{
+    margin: 5px;
+    font-size: 14px;
+    background-color: #FAD70D;
+    margin-left: 5%;
+    margin-right: 5%;
+    text-align: center;
+}
+
+
+header
+{
+    background: #F59E00;
+    text-align: center;
+    color: white;
+    padding: 7px;
+}
+
+
+.navbar-nav
+{
+    text-align: left;
+}
+
+.navbar-header
+{
+    text-align: right;
+}

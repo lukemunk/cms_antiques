@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>CMS Antiques</title>
+</head>
+<header>
+    <div th:replace="fragments/header :: header">
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-signin" href="#">Sign In</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">Home</a></li>
+                        <li class="active"><a href="#">Posts</a></li>
+                        <li class="active"><a href="#">Classifieds</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<body>
+
+
+<div class="container">
+    <div class="hero-unit">
+        <h1>Welcome</h1>
+        <p>
+            Put Recent Posts here
+        </p>
+        <p>
+            <a href="/signup" th:href="@{/signup}" class="btn btn-large btn-success">Sign up</a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
