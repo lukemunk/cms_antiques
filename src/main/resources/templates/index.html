@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link href="../static/styles.css" th:href="@{/styles.css}" rel="stylesheet" />
     <title>CMS Antiques</title>
 </head>
+
+
+<body>
+  
 <header>
+    <h1>Antiques Site</h1>
     <div th:replace="fragments/header :: header">
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
@@ -13,9 +19,9 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Home</a></li>
-                        <li class="active"><a href="#">Posts</a></li>
-                        <li class="active"><a href="#">Classifieds</a></li>
+                        <li class="active"><a href="#" class="navMenuOption">Home</a></li>
+                        <li class="active"><a href="#" class="navMenuOption">Posts</a></li>
+                        <li class="active"><a href="#" class="navMenuOption">Classifieds</a></li>
                     </ul>
                 </div>
             </div>
@@ -23,15 +29,48 @@
     </div>
 </header>
 
-<body>
-
-
-<div class="container">
+<div class="container-body">
+  <h2>Recent Posts</h2>
     <div class="hero-unit">
-        <h1>Welcome</h1>
-        <p>
-            Put Recent Posts here
-        </p>
+
+      
+        <div class="post">
+          <h3 class="postHeader">Title of Post</h3>
+          <div class="postBody">
+            <img></img>
+
+          <p>This is the body of the post, a short description of what is going
+          on in the post for the people to read.</p>
+
+          <a href="#" class="postLink">Go to Article</a>
+          </div>
+        </div>
+  
+          <div class="post">
+          <h3 class="postHeader">Title of Post</h3>
+          <div class="postBody">
+            <img></img>
+
+          <p>This is the body of the post, a short description of what is going
+          on in the post for the people to read.</p>
+
+          <a href="#" class="postLink">Go to Article</a>
+          </div>
+        </div>
+  
+          <div class="post">
+          <h3 class="postHeader">Title of Post</h3>
+          <div class="postBody">
+            <img></img>
+
+          <p>This is the body of the post, a short description of what is going
+          on in the post for the people to read.</p>
+          
+          <a href="#" class="postLink">Go to Article</a>
+          </div>
+        </div>
+  
+      
         <p>
             <a href="/signup" th:href="@{/signup}" class="btn btn-large btn-success">Sign up</a>
         </p>
