@@ -1,6 +1,6 @@
 header
 {
-    background: #0bc5de;
+    background: linear-gradient(#0bc5de, #0099f5);
     text-align: center;
     color: white;
     padding: 7px;
@@ -88,7 +88,8 @@ img
   margin-top: 0px;
   display: grid;
   padding-bottom: 0px;
-  background-color: #0099f5;
+  background-color: white;
+
   color: white;
 }
 
