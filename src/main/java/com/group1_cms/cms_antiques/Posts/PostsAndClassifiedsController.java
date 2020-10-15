@@ -17,20 +17,20 @@ public class PostsAndClassifiedsController {
 		this.postsService = postsService;
 	}
 	
-	@RequestMapping(value="/Posts")
+	@RequestMapping(value="/posts")
 	public String posts(Model model){
 		model.addAttribute("posts", postsService.getPosts());
-		return "Posts.html";
+		return "public/posts.html";
 	}
 	
-	@RequestMapping(value="/Posts/{category}")
+	@RequestMapping(value="/posts/{category}")
 	public String category(Model model, @PathVariable String category) {
 		model.addAttribute("posts", postsService.getPostsFromCategory(category));
-		return "Posts.html";
+		return "public/posts.html";
 	}
 	
-	@RequestMapping(value="/Classifieds")
+	@RequestMapping(value="/public/classifieds")
 	public String classifieds() {
-		return "Posts.html";
+		return "public/posts.html";
 	}
 }

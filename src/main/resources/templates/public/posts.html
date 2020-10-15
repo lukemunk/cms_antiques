@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Posts</title>
+	<link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+</head>
+<body>
+<!-- 
+	This Page Needs
+		-To show available posts
+			-depending on permissions they can see edit or delete options (?)
+			
+		-search bar
+		-Category selector
+		
+ -->
+	<p>
+		<a href="/posts">All Posts</a>
+		<a href="/posts/furniture">Furniture</a>
+		<a href="/posts/jewelry">Jewelry</a>
+		<a href="/posts/clothing">Clothing</a>
+		<a href="/posts/art">Art</a>
+		<a href="/posts/collectible">Collectible</a>
+		<a href="">New Post</a>
+	</p>
+	<p>Search Bar here</p>
+	<div class="col-md-8 mx-auto p-2" style="background-color: #eee;">
+		<div th:each="post: ${posts}">
+			<div class="card m-2">
+			  <div class="card-body">
+			    <h5 class="card-title" th:text="${post.title}"></h5>
+			    <h6 class="card-subtitle mb-2 text-muted" th:text="${post.creator.userName}"></h6>
+			    <h6 class="card-subtitle mb-2 text-muted" th:text="${post.item.name}"></h6>
+			    <p class="card-text" th:text="${#strings.abbreviate(post.story,500)}"></p>
+			    <a th:href="@{/post/{title}(title=${post.id})}" class="stretched-link"></a>
+			  </div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

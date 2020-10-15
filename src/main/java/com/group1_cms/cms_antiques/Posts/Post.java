@@ -2,13 +2,15 @@ package com.group1_cms.cms_antiques.Posts;
 
 import java.util.UUID;
 
-import com.group1_cms.cms_antiques.Item.Item;
+import com.group1_cms.cms_antiques.models.Item;
+import com.group1_cms.cms_antiques.models.User;
 
 public class Post {
 	private String id;
 	private String title;
 	private String story;
 	private Item item;
+	private User creator;
 	
 	public Post() {
 		title = "Post Title";
@@ -16,11 +18,12 @@ public class Post {
 		item = new Item();
 	}
 	
-	public Post(String title, String story, Item item) {
+	public Post(String title, String story, Item item, User creator) {
 		id = UUID.randomUUID().toString();
 		this.title = title;
 		this.story = story;
 		this.item = item;
+		this.creator = creator;
 	}
 
 	public String getId() {
@@ -54,6 +57,16 @@ public class Post {
 	public void setItem(Item item) {
 		this.item = item;
 	}
+
+	public User getCreator() {
+		return creator;
+	}
+
+	public void setCreator(User creator) {
+		this.creator = creator;
+	}
+	
+	
 
 	
 

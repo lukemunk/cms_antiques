@@ -1,4 +1,4 @@
-package com.group1_cms.cms_antiques.Item;
+package com.group1_cms.cms_antiques.models;
 
 public class Item {
 	private String name;
