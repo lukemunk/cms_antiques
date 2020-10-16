@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<body>
+	
+		<h1>Classifieds</h1>
+		
+		<form th:action="@{/postToClassifieds}" th:object="${classifieds}" method="get">
+		  <label for="classifiedCategory">Want to list an item? Choose your category from the list:</label>
+		  <input list="classifiedCategories" name="classifiedCategory" id="classifiedCategory">
+		  <datalist id="classifiedCategories">
+		    <option value="Jewelry">
+		    <option value="Clothing">
+		    <option value="Furniture">
+		
+		  </datalist>
+		  <input type="submit">
+		</form>
+		
+		
+		<div class="container">
+		    <div class="Jewelry">
+		        <h1>Jewelry</h1>
+		        <p>
+		            Put Recent Listings here
+		        </p>
+		     
+		    </div>
+		    <div class="Clothing">
+		        <h1>Clothing</h1>
+		        <p>
+		            Put Recent Listings here
+		        </p>
+		       
+		    </div>
+		    <div class="Furniture">
+		        <h1>Furniture</h1>
+		        <p>
+		            Put Recent Listings here
+		        </p>
+		        
+		    </div>
+		</div>
+	
+	</body>
+</html>

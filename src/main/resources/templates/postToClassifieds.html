@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+	<html xmlns:th="http://www.thymeleaf.org">
+	
+		<body>
+		
+			<center><h1>Classifieds</h1></center>
+			
+			
+			
+		
+			<form method="post" th:action="@{/postToClassifieds}" th:object="${postClassifiedsObj}">
+			<label for="adTitle">Ad title:</label>
+			<input type="text" id="adTitle" name="adTitle" th:field="*{adTitle}">
+			<br><br>
+			<label for="postToClassifieds">Please enter your content here:</label><br>
+			<textarea id="postToClassifieds" name="postToClassifieds" rows="10" cols="50">
+			  
+			  </textarea>
+			  <br><br>
+			  <label for="myfile">Want to upload an image?:</label>
+			<input type="file" id="myImg" name="myImg">
+			<br>
+			  <button onclick="goBack()">Cancel</button>
+			  <input type="submit" value="Submit">
+			</form>
+			<script>
+			function goBack(){
+				window.history.back();
+			}
+			</script>
+		
+		
+		</body>
+	</html>
