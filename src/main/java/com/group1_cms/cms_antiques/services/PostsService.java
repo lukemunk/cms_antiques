@@ -1,9 +1,12 @@
-package com.group1_cms.cms_antiques.Posts;
+package com.group1_cms.cms_antiques.services;
 
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.group1_cms.cms_antiques.models.Post;
+import com.group1_cms.cms_antiques.repositories.PostsRepository;
 
 @Service
 public class PostsService {

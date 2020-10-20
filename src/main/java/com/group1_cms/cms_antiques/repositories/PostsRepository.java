@@ -1,10 +1,11 @@
-package com.group1_cms.cms_antiques.Posts;
+package com.group1_cms.cms_antiques.repositories;
 
 import java.util.ArrayList;
 
 import org.springframework.stereotype.Repository;
 
 import com.group1_cms.cms_antiques.models.Item;
+import com.group1_cms.cms_antiques.models.Post;
 import com.group1_cms.cms_antiques.models.User;
 
 @Repository

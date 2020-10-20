@@ -1,4 +1,4 @@
-package com.group1_cms.cms_antiques.Posts;
+package com.group1_cms.cms_antiques.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -6,6 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.group1_cms.cms_antiques.services.PostsService;
 
 @Controller
 public class PostsAndClassifiedsController {

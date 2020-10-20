@@ -1,9 +1,6 @@
-package com.group1_cms.cms_antiques.Posts;
+package com.group1_cms.cms_antiques.models;
 
 import java.util.UUID;
-
-import com.group1_cms.cms_antiques.models.Item;
-import com.group1_cms.cms_antiques.models.User;
 
 public class Post {
 	private String id;
