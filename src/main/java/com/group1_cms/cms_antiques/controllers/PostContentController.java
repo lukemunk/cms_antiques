@@ -7,6 +7,7 @@ import com.group1_cms.cms_antiques.services.PostsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,11 +50,28 @@ public class PostContentController
         return currentPost.getStory();
     }
 
-    @GetMapping(path = "/",
+    @GetMapping(path = "/" +
+            "",
             produces = "application/json")
     public Item getItem()
     {
         return currentPost.getItem();
+    }
+    //endregion
+
+    //region Post List
+    @GetMapping(path = "/{Category}",
+            produces = "application/json")
+    public String getPostsCategory(@PathVariable String Category)
+    {
+        return null;
+    }
+
+    @GetMapping(path = "/",
+            produces = "application/json")
+    public String getAllPosts()
+    {
+        return null;
     }
     //endregion
 
