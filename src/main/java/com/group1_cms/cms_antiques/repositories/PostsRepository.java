@@ -94,7 +94,7 @@ public class PostsRepository {
 	public ArrayList<Post> getPosts(int numberOfPosts){
 		ArrayList<Post> posts = new ArrayList<Post>();
 		this.posts.stream()
-		.limit(10)
+		.limit(numberOfPosts)
 		.forEachOrdered(posts::add);
 		return posts;
 	}
@@ -104,7 +104,7 @@ public ArrayList<Post> getPostsFromCategory(int numberOfPosts, String category){
 		ArrayList<Post> posts = new ArrayList<Post>();
 		this.posts.stream()
 		.filter(post -> post.getItem().getCategory().equalsIgnoreCase(category))
-		.limit(10)
+		.limit(numberOfPosts)
 		.forEachOrdered(posts::add);
 		
 		return posts;

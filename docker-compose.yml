@@ -1,5 +1,5 @@
 version: '3.4'
-x-db-variables: &db-variables
+x-db-variables:  &db-variables
   MYSQL_DATABASE: 'cs4230'
   MYSQL_USER: 'cs4230-user'
   MYSQL_PASSWORD: 'password'
