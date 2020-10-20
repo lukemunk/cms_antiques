@@ -20,11 +20,11 @@
 		
  -->
  
-	 <!-- A grey horizontal navbar that becomes vertical on small screens -->
+	
 	<nav class="navbar navbar-expand-sm bg-light fixed-top">
 	
 		 <a href="#" class="navbar-brand">Brand</a>
-	  <!-- Links -->
+	  
 	  <ul class="nav nav-pills">
 	    <li class="nav-item">
 	      <a class="nav-link" href="/posts">All Posts</a>
@@ -50,22 +50,7 @@
 	
 	</nav>
  
-	
-	<!--  <nav class="navbar navbar-default">
-		<div>
-			<a href="/posts">All Posts</a>
-			<a href="/posts/furniture">Furniture</a>
-			<a href="/posts/jewelry">Jewelry</a>
-			<a href="/posts/clothing">Clothing</a>
-			<a href="">New Post</a>
-		</div>
-		<div class="search-container">
-		    <form action="">
-		    	<input type="text" placeholder="Search.." name="search">
-		    	<button type="submit">Submit</button>
-		    </form>
-		 </div>
-	 </nav> -->
+
 	<div class="col-md-8 mx-auto p-2" style="background-color: #eee; margin-top:80px">
 		<div th:each="post: ${posts}">
 			<div class="card m-2">
