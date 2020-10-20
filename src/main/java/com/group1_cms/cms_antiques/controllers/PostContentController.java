@@ -22,6 +22,6 @@ public class PostContentController
     public String getPostContent(Model model)
     {
         model.addAttribute("posts", postsService.getPosts());
-        return "public/postForum.html";
+        return "postForum.html";
     }
 }
