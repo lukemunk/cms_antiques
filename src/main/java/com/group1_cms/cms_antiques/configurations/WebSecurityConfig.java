@@ -1,12 +1,18 @@
 package com.group1_cms.cms_antiques.configurations;
 
+import com.group1_cms.cms_antiques.components.RegistrationFormValidator;
+import com.group1_cms.cms_antiques.components.StartupDatabaseLoader;
+import com.group1_cms.cms_antiques.models.Role;
+import com.group1_cms.cms_antiques.repositories.PermissionRepository;
+import com.group1_cms.cms_antiques.repositories.RoleRepository;
 import com.group1_cms.cms_antiques.repositories.UserRepository;
+import com.group1_cms.cms_antiques.services.PermissionService;
+import com.group1_cms.cms_antiques.services.RoleService;
 import com.group1_cms.cms_antiques.services.UserService;
 import com.group1_cms.cms_antiques.spring.security.CustomAuthenticationSuccessHandler;
 import com.group1_cms.cms_antiques.spring.security.JwtFilter;
 import com.group1_cms.cms_antiques.spring.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +23,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -33,6 +40,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
+
+    @Bean
+    public StartupDatabaseLoader getDatabaseLoader(RoleService roleService, PermissionService permissionService, UserService userService){
+        StartupDatabaseLoader startupDatabaseLoader = new StartupDatabaseLoader(roleService, permissionService, userService);
+        return startupDatabaseLoader;
+    }
+
     @Bean
     public UserRepository getUserRepository(){
         UserRepository userRepository = new UserRepository(namedParameterJdbcTemplate);
@@ -40,9 +54,38 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserService getUserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
-        UserService userService = new UserService(userRepository, passwordEncoder);
+    public UserService getUserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder){
+        UserService userService = new UserService(userRepository, roleRepository, passwordEncoder);
         return userService;
+    }
+
+    @Bean
+    public RoleRepository getRoleRepository(){
+        RoleRepository roleRepository = new RoleRepository(namedParameterJdbcTemplate);
+        return roleRepository;
+    }
+
+    @Bean
+    public RoleService getRoleService(RoleRepository roleRepository, PermissionRepository permissionRepository){  //Does roleRepository need to be autowired
+        RoleService roleService = new RoleService(roleRepository, permissionRepository);//to pass to bean constructor
+        return roleService;
+    }
+
+    @Bean
+    public PermissionRepository permissionRepository(){
+        PermissionRepository permissionRepository = new PermissionRepository(namedParameterJdbcTemplate);
+        return permissionRepository;
+    }
+
+    @Bean
+    public PermissionService permissionService(PermissionRepository permissionRepository){
+        PermissionService permissionService = new PermissionService(permissionRepository);
+        return permissionService;
+    }
+
+    @Bean
+    public RegistrationFormValidator getRegistrationFormValidator(UserService userService){
+        return new RegistrationFormValidator(userService);
     }
 
     @Override
@@ -58,7 +101,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+       return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+       //return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -83,15 +127,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .exceptionHandling().accessDeniedPage("/login")
                 .and()
-                    .formLogin().loginPage("/login")
+                    .formLogin()
+                    .loginPage("/login")
                     .usernameParameter("username")
                     .passwordParameter("password")
                     .loginProcessingUrl("/login")
-                    .defaultSuccessUrl("/home")
                     .successHandler(new CustomAuthenticationSuccessHandler(applicationContext.getBean(JwtTokenProvider.class)))
-                .and()
-                    .logout()
-                    .logoutUrl("/");
+                    .defaultSuccessUrl("/public/index")
+                    .failureUrl("/login-error");
 
     }
 

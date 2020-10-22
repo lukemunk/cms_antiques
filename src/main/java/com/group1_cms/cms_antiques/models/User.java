@@ -5,22 +5,38 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class User implements UserDetails {
 
+    //private final String INVALID_PASSWORD_MESSAGE = "Password must be a minimum 8 characters (1 uppercase, 1 lowercase, 1 number)";
+
     private UUID id;
+
+    //@NotEmpty(message = "*First Name required")
     private String firstName;
+
+    //@NotEmpty(message = "*Last Name required")
     private String lastName;
-    private String userName;
+
+    //@NotEmpty(message = "*Username required")
+    private String username;
 
     @JsonIgnore
+    //@NotEmpty(message = "*Password required")
+    //@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$",message = INVALID_PASSWORD_MESSAGE)
     private String password;
 
+    //@NotEmpty
     private String passwordConfirm;
 
+    //@NotEmpty(message = "*Email required")
+    //@Email(message = "Please enter a valid email address")
     private String email;
 
     private String phoneNum;
@@ -71,14 +87,15 @@ public class User implements UserDetails {
         this.lastName = lastName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
+    //@NotEmpty
     public String getPasswordConfirm() {
         return passwordConfirm;
     }
@@ -148,7 +165,17 @@ public class User implements UserDetails {
     }
 
     public Map<UUID, Role> getRoles() {
+        if(roles == null){
+            roles = new HashMap<>();
+        }
         return roles;
+    }
+
+    public Role getRoleById(UUID id){
+        if(roles != null){
+            return roles.get(id);
+        }
+        return null;
     }
 
     public void setRoles(Map<UUID, Role> roles) {
@@ -196,7 +223,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userName;
+        return username;
     }
 
     @Override

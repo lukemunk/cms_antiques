@@ -1,6 +1,7 @@
 #formHeading {
     font-family: "Brush Script MT";
-    font-size: 36pt;
+    font-size: 40pt;
+    color: #0D22FA;
 }
 .login-or {
     position: relative;
@@ -28,6 +29,25 @@
 .form-input{
     margin-bottom: 1rem;
 }
+
+.login-form-border{
+    border: 1px solid #0D22FA;
+    border-radius: .25rem;
+}
+
+#loginBtn{
+    background-color: #0099F5;
+}
+
 #createAccount{
     font-size: 13pt;
+    color: #0D22FA;
+}
+
+label{
+    color: #0B56DE
+}
+
+#createAccountLink{
+    color: #0099F5
 }

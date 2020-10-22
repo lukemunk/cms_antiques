@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:with="lang=${#locale.language}" th:lang="${lang}">
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Test</title>
+    <title>Login</title>
     <link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
     <link href="../css/all.min.css" th:href="@{/css/all.min.css}" rel="stylesheet"/>
     <link href="../css/loginPage.css" th:href="@{/css/loginPage.css}" rel="stylesheet" />
@@ -11,25 +12,25 @@
     <div class="container">
         <div class="row">
             <div class="col-md-6 mx-auto">
-                <div class="border-primary shadow-sm mt-5 pb-3 border rounded">
+                <div class="login-form-border shadow-sm mt-5 pb-3">
                     <div class="col-9 mx-auto">
-                        <form class="form-signin" action="#" th:action="@{/login}" method="post">
+                        <form class="form-signin" action="#" th:action="@{/login}" th:object="${user}" method="post">
                             <h1 class="text-center mt-md-3 mt-sm-2" id="formHeading">Log in</h1>
-                            <div class="form-group">
-                                <label for="username" class="col-form-label text-primary">User Name</label>
-                                <input type="text" id="username" name="username" class="form-control mx-auto form-input" placeholder="Username"
+                            <div class="form-group" th:classappend = "${loginError} ? 'has-error' : '' ">
+                                <label th:for="*{username}" for="username" class="col-form-label">User Name</label>
+                                <input type="text" th:field="*{username}" id="username" name="username" class="form-control mx-auto form-input"
                                        autofocus="true"/>
-                                <label for="password" class="col-form-label text-primary">Password</label>
-                                <input type="password" id="password" name="password" class="form-control mx-auto form-input" placeholder="Password"/>
-
+                                <label th:for="*{password}" for="password" class="col-form-label">Password</label>
+                                <input type="password" th:field="*{password}" id="password" name="password" class="form-control mx-auto form-input"/>
                                 <div class="col-md-8 text-center mx-auto">
-                                    <button class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
+                                    <button id="loginBtn" class="btn btn-lg btn-block text-white" type="submit">Log In</button>
                                 </div>
+                                <span th:if="${loginError}">Invalid username or password</span>
                                 <div class="login-or">
                                     <hr class="hr-or">
                                     <span class="span-or">or</span>
                                 </div>
-                                <h5 class="text-center form-text" id="createAccount">Don't have an account? <a th:href="@{/register}">Create account</a></h5>
+                                <h5 class="text-center form-text" id="createAccount">Don't have an account? <a id="createAccountLink" th:href="@{/register}">Create account</a></h5>
                             </div>
                         </form>
                     </div>
@@ -37,5 +38,6 @@
             </div>
         </div>
     </div>
+
 </body>
 </html>
