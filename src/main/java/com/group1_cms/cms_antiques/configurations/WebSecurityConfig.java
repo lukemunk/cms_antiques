@@ -102,7 +102,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder(){
        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-       //return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -113,7 +112,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                .cors().and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                    .addFilterBefore(new JwtFilter(jwtTokenProvider(applicationContext.getBean(UserService.class))),
@@ -133,7 +132,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .passwordParameter("password")
                     .loginProcessingUrl("/login")
                     .successHandler(new CustomAuthenticationSuccessHandler(applicationContext.getBean(JwtTokenProvider.class)))
-                    .defaultSuccessUrl("/public/index")
+                    .defaultSuccessUrl("/public/home")
                     .failureUrl("/login-error");
 
     }

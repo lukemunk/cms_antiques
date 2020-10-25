@@ -91,12 +91,21 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
+    public boolean checkForDuplicateUser(String username){
+
+        User user = userRepository.getUserByUserName(username);
+
+        if(user.getId() == null){
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.getUserByUserName(username);
         if(user.getId() == null){
-           // throw new UsernameNotFoundException("User not found using username " + username);
-            return null;
+            throw new UsernameNotFoundException("User not found using username " + username);
         }
         return user;
     }

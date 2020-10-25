@@ -37,7 +37,7 @@ public class RegistrationFormValidator implements Validator {
         if(!user.getPassword().equals(user.getPasswordConfirm()) && user.getPasswordConfirm().length() > 0){
             errors.rejectValue("passwordConfirm", "Diff.PasswordConfirm");
         }
-        if(userService.loadUserByUsername(user.getUsername()) != null){
+        if(userService.checkForDuplicateUser(user.getUsername())){
             errors.rejectValue("username", "Duplicate.Username");
         }
     }

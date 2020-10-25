@@ -20,7 +20,7 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         String cookieJwt = jwtTokenProvider.createCookieTokenString(authentication);
-        if(null != cookieJwt){
+        if(cookieJwt != null){
             response.setHeader("Set-Cookie", cookieJwt);
         }
         super.onAuthenticationSuccess(request, response, authentication);
