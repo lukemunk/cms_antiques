@@ -12,6 +12,8 @@ import com.group1_cms.cms_antiques.models.User;
 public class PostsRepository {
 	private ArrayList<Post> posts;
 
+	private static final String GET_POST_BY_ID = "SELECT * FROM Posts WHERE posts.ID = p.ID";
+
 	public PostsRepository() {
 		User user1 = new User();
 		User user2 = new User();
@@ -109,4 +111,12 @@ public ArrayList<Post> getPostsFromCategory(int numberOfPosts, String category){
 		
 		return posts;
 	}
+
+    public Post getPostByID(Long id)
+    {
+    	Post newPost;
+		// Not yet implemented
+
+    	return null;
+    }
 }

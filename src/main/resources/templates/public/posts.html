@@ -84,6 +84,17 @@
 		    </form>
 		 </div>
 	 </nav>
+
+    <article th:each="p : ${tenPosts}">
+        <h2 class="title" th:text="${p.title}">Title</h2>
+        <div class="date">
+            <i>Posted by</i>
+            <span th:if="${p.creator}" th:remove="tag"/>
+        </div>
+
+        <p class="content" th:utext="${p.story}">Post content</p>
+    </article>
+
 	<div class="col-md-8 mx-auto p-2" style="background-color: #eee;">
 		<div th:each="post: ${posts}">
 			<div class="card m-2">

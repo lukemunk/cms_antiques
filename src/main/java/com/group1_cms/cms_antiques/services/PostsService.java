@@ -27,4 +27,9 @@ public class PostsService {
 		return postsRepository.getPostsFromCategory(10, category);
 	}
 
+	public Post findById(Long id)
+	{
+		Post newPost = postsRepository.getPostByID(id);
+		return newPost;
+	}
 }

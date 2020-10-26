@@ -12,13 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(path = "/posts/post")
+@RequestMapping(path = "/posts/")
 public class PostContentController
 {
     private PostsService postsService;
-    private List<Post> currentPosts;
+    private List<Post> currentPosts = postsService.getPosts();
     private Post currentPost;
 
     @Autowired
@@ -28,11 +29,11 @@ public class PostContentController
     }
 
     // Returns a post Page
-    @RequestMapping(value="/")
-    public String getPostPage(Model model)
-    {
-        model.addAttribute("posts", postsService.getPosts());
-        return "postForum.html";
+    @RequestMapping("/view/{id}")
+    public String view(@PathVariable("id") Long id, Model model) {
+        Post post = postsService.findById(id);
+        model.addAttribute("post", post);
+        return "posts/view";
     }
 
     //region Post Content
@@ -69,9 +70,12 @@ public class PostContentController
 
     @GetMapping(path = "/",
             produces = "application/json")
-    public String getAllPosts()
+    public String getAllPosts(Model model)
     {
-        return null;
+        // Gets posts in limited order
+        List<Post> tenPosts = currentPosts.stream().limit(10).collect(Collectors.toList());
+        model.addAttribute("tenPosts", tenPosts);
+        return "index";
     }
     //endregion
 
