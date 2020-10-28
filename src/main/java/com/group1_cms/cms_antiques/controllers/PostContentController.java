@@ -63,9 +63,10 @@ public class PostContentController
     //region Post List
     @GetMapping(path = "/{Category}",
             produces = "application/json")
-    public String getPostsCategory(@PathVariable String Category)
+    public String getPostsCategory(Model model, @PathVariable String Category)
     {
-        return null;
+        model.addAttribute("posts", postsService.getPostsFromCategory(Category));
+        return "public/posts.html";
     }
 
     @GetMapping(path = "/",

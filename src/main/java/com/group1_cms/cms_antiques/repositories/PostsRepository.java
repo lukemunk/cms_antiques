@@ -115,7 +115,7 @@ public ArrayList<Post> getPostsFromCategory(int numberOfPosts, String category){
     public Post getPostByID(Long id)
     {
     	Post newPost;
-		// Not yet implemented
+		this.posts.stream().filter(post -> post.getId().equalsIgnoreCase(id.toString()));
 
     	return null;
     }
