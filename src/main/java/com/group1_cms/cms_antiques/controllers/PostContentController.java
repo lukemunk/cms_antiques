@@ -19,11 +19,9 @@ import java.util.stream.Collectors;
 public class PostContentController
 {
     private PostsService postsService;
-    private List<Post> currentPosts = postsService.getPosts();
-    private Post currentPost;
 
     @Autowired
-    public void PostsAndClassifiedsController(PostsService postsService)
+    public PostContentController(PostsService postsService)
     {
         this.postsService = postsService;
     }
@@ -32,33 +30,13 @@ public class PostContentController
     @RequestMapping("/view/{id}")
     public String view(@PathVariable("id") Long id, Model model) {
         Post post = postsService.findById(id);
+        if (post == null) {
+            // Handle no post found
+            return "redirect:/";
+        }
         model.addAttribute("post", post);
         return "posts/view";
     }
-
-    //region Post Content
-    @GetMapping(path = "/",
-                produces = "application/json")
-    public String getTitle()
-    {
-        return currentPost.getTitle();
-    }
-
-    @GetMapping(path = "/",
-            produces = "application/json")
-    public String getStory()
-    {
-        return currentPost.getStory();
-    }
-
-    @GetMapping(path = "/" +
-            "",
-            produces = "application/json")
-    public Item getItem()
-    {
-        return currentPost.getItem();
-    }
-    //endregion
 
     //region Post List
     @GetMapping(path = "/{Category}",
@@ -74,7 +52,7 @@ public class PostContentController
     public String getAllPosts(Model model)
     {
         // Gets posts in limited order
-        List<Post> tenPosts = currentPosts.stream().limit(10).collect(Collectors.toList());
+        List<Post> tenPosts = postsService.getPosts().stream().limit(10).collect(Collectors.toList());
         model.addAttribute("tenPosts", tenPosts);
         return "index";
     }
