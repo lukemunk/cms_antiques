@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org" th:with="lang=${#locale.language}" th:lang="${lang}">
 <head>
     <meta charset="UTF-8">
     <title>CMS Antiques</title>
@@ -7,7 +7,7 @@
     <link href="../css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet"/>
 </head>
 <header>
-    <div th:replace="fragments/header :: header">
+  <!--  <div th:replace="fragments/header :: header"> -->
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-    </div>
+ <!--   </div> -->
 </header>
 
 <body>

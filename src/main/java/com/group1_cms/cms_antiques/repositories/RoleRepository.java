@@ -107,10 +107,10 @@ public class RoleRepository {
         addSqlItem(sqlColumns, columnNameToBindingValue, bindingValues, ROLE_ID_KEY, ROLE_ID_BINDING_KEY, role.getId().toString());
         addSqlItem(sqlColumns, columnNameToBindingValue, bindingValues, ROLE_NAME_KEY, ROLE_NAME_BINDING_KEY, role.getName());
         if(role.getCreatedOn() != null){
-            addSqlItem(sqlColumns, columnNameToBindingValue, bindingValues, ROLE_CREATED_ON_KEY, ROLE_CREATED_BINDING_KEY, role.getCreatedOn());
+            addSqlItem(sqlColumns, columnNameToBindingValue, bindingValues, ROLE_CREATED_ON_KEY, ROLE_CREATED_BINDING_KEY, Timestamp.from(role.getCreatedOn().toInstant()));
         }
         if(role.getModifiedOn() != null){
-            addSqlItem(sqlColumns, columnNameToBindingValue, bindingValues, ROLE_MODIFIED_ON_KEY, ROLE_MODIFIED_ON_BINDING_KEY, role.getModifiedOn());
+            addSqlItem(sqlColumns, columnNameToBindingValue, bindingValues, ROLE_MODIFIED_ON_KEY, ROLE_MODIFIED_ON_BINDING_KEY, Timestamp.from(role.getModifiedOn().toInstant()));
         }
 
         StringBuilder recordSql = getSqlInsertStatement("Role", primaryKeys, sqlColumns, columnNameToBindingValue, true);

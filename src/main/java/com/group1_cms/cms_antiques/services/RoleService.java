@@ -44,6 +44,7 @@ public class RoleService {
             for (Permission permission: permissionList) {           //after saving role to database, loop through list of permissions
                 permissionToAdd = permissionRepository.getPermissionByName(permission.getName());
                 if(permissionToAdd == null){ //check to see if this permession is in database
+                    permission.setId(UUID.randomUUID()); //set the random id of permission before saving
                     permissionRepository.save(permission);                                  //save the permission if not in database
                     roleRepository.addPermissions(role, permission);   //after saving Role and Permission to database add them to Role_Permission
                 }
@@ -58,6 +59,7 @@ public class RoleService {
             for (Permission permission: permissionList){     //loop through the permissions
                 permissionToAdd = permissionRepository.getPermissionByName(permission.getName());
                 if(permissionToAdd == null){                                                  //check if permission is already in database
+                    permission.setId(UUID.randomUUID());
                     permissionRepository.save(permission);                                    //if permission not in database save it
                     roleRepository.addPermissions(roleWithPermissions, permission);           //add role and permission to Role_Permission in database
                 }

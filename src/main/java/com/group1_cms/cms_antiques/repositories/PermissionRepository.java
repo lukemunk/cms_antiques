@@ -66,10 +66,12 @@ public class PermissionRepository {
         addSqlItem(sqlColumns, columnNameToBindingValue, bindingValues, PERMISSION_ID_KEY, PERMISSION_ID_BINDING_KEY, permission.getId().toString());
         addSqlItem(sqlColumns, columnNameToBindingValue, bindingValues, PERMISSION_NAME_KEY, PERMISSION_NAME_BINDING_KEY, permission.getName());
         if(permission.getCreatedOn() != null){
-            addSqlItem(sqlColumns, columnNameToBindingValue, bindingValues, PERMISSION_CREATED_ON_KEY, PERMISSION_CREATED_ON_BINDING_KEY, permission.getCreatedOn());
+            addSqlItem(sqlColumns, columnNameToBindingValue, bindingValues, PERMISSION_CREATED_ON_KEY, PERMISSION_CREATED_ON_BINDING_KEY,
+                    Timestamp.from(permission.getCreatedOn().toInstant()));
         }
         if(permission.getModifiedOn() != null){
-            addSqlItem(sqlColumns, columnNameToBindingValue, bindingValues, PERMISSION_MODIFIED_ON_KEY, PERMISSION_MODIFIED_ON_BINDING_KEY, permission.getModifiedOn());
+            addSqlItem(sqlColumns, columnNameToBindingValue, bindingValues, PERMISSION_MODIFIED_ON_KEY, PERMISSION_MODIFIED_ON_BINDING_KEY,
+                    Timestamp.from(permission.getCreatedOn().toInstant()));
         }
         String insertionValueString = columnNameToBindingValue.values().stream()
                 .map(s -> {
@@ -106,7 +108,7 @@ public class PermissionRepository {
         @Override
         public Permission mapRow(ResultSet rs, int i) throws SQLException {
             Permission permission = new Permission();
-            permission.setId(UUID.fromString(rs.getString("id")));
+            permission.setId(getUUIDFromResultSet(rs, "id"));
             permission.setName(rs.getString("name"));
             permission.setCreatedOn(createZonedDateTime(rs,"created_on"));
             permission.setModifiedOn(createZonedDateTime(rs, "modified_on"));

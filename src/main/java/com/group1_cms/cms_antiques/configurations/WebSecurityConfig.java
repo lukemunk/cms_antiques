@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -99,14 +100,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(userDetailsServiceBean())
+                .passwordEncoder(passwordEncoder());
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder(){
        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Bean
-    public JwtTokenProvider jwtTokenProvider(UserService userService){
-        return new JwtTokenProvider(userService);
+    public JwtTokenProvider jwtTokenProvider(UserService userService, AuthenticationManager authenticationManager){
+        return new JwtTokenProvider(userService, applicationContext.getBean(AuthenticationManager.class));
+    }
+
+    @Bean
+    public CustomAuthenticationSuccessHandler authenticationSuccessHandler(){
+        return new CustomAuthenticationSuccessHandler(jwtTokenProvider(applicationContext.getBean(UserService.class),
+                applicationContext.getBean(AuthenticationManager.class)));
     }
 
     @Override
@@ -115,13 +129,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                   .addFilterBefore(new JwtFilter(jwtTokenProvider(applicationContext.getBean(UserService.class))),
+                   .addFilterBefore(new JwtFilter(jwtTokenProvider(applicationContext.getBean(UserService.class), applicationContext.getBean(AuthenticationManager.class))),
                             UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/public/**").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/register").permitAll()
-                .antMatchers("/").permitAll()
+                .antMatchers("/login-error").permitAll()
                 .anyRequest().authenticated()
                 .and()
                     .exceptionHandling().accessDeniedPage("/login")
@@ -131,8 +145,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .usernameParameter("username")
                     .passwordParameter("password")
                     .loginProcessingUrl("/login")
-                    .successHandler(new CustomAuthenticationSuccessHandler(applicationContext.getBean(JwtTokenProvider.class)))
-                    .defaultSuccessUrl("/public/home")
+                    .successHandler(new CustomAuthenticationSuccessHandler(jwtTokenProvider(applicationContext.getBean(UserService.class),
+                            applicationContext.getBean(AuthenticationManager.class))))
                     .failureUrl("/login-error");
 
     }

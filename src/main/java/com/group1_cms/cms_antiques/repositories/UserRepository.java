@@ -124,7 +124,7 @@ public class UserRepository {
             addSqlItem(sqlColumns, columnNameToBindingValue, bindingValues, LOCKED_KEY, LOCKED_BINDING_KEY, user.isAccountNonLocked()
             );
         }
-        if(!user.isEnabled()){
+        if(user.isEnabled()){
             addSqlItem(sqlColumns, columnNameToBindingValue, bindingValues, ENABLED_KEY, ENABLED_BINDING_KEY, user.isEnabled());
         }
 

@@ -5,11 +5,16 @@ import com.group1_cms.cms_antiques.models.User;
 import com.group1_cms.cms_antiques.repositories.RoleRepository;
 import com.group1_cms.cms_antiques.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.User.UserBuilder;
 
+import java.time.ZonedDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +27,8 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder){
+    public UserService(UserRepository userRepository, RoleRepository roleRepository,
+                       PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -60,6 +66,8 @@ public class UserService implements UserDetailsService {
         Role role = roleRepository.getRoleByName("ROLE_Member");
         userRole.put(role.getId(), role);
         user.setRoles(userRole);
+        user.setEnabled(true);
+        user.setCreatedOn(ZonedDateTime.now());
         saveUser(user, true);
         User newUser = addUserRole(user, role);
         return newUser;
@@ -70,6 +78,8 @@ public class UserService implements UserDetailsService {
         Role role = roleRepository.getRoleByName("ROLE_Admin");
         adminRole.put(role.getId(), role);
         user.setRoles(adminRole);
+        user.setEnabled(true);
+        user.setCreatedOn(ZonedDateTime.now());  //edit setexpiredon and setcredentialsexpiredon
         saveUser(user, true);
         User adminUser = addUserRole(user, role);
         return adminUser;
@@ -101,12 +111,21 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
+    public User getUserFromUserDetails(UserDetails userDetails){
+        User user = userRepository.getUserByUserName(userDetails.getUsername());
+        if(user.getId() != null){
+            return user;
+        }
+        return null;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.getUserByUserName(username);
-        if(user.getId() == null){
+        UserDetails user = userRepository.getUserByUserName(username);
+        if(user.getUsername() == null){
             throw new UsernameNotFoundException("User not found using username " + username);
         }
         return user;
     }
+
 }

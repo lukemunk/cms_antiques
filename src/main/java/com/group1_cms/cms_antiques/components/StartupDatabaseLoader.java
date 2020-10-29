@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,20 +36,36 @@ public class StartupDatabaseLoader implements ApplicationListener<ContextRefresh
         //create user to add as default admin user
         User defaultAdmin = createDefaultAdmin("first", "last", "password", "admin", "admin@mail.com");
 
-        //create roles and save to database
-        Role member = createRole("ROLE_Member");
-        Role admin = createRole("ROLE_Admin");
-        Role moderator = createRole("ROLE_Moderator");
+        //create roles
+        Role admin = new Role("ROLE_Admin");
+        admin.setCreatedOn(ZonedDateTime.now());
 
-        //create permissions and save to database
-        Permission createContent = createPermission("Create_Content");
-        Permission viewClassifieds = createPermission("View_Classifieds");
-        Permission addRemovePermissions =  createPermission("Add_Remove_Permissions");
-        Permission viewRestricted = createPermission("View_Restricted");
-        Permission addRemoveRoles = createPermission("Add_Remove_Roles");
-        Permission addRemoveUser = createPermission("Add_Remove_User");
+        Role member = new Role("ROLE_Member");
+        member.setCreatedOn(ZonedDateTime.now());
 
-        //create permission lists for roles
+        Role moderator = new Role("ROLE_Moderator");
+        moderator.setCreatedOn(ZonedDateTime.now());
+
+        //create permissions
+        Permission createContent = new Permission("Create_Content");
+        createContent.setCreatedOn(ZonedDateTime.now());
+
+        Permission viewClassifieds = new Permission("View_Classifieds");
+        viewClassifieds.setCreatedOn(ZonedDateTime.now());
+
+        Permission addRemovePermissions = new Permission("Add_Remove_Permissions");
+        addRemovePermissions.setCreatedOn(ZonedDateTime.now());
+
+        Permission viewRestricted = new Permission("View_Restricted");
+        viewRestricted.setCreatedOn(ZonedDateTime.now());
+
+        Permission addRemoveRoles = new Permission("Add_Remove_Roles");
+        addRemoveRoles.setCreatedOn(ZonedDateTime.now());
+
+        Permission addRemoveUser = new Permission("Add_Remove_User");
+        addRemoveUser.setCreatedOn(ZonedDateTime.now());
+
+        //create permissions lists by role
         List<Permission> memberPermissionList = new ArrayList<>();
         List<Permission> adminPermissionList = new ArrayList<>();
         List<Permission> moderatorPermissionList = new ArrayList<>();
@@ -66,7 +83,9 @@ public class StartupDatabaseLoader implements ApplicationListener<ContextRefresh
         moderatorPermissionList.add(viewRestricted);
         moderatorPermissionList.add(viewClassifieds);
 
-        //add list of permissions to roles and save to Role_Permission in database
+
+        //roleService.addPermissionsToRole adds any roles and associated permissions to database
+        //if role, permissions, or role_permissions is already in the database then do nothing
         roleService.addPermissionsToRole(member, memberPermissionList);
         roleService.addPermissionsToRole(admin, adminPermissionList);
         roleService.addPermissionsToRole(moderator, moderatorPermissionList);
@@ -74,18 +93,6 @@ public class StartupDatabaseLoader implements ApplicationListener<ContextRefresh
         userService.saveDefaultAdminUser(defaultAdmin);
 
         isInitialized = true;
-    }
-
-    private Role createRole(String name){
-        Role role = new Role(name);
-        roleService.saveRole(role);
-        return role;
-    }
-
-    private Permission createPermission(String name){
-        Permission permission = new Permission(name);
-        permissionService.savePermission(permission);
-        return permission;
     }
 
     private User createDefaultAdmin(String fName, String lName, String password, String username, String email){
