@@ -15,6 +15,13 @@ public class Role {
     private ZonedDateTime createdOn;
     private ZonedDateTime modifiedOn;
 
+    public Role() {
+    }
+
+    public Role(String name) {
+        this.name = name;
+    }
+
     public UUID getId() {
         return id;
     }
