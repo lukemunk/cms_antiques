@@ -18,9 +18,9 @@ public class PostsRepository {
 		User user1 = new User();
 		User user2 = new User();
 		User user3= new User();
-		user1.setUserName("Bobloblaw");
-		user2.setUserName("AntiquesMan");
-		user3.setUserName("Crzy4Antiques");
+		user1.setUsername("Bobloblaw");
+		user2.setUsername("AntiquesMan");
+		user3.setUsername("Crzy4Antiques");
 		
 		posts = new ArrayList<Post>();
 		posts.add(new Post("Post Title", 

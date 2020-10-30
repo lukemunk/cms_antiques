@@ -136,6 +136,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login").permitAll()
                 .antMatchers("/register").permitAll()
                 .antMatchers("/login-error").permitAll()
+                .antMatchers("/posts/**").permitAll()
+                .antMatchers("/").permitAll()
                 .anyRequest().authenticated()
                 .and()
                     .exceptionHandling().accessDeniedPage("/login")
