@@ -9,10 +9,11 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
- 
+
+<div class="container">
 	<nav class="navbar navbar-expand-sm bg-light fixed-top">
 	
-		 <a href="#" class="navbar-brand">Brand</a>
+		 <a href="/" class="navbar-brand">Home</a>
 	  
 	  <ul class="nav nav-pills">
 	    <li class="nav-item">
@@ -38,15 +39,16 @@
 	  </form>
 		
 	</nav>
- 
+</div>
+
 		<div th:each="post: ${posts}">
 			<div class="card m-2">
 			  <div class="card-body">
 			    <h5 class="card-title" th:text="${post.title}"></h5>
-			    <h6 class="card-subtitle mb-2 text-muted" th:text="${post.creator.userName}"></h6>
+			    <h6 class="card-subtitle mb-2 text-muted" th:text="${post.creator.username}"></h6>
 			    <h6 class="card-subtitle mb-2 text-muted" th:text="${post.item.name}"></h6>
 			    <p class="card-text" th:text="${#strings.abbreviate(post.story,500)}"></p>
-			    <a th:href="@{/post/{title}(title=${post.id})}" class="stretched-link"></a>
+			    <a th:href="@{/posts/view/{title}(title=${post.id})}" class="stretched-link"></a>
 			  </div>
 			</div>
 		</div>
