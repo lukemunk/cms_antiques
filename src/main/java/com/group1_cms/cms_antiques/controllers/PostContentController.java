@@ -45,9 +45,8 @@ public class PostContentController
 
     // Gets new Post, saves it, redirects to where it is at
     @RequestMapping("posts/view/editpost_{id}")
-    public ModelAndView postToForums(@PathVariable("id") String id, Model model)
+    public ModelAndView postToForums(@PathVariable("id") String id, @ModelAttribute(value="post") Post post)
     {
-        Post post = (Post)model;
         ModelAndView newView = new ModelAndView("posts/view/" + id);
 
         if (post == null) {
