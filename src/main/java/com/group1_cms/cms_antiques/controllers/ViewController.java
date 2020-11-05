@@ -18,7 +18,7 @@ public class ViewController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/home")
     public ModelAndView privateHomePage(ModelAndView modelAndView){
-        modelAndView.setViewName("/home");
+        modelAndView.setViewName("public/home");
         return modelAndView;
     }
 
