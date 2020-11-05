@@ -25,7 +25,6 @@ public class UserRowCallBackHandler implements RowCallbackHandler {
         if(user == null){
             user = new User();
         }
-
         if(user.getId() == null){
             user.setId(getUUIDFromResultSet(rs, "user_id"));
         }
@@ -36,7 +35,7 @@ public class UserRowCallBackHandler implements RowCallbackHandler {
             user.setLastName(rs.getString("last_name"));
         }
         if(user.getUsername() == null){
-            user.setUserName(rs.getString("username"));
+            user.setUsername(rs.getString("username"));
         }
         if(user.getPassword() == null){
             user.setPassword(rs.getString("password"));
@@ -69,7 +68,7 @@ public class UserRowCallBackHandler implements RowCallbackHandler {
 
         UUID roleId = getUUIDFromResultSet(rs, "role_id");
         UUID permissionId = getUUIDFromResultSet(rs, "perm_id");
-        Role currentRole = user.getRoles().get(roleId);
+        Role currentRole = user.getRoleById(roleId);
 
         if(currentRole == null && roleId != null){
             currentRole = new Role();

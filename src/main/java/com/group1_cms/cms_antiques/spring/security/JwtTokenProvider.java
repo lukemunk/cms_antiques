@@ -6,12 +6,16 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import java.util.Date;
 
@@ -28,10 +32,12 @@ public class JwtTokenProvider {
     private static final String BEARER_STRING = "Bearer ";
 
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public JwtTokenProvider(UserService userService){
+    public JwtTokenProvider(UserService userService, AuthenticationManager authenticationManager){
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
     }
 
     public Authentication getAuthentication(HttpServletRequest request){
@@ -49,6 +55,14 @@ public class JwtTokenProvider {
             if(userDetails != null && userDetails.getUsername() != null){
                 return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
             }
+        }
+        return null;
+    }
+
+    public Authentication getAuthentication(String username, String password){
+        UserDetails userDetails = userService.loadUserByUsername(username);
+        if(userDetails != null && userDetails.getUsername() != null){
+            return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         }
         return null;
     }
@@ -144,11 +158,22 @@ public class JwtTokenProvider {
     }
 
     public String createToken(Authentication authentication, Date date){
-        if(authentication != null && authentication.isAuthenticated()
-                && authentication.getPrincipal() instanceof User){
+
+        if(authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof User){
             User user = (User) authentication.getPrincipal();
             return createToken(user, date);
         }
         return null;
+    }
+
+    public void autoLogin(String username, String password, HttpServletResponse response){
+        Authentication authentication = getAuthentication(username, password);
+        if(authentication.isAuthenticated()){
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String cookieJwt = createCookieTokenString(authentication);
+            if(cookieJwt != null){
+                response.setHeader("Set-Cookie", cookieJwt);
+            }
+        }
     }
 }

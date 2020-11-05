@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Classified Ads</title>
+	 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+ 
+	<nav class="navbar navbar-expand-sm bg-light fixed-top">
+	
+		 <a href="/" class="navbar-brand">Brand</a>
+	  
+	  <ul class="nav nav-pills">
+	    <li class="nav-item">
+	      <a class="nav-link" href="/classified_ads/all/1">All Classified Ads</a>
+	    </li>
+	    <li th:each="category: ${categories}">
+	    	<a class="nav-link" th:text="${category}" th:href="@{/classified_ads/{category}/1(category=${category})}"></a>
+	    </li>
+	      <a class="nav-link" href="/classifiedsForm">New Classified Ad</a>
+	    </li>
+	  </ul>
+	  
+	  <form class="form-inline" method="get" th:action="@{/classified_ads/{category}/1 (category=${category})}">
+	    <input class="form-control mr-sm-2" type="text" placeholder="Search" id="search" name="search">
+	    <button class="btn btn-success" type="submit">Search</button>
+	  </form>
+	
+	</nav>
+
+	<h1 th:text="${category}"  class = "jumbotron d-flex justify-content-center" style="margin-top:80px;"></h1>
+	
+	<div th:insert="fragments/pagination :: pagination"></div>
+	
+    
+
+	<div class="col-md-8 mx-auto p-2" style="background-color: #eee;">
+		<div th:each="ad: ${classifiedAds}">
+			<div class="card m-2">
+	            <div class="row no-gutters">
+	                <div class="col-sm-3">
+	                    <img th:unless="${ad.item.itemImage.fileName} eq ${''}" class="card-img"  style="max-height: 100%;" th:src="@{${ad.item.itemImage.filePath}}">
+	                </div>
+	                <div class="col-sm-7">
+	                    <div class="card-body">
+	                        <h4 class="card-title" th:text="${ad.title}"></h4>
+	                        <h6 class="card-subtitle mb-2 text-muted" th:text="${'-' + ad.creator.userName}"></h6>
+	                        <h5 class="card-subtitle mb-2" th:text="${ad.item.name}"></h5>
+	                        <h5 th:text="${ad.price}"></h5>
+	                        <p class="card-text" th:text="${#strings.abbreviate(ad.description,300)}"></p>
+			    			
+	                    </div>
+	                </div>
+	                <a th:href="@{/classifiedsForm/{id}(id=${ad.id})}" class="stretched-link"></a>
+	            </div>
+	        </div>
+		</div>
+	</div>
+	
+	<div th:insert="fragments/pagination :: pagination"></div>
+	
+	
+</body>
+</html>

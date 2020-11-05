@@ -1,5 +1,6 @@
 package com.group1_cms.cms_antiques.spring.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
@@ -19,7 +20,7 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         String cookieJwt = jwtTokenProvider.createCookieTokenString(authentication);
-        if(null != cookieJwt){
+        if(cookieJwt != null){
             response.setHeader("Set-Cookie", cookieJwt);
         }
         super.onAuthenticationSuccess(request, response, authentication);

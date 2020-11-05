@@ -2,11 +2,55 @@
 <html xmlns:th="http://www.thymeleaf.org" th:with="lang=${#locale.language}" th:lang="${lang}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link href="../css/register-styles.css" rel="stylesheet" />
+    <title>Register</title>
+    <link href="../css/accountRegistration.css" rel="stylesheet" />
     <link href="../css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-    <div class="text-primary h1">Registration</div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 mx-auto border shadow-lg border pb-3 mt-4 mb-sm-3">
+                <div class="h1 form-heading text-white">Register Account</div>
+                <div class="row">
+                    <div class="col-9">
+                        <p style="color: #0B56DE">Already have an account?</p>
+                    </div>
+                    <div class="col-3 text-right">
+                        <a th:href="@{/login}" role="button" class="btn btn-sm login-button">Login</a>
+                    </div>
+
+                </div>
+                <form th="#" th:action="@{/register}" th:object="${user}" method="post">
+                    <div class="form-group form-registration">
+                        <label th:for="*{username}" class="col-form-label">Username</label>
+                        <span class="text-danger form-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+                        <input type="text" th:field="*{username}" name="username" class="form-control" autofocus="true"/>
+                        <label th:for="*{firstName}" class="col-form-label">First Name</label>
+                        <span class="text-danger form-error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
+                        <input type="text" th:field="*{firstName}" name="firstName" class="form-control"/>
+                        <label th:for="*{lastName}" class="col-form-label">Last Name</label>
+                        <span class="text-danger form-error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
+                        <input type="text" th:field="*{lastName}" name="lastName" class="form-control">
+                        <label th:for="*{email}" class="col-form-label">Email Address</label>
+                        <span class="text-danger form-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                        <input type="text" th:field="*{email}" name="email" class="form-control">
+                        <label th:for="*{password}" class="col-form-label">Password</label>
+                        <span class="text-danger form-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                        <input type="password" th:field="*{password}" name="email" class="form-control">
+                        <label th:for="*{passwordConfirm}" class="col-form-label">Confirm Password</label>
+                        <span class="text-danger form-error" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></span>
+                        <input type="password" th:field="*{passwordConfirm}" name="email" class="form-control">
+                        <!-- TODO member role by default.  Need page where admin user can assign more
+                            priviliges to a user if necessary -->
+                        <div class="col-md-6 mx-auto">
+                            <button id="submitBtn" type="submit" class="btn btn-lg btn-block text-white">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
