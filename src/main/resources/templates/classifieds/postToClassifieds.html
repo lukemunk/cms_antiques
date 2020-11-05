@@ -8,6 +8,7 @@
 			
 			
 		
+
 			<form method="post" th:action="@{/classified_ads}" th:object="${classifiedAd}"  enctype="multipart/form-data">
 				<input type="hidden" id="id" name="id" th:field="*{id}">
 				<input type="hidden" id="itemId" name="itemId" th:field="*{item.id}">

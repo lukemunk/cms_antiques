@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
+<head>
+	<meta charset="ISO-8859-1">
+	<title>ClassifiedsView</title>
+	<link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+</head>
 	<body>
 	
 		<h1>Classifieds</h1>
@@ -41,6 +46,19 @@
 		        
 		    </div>
 		</div>
+		
+		<!--To display content of page-->
+		<div class="container">
+			<h2 class="title" th:text="${Classifieds.title}">Title</h2>
+			<div class="date">
+				<i>Posted by</i>
+				<span th:if="${Classifieds.creator}" th:remove="tag">
+        </span>
+			</div>
+			<h3 class="price" th:text="${Classifieds.price}">Price</h2>
+			<p class="content" th:utext="${Classifieds.description}">Classifieds content</p>
+		</div>
+	
 	
 	</body>
 </html>

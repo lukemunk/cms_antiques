@@ -22,11 +22,13 @@ import com.group1_cms.cms_antiques.models.Item;
 import com.group1_cms.cms_antiques.models.ItemImage;
 import com.group1_cms.cms_antiques.services.ClassifiedAdsService;
 import com.group1_cms.cms_antiques.services.PostsService;
+import com.group1_cms.cms_antiques.services.ClassifiedsService;
 
 @Controller
 public class PostsAndClassifiedsController {
 	
 	private PostsService postsService;
+
 	private ClassifiedAdsService classifiedAdsService;
 
 	@Autowired
@@ -144,6 +146,5 @@ public class PostsAndClassifiedsController {
 		
 		return "classifieds/postToClassifieds.html";
 	}
-	
 	
 }
