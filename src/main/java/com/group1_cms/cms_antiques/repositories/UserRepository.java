@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class UserRepository {
 
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private static final String USER_ID_KEY = "id";
     private static final String USER_ID_BINDING_KEY = ":" + USER_ID_KEY;
