@@ -75,16 +75,13 @@ public class PostContentController
     @RequestMapping("posts/view/deletepost_{id}")
     public ModelAndView deletePost(@PathVariable("id") String id, @ModelAttribute(value="post") Post post)
     {
-        ModelAndView newView = new ModelAndView("posts");
+        ModelAndView newView = new ModelAndView("redirect:/posts/all/1");
 
         if (post == null) {
             // Handle no post found
-            return new ModelAndView("posts");
+            return new ModelAndView("redirect:/posts/all/1");
         }
-        if (postsService.getAllPosts().contains(post))
-        {
-            postsService.deletePost(post);
-        }
+        postsService.deletePost(post);
 
         return newView;
     }

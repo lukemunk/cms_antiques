@@ -68,7 +68,7 @@
 		<!input type="file" id="myImg" name="myImg">
 		<br>
 		<button onclick="goBack()">Cancel</button>
-		<button onclick="">Delete</button>
+		<button th:formaction="@{/posts/view/deletepost_{id}(id=${post.id})}">Delete</button>
 		<input type="submit" value="Submit">
 	</form>
 	<script>
