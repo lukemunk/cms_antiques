@@ -7,6 +7,8 @@ import com.group1_cms.cms_antiques.services.PostsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,39 +19,49 @@ import java.util.stream.Collectors;
 public class PostContentController
 {
     private PostsService postsService;
+    private long postCount = 0;
 
     @Autowired
     public PostContentController(PostsService postsService)
     {
         this.postsService = postsService;
+        postCount = postsService.getAllPosts().stream().count();
     }
 
     // Returns a post Page
     @RequestMapping("posts/view/{id}")
-    public String view(@PathVariable("id") Long id, Model model) {
+    public ModelAndView view(@PathVariable("id") String id, Model model)
+    {
         Post post = postsService.findById(id);
+        ModelAndView newView = new ModelAndView("posts/view");
+
         if (post == null) {
             // Handle no post found
-            return "redirect:/";
+            return new ModelAndView("posts");
         }
-        model.addAttribute("post", post);
-        return "posts/view";
+        newView.addObject("post", post);
+        return newView;
     }
 
     // Gets new Post, saves it, redirects to where it is at
-    @RequestMapping("postToForums/{id}")
-    public String postToForums(@PathVariable("id") Long id, Model model)
+    @RequestMapping("posts/view/editpost_{id}")
+    public ModelAndView postToForums(@PathVariable("id") String id, @ModelAttribute(value="post") Post post)
     {
-        Post post = (Post)model;
+        ModelAndView newView = new ModelAndView("posts/view/" + id);
+
         if (post == null) {
             // Handle no post found
-            return "redirect:/";
+            return new ModelAndView("posts");
+        }
+        if (postsService.getPosts().contains(post))
+        {
+            postsService.updatePost(post);
         }
 
         postsService.getPosts().add(post);
 
-        model.addAttribute("post", post);
-        return "posts/view";
+        newView.addObject("post", post);
+        return newView;
     }
 
     //region Post List
@@ -66,9 +78,9 @@ public class PostContentController
     public String getAllPosts(Model model,
                               @RequestParam("page") Optional<Integer> page,
                               @RequestParam("size") Optional<Integer> size)
-    {	int currentPage = page.orElse(1);
-        int pageSize = size.orElse(5);
-        
+    {
+        // Gets the number of pages
+        long pages = (long)Math.ceil((double)postCount / 10);
 
         // Gets posts in limited order
         List<Post> tenPosts = postsService.getPosts().stream().limit(10).collect(Collectors.toList());

@@ -25,15 +25,24 @@ public class PostsService {
 	public ArrayList<Post> getPosts(){
 		return postsRepository.getPosts(10);
 	}
+
+	public ArrayList<Post> getAllPosts(){
+		return postsRepository.getAllPosts();
+	}
 	
 	public ArrayList<Post> getPostsFromCategory(String category){
 		return postsRepository.getPostsFromCategory(10, category);
 	}
 
-	public Post findById(Long id)
+	public Post findById(String id)
 	{
 		Post newPost = postsRepository.getPostByID(id);
 		return newPost;
+	}
+
+	public void updatePost(Post postIN)
+	{
+		postsRepository.updatePost(postIN);
 	}
 
 }
