@@ -18,9 +18,9 @@ public class ClassifiedsRepository {
 		User user1 = new User();
 		User user2 = new User();
 		User user3= new User();
-		user1.setUserName("sdfhg");
-		user2.setUserName("wetry");
-		user3.setUserName("wyui");
+		user1.setUsername("sdfhg");
+		user2.setUsername("wetry");
+		user3.setUsername("wyui");
 		
 		classifieds = new ArrayList<Classifieds>();
 		classifieds.add(new Classifieds("Ad Title", 
