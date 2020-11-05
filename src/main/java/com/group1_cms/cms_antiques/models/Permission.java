@@ -13,6 +13,13 @@ public class Permission {
     private ZonedDateTime createdOn;
     private ZonedDateTime modifiedOn;
 
+    public Permission() {
+    }
+
+    public Permission(String name) {
+        this.name = name;
+    }
+
     public UUID getId() {
         return id;
     }

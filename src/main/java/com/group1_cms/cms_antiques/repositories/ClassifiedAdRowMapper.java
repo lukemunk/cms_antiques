@@ -36,7 +36,7 @@ public class ClassifiedAdRowMapper implements RowMapper<ClassifiedAd>{
 		
 		User user = new User();
 		user.setId(UUID.fromString(rs.getString("User Id")));
-		user.setUserName(rs.getString("username"));
+		user.setUsername(rs.getString("username"));
 		classifiedAd.setCreator(user);
 		return classifiedAd;
 	}

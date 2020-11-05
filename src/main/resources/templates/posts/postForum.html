@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>PostView</title>
+	<link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+</head>
+
+	<body>
+	
+		<h1>Antiques Forum</h1>
+		
+		<form th:action="@{/postToForums}" th:object="${posts}" method="get">
+		  <label for="postCategory">Want to post? Choose your category from the list:</label>
+		  <input list="postCategories" name="postCategory" id="postCategory">
+		  <datalist id="postCategories">
+		    <option value="Jewelry">
+		    <option value="Clothing">
+		    <option value="Furniture">
+		
+		  </datalist>
+		  <input type="submit">
+		</form>
+		
+		
+		<div class="container">
+		    <div class="Jewelry">
+		        <h1>Jewelry</h1>
+		        <p>
+		            Put Recent Posts here
+		        </p>
+		     
+		    </div>
+		    <div class="Clothing">
+		        <h1>Clothing</h1>
+		        <p>
+		            Put Recent Posts here
+		        </p>
+		       
+		    </div>
+		    <div class="Furniture">
+		        <h1>Furniture</h1>
+		        <p>
+		            Put Recent Posts here
+		        </p>
+		        
+		    </div>
+		</div>
+
+		<!--To display content of page-->
+		<div class="container">
+			<h2 class="title" th:text="${Post.title}">Title</h2>
+			<div class="date">
+				<i>Posted by</i>
+				<span th:if="${Post.creator}" th:remove="tag">
+        </span>
+			</div>
+			<p class="content" th:utext="${Post.story}">Post content</p>
+		</div>
+	
+	</body>
+</html>
