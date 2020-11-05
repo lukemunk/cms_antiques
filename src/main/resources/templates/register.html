@@ -42,8 +42,6 @@
                         <label th:for="*{passwordConfirm}" class="col-form-label">Confirm Password</label>
                         <span class="text-danger form-error" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></span>
                         <input type="password" th:field="*{passwordConfirm}" name="email" class="form-control">
-                        <!-- TODO member role by default.  Need page where admin user can assign more
-                            priviliges to a user if necessary -->
                         <div class="col-md-6 mx-auto">
                             <button id="submitBtn" type="submit" class="btn btn-lg btn-block text-white">Submit</button>
                         </div>

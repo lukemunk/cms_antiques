@@ -1,5 +1,6 @@
 package com.group1_cms.cms_antiques.configurations;
 
+import com.group1_cms.cms_antiques.components.PasswordResetFormValidator;
 import com.group1_cms.cms_antiques.components.RegistrationFormValidator;
 import com.group1_cms.cms_antiques.components.StartupDatabaseLoader;
 import com.group1_cms.cms_antiques.models.Role;
@@ -89,6 +90,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new RegistrationFormValidator(userService);
     }
 
+    @Bean
+    public PasswordResetFormValidator getPasswordResetFormValidator(UserService userService, PasswordEncoder passwordEncoder){
+        return new PasswordResetFormValidator(userService, passwordEncoder());
+    }
+
     @Override
     public UserDetailsService userDetailsServiceBean() throws Exception {
         return applicationContext.getBean(UserService.class);
@@ -129,6 +135,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .anonymous().principal("guest").authorities("Guest_User")
+                .and()
                    .addFilterBefore(new JwtFilter(jwtTokenProvider(applicationContext.getBean(UserService.class), applicationContext.getBean(AuthenticationManager.class))),
                             UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
@@ -137,6 +145,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/register").permitAll()
                 .antMatchers("/login-error").permitAll()
                 .antMatchers("/posts/**").permitAll()
+                .antMatchers("/").permitAll()
+                .antMatchers("/admin/**").hasAuthority("Admin_Permissions")
+                .antMatchers("/admin/viewRestricted/**").hasAuthority("View_Restricted")
+                .antMatchers("/admin/modifyClassifieds").hasAuthority("Modify_Classifieds")
+                .antMatchers("/admin/modifyPosts").hasAuthority("Modify_Posts")
+                .antMatchers("/admin/modifyCategory").hasAuthority("Modify_Category")
+                .antMatchers("/admin/modifyUserPermissions").hasAuthority("Modify_User_Permissions")
+                .antMatchers("/admin/modifyUserRoles").hasAuthority("Modify_User_Roles")
+                .antMatchers("/admin/modifyUsers").hasAuthority("Modify_User")
+                .antMatchers("/member/**").authenticated()
                 .antMatchers("**").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -159,6 +177,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .ignoring()
                 .antMatchers("/css/**")
                 .antMatchers("/js/**")
-                .antMatchers("/webfonts/**");
+                .antMatchers("/webfonts/**")
+                .antMatchers("/appImages/**");
     }
 }

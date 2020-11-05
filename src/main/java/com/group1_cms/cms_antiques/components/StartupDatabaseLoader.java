@@ -53,17 +53,31 @@ public class StartupDatabaseLoader implements ApplicationListener<ContextRefresh
         Permission viewClassifieds = new Permission("View_Classifieds");
         viewClassifieds.setCreatedOn(ZonedDateTime.now());
 
-        Permission addRemovePermissions = new Permission("Add_Remove_Permissions");
-        addRemovePermissions.setCreatedOn(ZonedDateTime.now());
+        Permission modifyUserPermissions = new Permission("Modify_User_Permissions");
+        modifyUserPermissions.setCreatedOn(ZonedDateTime.now());
 
         Permission viewRestricted = new Permission("View_Restricted");
         viewRestricted.setCreatedOn(ZonedDateTime.now());
 
-        Permission addRemoveRoles = new Permission("Add_Remove_Roles");
-        addRemoveRoles.setCreatedOn(ZonedDateTime.now());
+        Permission modifyUserRoles = new Permission("Modify_User_Roles");
+        modifyUserRoles.setCreatedOn(ZonedDateTime.now());
 
-        Permission addRemoveUser = new Permission("Add_Remove_User");
-        addRemoveUser.setCreatedOn(ZonedDateTime.now());
+        Permission modifyUser = new Permission("Modify_User");
+        modifyUser.setCreatedOn(ZonedDateTime.now());
+
+        Permission adminPermissions = new Permission("Admin_Permissions");
+        adminPermissions.setCreatedOn(ZonedDateTime.now());
+
+        Permission modifyClassifieds = new Permission("Modify_Classifieds");
+        modifyClassifieds.setCreatedOn(ZonedDateTime.now());
+
+        Permission modifyPosts = new Permission("Modify_Posts");
+        modifyPosts.setCreatedOn(ZonedDateTime.now());
+
+        Permission modifyCategory = new Permission("Modify_Category");
+        modifyCategory.setCreatedOn(ZonedDateTime.now());
+
+
 
         //create permissions lists by role
         List<Permission> memberPermissionList = new ArrayList<>();
@@ -73,13 +87,17 @@ public class StartupDatabaseLoader implements ApplicationListener<ContextRefresh
         memberPermissionList.add(createContent);
         memberPermissionList.add(viewClassifieds);
 
+        adminPermissionList.add(adminPermissions);
         adminPermissionList.add(createContent);
         adminPermissionList.add(viewClassifieds);
-        adminPermissionList.add(addRemovePermissions);
+        adminPermissionList.add(modifyUserPermissions);
         adminPermissionList.add(viewRestricted);
-        adminPermissionList.add(addRemoveRoles);
-        adminPermissionList.add(addRemoveUser);
+        adminPermissionList.add(modifyUserRoles);
+        adminPermissionList.add(modifyUser);
+        adminPermissionList.add(modifyClassifieds);
+        adminPermissionList.add(modifyPosts);
 
+        moderatorPermissionList.add(adminPermissions);
         moderatorPermissionList.add(viewRestricted);
         moderatorPermissionList.add(viewClassifieds);
 
