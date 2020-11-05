@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head>
-	<meta charset="ISO-8859-1">
-	<title>PostView</title>
-	<link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
-</head>
-
 	<body>
 	
 		<h1>Antiques Forum</h1>
@@ -46,17 +40,6 @@
 		        </p>
 		        
 		    </div>
-		</div>
-
-		<!--To display content of page-->
-		<div class="container">
-			<h2 class="title" th:text="${Post.title}">Title</h2>
-			<div class="date">
-				<i>Posted by</i>
-				<span th:if="${Post.creator}" th:remove="tag">
-        </span>
-			</div>
-			<p class="content" th:utext="${Post.story}">Post content</p>
 		</div>
 	
 	</body>

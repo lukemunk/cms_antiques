@@ -1,17 +1,28 @@
 package com.group1_cms.cms_antiques.models;
 
+import java.util.UUID;
+
 public class Item {
+	private UUID id;
 	private String name;
 	private String category;
+	private ItemImage itemImage;
 	
-	public Item() {
-		name = "Antique";
-		category = "Furniture";
-	}
+	public Item() {}
 	
 	public Item(String name, String category) {
 		this.name = name;
 		this.category = category;
+	}
+	
+	
+
+	public UUID getId() {
+		return id;
+	}
+
+	public void setId(UUID id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -29,6 +40,18 @@ public class Item {
 	public void setCategory(String category) {
 		this.category = category;
 	}
+
+	public ItemImage getItemImage() {
+		return itemImage;
+	}
+
+	public void setItemImage(ItemImage itemImage) {
+		this.itemImage = itemImage;
+	}
+
+	
+	
+	
 	
 	
 }

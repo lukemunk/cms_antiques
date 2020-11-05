@@ -1,6 +1,9 @@
 package com.group1_cms.cms_antiques.services;
 
+import java.awt.print.Book;
+import java.awt.print.Pageable;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,14 +25,24 @@ public class PostsService {
 	public ArrayList<Post> getPosts(){
 		return postsRepository.getPosts(10);
 	}
+
+	public ArrayList<Post> getAllPosts(){
+		return postsRepository.getAllPosts();
+	}
 	
 	public ArrayList<Post> getPostsFromCategory(String category){
 		return postsRepository.getPostsFromCategory(10, category);
 	}
 
-	public Post findById(Long id)
+	public Post findById(String id)
 	{
 		Post newPost = postsRepository.getPostByID(id);
 		return newPost;
 	}
+
+	public void updatePost(Post postIN)
+	{
+		postsRepository.updatePost(postIN);
+	}
+
 }

@@ -155,6 +155,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/modifyUserRoles").hasAuthority("Modify_User_Roles")
                 .antMatchers("/admin/modifyUsers").hasAuthority("Modify_User")
                 .antMatchers("/member/**").authenticated()
+                .antMatchers("**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                     .exceptionHandling().accessDeniedPage("/login")

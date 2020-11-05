@@ -23,11 +23,11 @@ public class PostsRepository {
 		user3.setUsername("Crzy4Antiques");
 		
 		posts = new ArrayList<Post>();
-		posts.add(new Post("Post Title", 
+		posts.add(new Post("Doll On loose",
 				"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", 
 				new Item("Doll", "Collectible"),
 				user1));
-		posts.add(new Post("Post Title", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Convallis posuere morbi leo urna molestie at elementum eu. Aliquam faucibus purus in massa tempor nec feugiat nisl pretium. Facilisis magna etiam tempor orci eu lobortis elementum nibh. Neque laoreet suspendisse interdum consectetur. In fermentum et sollicitudin ac. Pellentesque sit amet porttitor eget dolor morbi. Et ultrices neque ornare aenean euismod elementum. Ut consequat semper viverra nam libero justo laoreet sit amet. Fermentum et sollicitudin ac orci phasellus egestas tellus rutrum. Ut tristique et egestas quis ipsum suspendisse ultrices gravida dictum. Volutpat commodo sed egestas egestas fringilla phasellus faucibus scelerisque eleifend. In hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit. Ac placerat vestibulum lectus mauris ultrices. Pellentesque pulvinar pellentesque habitant morbi tristique senectus et. Viverra aliquet eget sit amet. Penatibus et magnis dis parturient. Integer malesuada nunc vel risus commodo. Aliquam eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis.\r\n" + 
+		posts.add(new Post("Old Chair", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Convallis posuere morbi leo urna molestie at elementum eu. Aliquam faucibus purus in massa tempor nec feugiat nisl pretium. Facilisis magna etiam tempor orci eu lobortis elementum nibh. Neque laoreet suspendisse interdum consectetur. In fermentum et sollicitudin ac. Pellentesque sit amet porttitor eget dolor morbi. Et ultrices neque ornare aenean euismod elementum. Ut consequat semper viverra nam libero justo laoreet sit amet. Fermentum et sollicitudin ac orci phasellus egestas tellus rutrum. Ut tristique et egestas quis ipsum suspendisse ultrices gravida dictum. Volutpat commodo sed egestas egestas fringilla phasellus faucibus scelerisque eleifend. In hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit. Ac placerat vestibulum lectus mauris ultrices. Pellentesque pulvinar pellentesque habitant morbi tristique senectus et. Viverra aliquet eget sit amet. Penatibus et magnis dis parturient. Integer malesuada nunc vel risus commodo. Aliquam eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis.\r\n" +
 				"\r\n" + 
 				"Aliquet bibendum enim facilisis gravida neque. Tempor commodo ullamcorper a lacus vestibulum. Non enim praesent elementum facilisis leo vel fringilla. Pellentesque eu tincidunt tortor aliquam nulla facilisi cras fermentum odio. Morbi enim nunc faucibus a. Consectetur adipiscing elit duis tristique sollicitudin nibh sit amet. Pulvinar mattis nunc sed blandit. Lectus mauris ultrices eros in cursus turpis massa. Nec ultrices dui sapien eget mi proin. Auctor eu augue ut lectus arcu. In fermentum et sollicitudin ac orci phasellus. Neque viverra justo nec ultrices dui sapien eget mi proin. Sit amet tellus cras adipiscing enim eu. Leo vel fringilla est ullamcorper eget nulla facilisi etiam. Neque aliquam vestibulum morbi blandit cursus risus at ultrices mi. Tristique senectus et netus et malesuada fames ac turpis egestas.\r\n" + 
 				"\r\n" + 
@@ -43,8 +43,8 @@ public class PostsRepository {
 				"© 2015 — 2020",
 				new Item("Chair", "Furniture"),
 				user2));
-		posts.add(new Post("Post Title", "ut consequat semper viverra nam libero justo laoreet sit amet cursus sit amet dictum sit amet justo donec enim diam vulputate ut pharetra sit amet aliquam id diam maecenas ultricies mi eget mauris pharetra et ultrices neque ornare aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus urna neque viverra justo nec ultrices dui sapien eget mi proin sed libero enim sed faucibus turpis in eu mi bibendum neque egestas congue quisque egestas diam in arcu cursus euismod quis viverra nibh cras pulvinar mattis nunc sed blandit libero volutpat sed cras ornare arcu dui", new Item("Couch", "Furniture"),user1));
-		posts.add(new Post("Post Title", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. At volutpat diam ut venenatis tellus in metus vulputate. Et leo duis ut diam quam nulla. Purus faucibus ornare suspendisse sed nisi lacus. Neque sodales ut etiam sit amet nisl purus in. Id donec ultrices tincidunt arcu. Elementum sagittis vitae et leo duis. Hac habitasse platea dictumst quisque sagittis purus sit amet volutpat. Scelerisque eleifend donec pretium vulputate. Ut sem viverra aliquet eget. Augue eget arcu dictum varius duis at consectetur. Urna nunc id cursus metus aliquam eleifend mi in. Aliquet nibh praesent tristique magna sit amet purus gravida. Consequat nisl vel pretium lectus quam id leo in. Dui sapien eget mi proin. Donec massa sapien faucibus et. Tellus pellentesque eu tincidunt tortor aliquam nulla facilisi. At elementum eu facilisis sed odio morbi.\r\n" + 
+		posts.add(new Post("Lost Couch", "ut consequat semper viverra nam libero justo laoreet sit amet cursus sit amet dictum sit amet justo donec enim diam vulputate ut pharetra sit amet aliquam id diam maecenas ultricies mi eget mauris pharetra et ultrices neque ornare aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus urna neque viverra justo nec ultrices dui sapien eget mi proin sed libero enim sed faucibus turpis in eu mi bibendum neque egestas congue quisque egestas diam in arcu cursus euismod quis viverra nibh cras pulvinar mattis nunc sed blandit libero volutpat sed cras ornare arcu dui", new Item("Couch", "Furniture"),user1));
+		posts.add(new Post("This is my painting", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. At volutpat diam ut venenatis tellus in metus vulputate. Et leo duis ut diam quam nulla. Purus faucibus ornare suspendisse sed nisi lacus. Neque sodales ut etiam sit amet nisl purus in. Id donec ultrices tincidunt arcu. Elementum sagittis vitae et leo duis. Hac habitasse platea dictumst quisque sagittis purus sit amet volutpat. Scelerisque eleifend donec pretium vulputate. Ut sem viverra aliquet eget. Augue eget arcu dictum varius duis at consectetur. Urna nunc id cursus metus aliquam eleifend mi in. Aliquet nibh praesent tristique magna sit amet purus gravida. Consequat nisl vel pretium lectus quam id leo in. Dui sapien eget mi proin. Donec massa sapien faucibus et. Tellus pellentesque eu tincidunt tortor aliquam nulla facilisi. At elementum eu facilisis sed odio morbi.\r\n" +
 				"\r\n" + 
 				"Leo vel orci porta non. Senectus et netus et malesuada fames. Magna etiam tempor orci eu lobortis. Ac turpis egestas maecenas pharetra convallis posuere. Eu sem integer vitae justo eget magna fermentum. Sem fringilla ut morbi tincidunt augue interdum velit. Massa tincidunt dui ut ornare lectus. Suspendisse sed nisi lacus sed viverra tellus in hac habitasse. Mus mauris vitae ultricies leo integer malesuada. Amet dictum sit amet justo donec enim. Magnis dis parturient montes nascetur ridiculus mus mauris. Sit amet justo donec enim diam vulputate ut pharetra.\r\n" + 
 				"\r\n" + 
@@ -65,32 +65,32 @@ public class PostsRepository {
 				"Risus viverra adipiscing at in tellus integer feugiat. Aliquet lectus proin nibh nisl. Ut morbi tincidunt augue interdum velit euismod in pellentesque. Mattis aliquam faucibus purus in massa tempor nec feugiat nisl. Condimentum lacinia quis vel eros donec ac odio tempor. Sed viverra ipsum nunc aliquet bibendum enim. Vulputate odio ut enim blandit volutpat maecenas volutpat. Amet tellus cras adipiscing enim eu turpis egestas pretium aenean. Quis varius quam quisque id diam. Tincidunt dui ut ornare lectus sit amet est. Mauris rhoncus aenean vel elit scelerisque.", 
 				new Item("Painting", "Art"),
 				user3));
-		posts.add(new Post("Post Title", "", new Item("Ring", "Jewelry"), user1));
-		posts.add(new Post("Post Title", "", new Item("Necklace", "Jewelry"), user2));
-		posts.add(new Post("Post Title", "", new Item("Toy Car", "Collectible"),user3));
-		posts.add(new Post("Post Title", "", new Item("Dress", "Clothing"),user1));
-		posts.add(new Post("Post Title", "", new Item("Pants", "Clothing"),user2));
-		posts.add(new Post("Post Title", "", new Item("Hat", "Clothing"),user3));
-		posts.add(new Post("Post Title", "", new Item("Shirt", "Clothing"),user1));
-		posts.add(new Post("Post Title", "", new Item("Table", "Furniture"),user2));
-		posts.add(new Post("Post Title", "", new Item("Stool", "Furniture"),user3));
-		posts.add(new Post("Post Title", "", new Item("Pottery", "Art"),user1));
-		posts.add(new Post("Post Title", "", new Item("Socks", "Clothing"),user2));
-		posts.add(new Post("Post Title", "", new Item("Crown", "Jewelry"),user3));
-		posts.add(new Post("Post Title", "", new Item("Painting", "Art"),user1));
-		posts.add(new Post("Post Title", "", new Item("Stand", "Furniture"),user2));
-		posts.add(new Post("Post Title", "", new Item("Bed", "Furniture"),user3));
-		posts.add(new Post("Post Title", "", new Item("Car", "Collectible"),user1));
-		posts.add(new Post("Post Title", "", new Item("Painting 1", "Art"),user2));
-		posts.add(new Post("Post Title", "", new Item("Painting 2", "Art"),user3));
-		posts.add(new Post("Post Title", "", new Item("Painting 3", "Art"),user1));
-		posts.add(new Post("Post Title", "", new Item("Painting 4", "Art"),user2));
-		posts.add(new Post("Post Title", "", new Item("Painting 5", "Art"),user3));
-		posts.add(new Post("Post Title", "", new Item("Painting 6", "Art"),user1));
-		posts.add(new Post("Post Title", "", new Item("Painting 7", "Art"),user2));
-		posts.add(new Post("Post Title", "", new Item("Painting 8", "Art"),user3));
-		posts.add(new Post("Post Title", "", new Item("Painting 9", "Art"),user1));
-		posts.add(new Post("Post Title", "", new Item("Painting 10", "Art"),user2));	
+		posts.add(new Post("Grandma's Ring", "", new Item("Ring", "Jewelry"), user1));
+		posts.add(new Post("Ruby Necklace", "", new Item("Necklace", "Jewelry"), user2));
+		posts.add(new Post("Barbie's Corvette", "", new Item("Toy Car", "Collectible"),user3));
+		posts.add(new Post("Small Dress", "", new Item("Dress", "Clothing"),user1));
+		posts.add(new Post("Jimmy's Pants", "", new Item("Pants", "Clothing"),user2));
+		posts.add(new Post("My hat has three corners", "", new Item("Hat", "Clothing"),user3));
+		posts.add(new Post("Revolution Shirt", "", new Item("Shirt", "Clothing"),user1));
+		posts.add(new Post("Great Aunt's Table", "", new Item("Table", "Furniture"),user2));
+		posts.add(new Post("Three legged stool", "", new Item("Stool", "Furniture"),user3));
+		posts.add(new Post("Pot from 1760", "", new Item("Pottery", "Art"),user1));
+		posts.add(new Post("Yankee's Socks", "", new Item("Socks", "Clothing"),user2));
+		posts.add(new Post("Lord's Crown", "", new Item("Crown", "Jewelry"),user3));
+		posts.add(new Post("Painting of Obiwan", "", new Item("Painting", "Art"),user1));
+		posts.add(new Post("Old night stand", "", new Item("Stand", "Furniture"),user2));
+		posts.add(new Post("Bed, Lice Included", "", new Item("Bed", "Furniture"),user3));
+		posts.add(new Post("1967 Mustang", "", new Item("Car", "Collectible"),user1));
+		posts.add(new Post("Painting of Mustafar", "", new Item("Painting 1", "Art"),user2));
+		posts.add(new Post("Painting of It", "", new Item("Painting 2", "Art"),user3));
+		posts.add(new Post("Painting of an ear", "", new Item("Painting 3", "Art"),user1));
+		posts.add(new Post("Not sure", "", new Item("Painting 4", "Art"),user2));
+		posts.add(new Post("Impressionist Era", "", new Item("Painting 5", "Art"),user3));
+		posts.add(new Post("Melting Clocks", "", new Item("Painting 6", "Art"),user1));
+		posts.add(new Post("Modern Art", "", new Item("Painting 7", "Art"),user2));
+		posts.add(new Post("My grandparents", "", new Item("Painting 8", "Art"),user3));
+		posts.add(new Post("The farm", "", new Item("Painting 9", "Art"),user1));
+		posts.add(new Post("Animal Farm", "", new Item("Painting 10", "Art"),user2));
 	}
 	
 	public ArrayList<Post> getPosts(int numberOfPosts){
@@ -98,6 +98,40 @@ public class PostsRepository {
 		this.posts.stream()
 		.limit(numberOfPosts)
 		.forEachOrdered(posts::add);
+		return posts;
+	}
+
+	public ArrayList<Post> getAllPosts(){
+		ArrayList<Post> posts = new ArrayList<Post>();
+		this.posts.stream()
+				.forEachOrdered(posts::add);
+		return posts;
+	}
+
+	public ArrayList<Post> updatePost(Post postIN){
+		ArrayList<Post> posts = new ArrayList<Post>();
+		Post oldPost = null;
+		if (posts.contains(postIN))
+		{
+			// Removes old post
+			for (Post x: posts)
+			{
+				if (postIN.equals(x))
+				{
+					oldPost = x;
+				}
+			}
+			if (oldPost != null)
+			{
+				posts.remove(oldPost);
+			}
+
+			// Adds the new post
+			posts.add(postIN);
+		}
+
+		this.posts.stream()
+				.forEachOrdered(posts::add);
 		return posts;
 	}
 	
@@ -112,11 +146,22 @@ public ArrayList<Post> getPostsFromCategory(int numberOfPosts, String category){
 		return posts;
 	}
 
-    public Post getPostByID(Long id)
+    public Post getPostByID(String id)
     {
-    	Post newPost;
-		this.posts.stream().filter(post -> post.getId().equalsIgnoreCase(id.toString()));
+    	Post newPost = null;
+		for (Post x: posts)
+		{
+			if (x.getId().equalsIgnoreCase(id))
+			{
+				newPost = x;
+			}
+		}
 
-    	return null;
+		if (newPost == null)
+		{
+			return null;
+		}
+
+    	return newPost;
     }
 }

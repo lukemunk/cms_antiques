@@ -44,6 +44,7 @@ public class ViewController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+
     @RequestMapping(method = RequestMethod.GET, value = "/")
     public ModelAndView publicHomePage(){
         ModelAndView modelAndView = new ModelAndView("index");
