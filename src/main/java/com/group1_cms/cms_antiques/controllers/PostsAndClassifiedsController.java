@@ -36,12 +36,7 @@ public class PostsAndClassifiedsController {
 		this.postsService = postsService;
 		this.classifiedAdsService = classifiedAdsService;
 	}
-	
-	@RequestMapping(value="/posts")
-	public String posts(Model model){
-		model.addAttribute("posts", postsService.getPosts());
-		return "public/posts.html";
-	}
+
 	
 	@RequestMapping(value="/posts/{category}")
 	public String category(Model model, @PathVariable String category) {

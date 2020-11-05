@@ -28,7 +28,7 @@ public class PostContentController
         postCount = postsService.getAllPosts().stream().count();
     }
 
-    // Returns a post Page
+    // Returns a post Page where they can also edit the post
     @RequestMapping("posts/view/{id}")
     public ModelAndView view(@PathVariable("id") String id, Model model)
     {
@@ -37,8 +37,19 @@ public class PostContentController
 
         if (post == null) {
             // Handle no post found
-            return new ModelAndView("posts");
+            return new ModelAndView("redirect:/posts/all/1");
         }
+        newView.addObject("post", post);
+        return newView;
+    }
+
+    // Returns a page where they can create a new post
+    @RequestMapping("posts/newpost")
+    public ModelAndView newPost( Model model)
+    {
+        Post post = new Post();
+        ModelAndView newView = new ModelAndView("posts/newpost");
+
         newView.addObject("post", post);
         return newView;
     }
@@ -47,45 +58,86 @@ public class PostContentController
     @RequestMapping("posts/view/editpost_{id}")
     public ModelAndView postToForums(@PathVariable("id") String id, @ModelAttribute(value="post") Post post)
     {
-        ModelAndView newView = new ModelAndView("posts/view/" + id);
+        ModelAndView newView = new ModelAndView("redirect:/posts/view/" + id);
 
         if (post == null) {
             // Handle no post found
-            return new ModelAndView("posts");
+            return new ModelAndView("redirect:/posts/all/1");
         }
-        if (postsService.getPosts().contains(post))
-        {
-            postsService.updatePost(post);
-        }
+        postsService.updatePost(post);
 
-        postsService.getPosts().add(post);
 
         newView.addObject("post", post);
         return newView;
     }
 
-    //region Post List
-    @GetMapping(path = "posts/{Category}",
-            produces = "application/json")
-    public String getPostsCategory(Model model, @PathVariable String Category)
+    // Gets new Post, saves it, redirects to where it is at
+    @RequestMapping("posts/view/deletepost_{id}")
+    public ModelAndView deletePost(@PathVariable("id") String id, @ModelAttribute(value="post") Post post)
     {
-        model.addAttribute("posts", postsService.getPostsFromCategory(Category));
-        return "public/posts.html";
+        ModelAndView newView = new ModelAndView("posts");
+
+        if (post == null) {
+            // Handle no post found
+            return new ModelAndView("posts");
+        }
+        if (postsService.getAllPosts().contains(post))
+        {
+            postsService.deletePost(post);
+        }
+
+        return newView;
     }
 
-    @GetMapping(path = "posts/",
-            produces = "application/json")
-    public String getAllPosts(Model model,
-                              @RequestParam("page") Optional<Integer> page,
-                              @RequestParam("size") Optional<Integer> size)
-    {
+    @RequestMapping(value="/posts")
+    public ModelAndView posts(Model model){
         // Gets the number of pages
-        long pages = (long)Math.ceil((double)postCount / 10);
+        int pages = (int)Math.ceil((double)postsService.getAllPosts().stream().count() / 10);
+
+            ModelAndView newView = new ModelAndView("redirect:posts/all/1");
+
+        return newView;
+    }
+
+    @GetMapping(path = "posts/{category}/{page}",
+            produces = "application/json")
+    public ModelAndView getAllPosts(Model model,
+                              @RequestParam(required = false) String searchIN,
+                              @PathVariable(required = false) String category,
+                              @PathVariable String page)
+    {
+        int pages = 0;
+        String search = "";
+        // Gets the number of pages
+        if (category.equalsIgnoreCase("all"))
+        {
+            pages = (int)Math.ceil((double)postsService.getAllPosts().stream().count() / 10);
+        }
+        else
+        {
+            pages = (int)Math.ceil((double)postsService.getAllPosts().stream().filter(post -> post.getItem().getCategory().equalsIgnoreCase(category)).count() / 10);
+        }
+        if (searchIN == null)
+        {
+            // Do nothing
+        }
+        else
+        {
+            search = searchIN;
+        }
+
+        ModelAndView newView = new ModelAndView("public/posts.html");
+
+        newView.addObject("page", Integer.parseInt(page));
+        newView.addObject("totalPages", pages);
+        newView.addObject("search", search);
+        newView.addObject("category", category.substring(0, 1).toUpperCase() + category.substring(1));
+        newView.addObject("categories", postsService.getAllCategories());
 
         // Gets posts in limited order
-        List<Post> tenPosts = postsService.getPosts().stream().limit(10).collect(Collectors.toList());
-        model.addAttribute("tenPosts", tenPosts);
-        return "index";
+        newView.addObject("posts", postsService.getPosts(category, search, Integer.parseInt(page)));
+
+        return newView;
     }
     //endregion
 

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Post</title>
+    <link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+</head>
+
+<body>
+
+<div class="container">
+    <nav class="navbar navbar-expand-sm bg-light fixed-top">
+
+        <a href="/" class="navbar-brand">Home</a>
+
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link" href="/posts">All Posts</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/posts/furniture">Furniture</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/posts/jewelry">Jewelry</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/posts/clothing">Clothing</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/postToForums">New Post</a>
+            </li>
+        </ul>
+
+        <form class="form-inline" action="/action_page.php">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search">
+            <button class="btn btn-success" type="submit">Search</button>
+        </form>
+
+    </nav>
+</div>
+
+<div class = "jumbotron d-flex justify-content-center" style="margin-top:80px;">
+    <h1 text="New Post" ></h1>
+</div>
+
+
+<div class="container-body">
+    <form method="post" th:action="@{/posts/view/editpost_{id}(id=${post.id})}" th:object="${post}">
+        <label for="postTitle">Post title:</label>
+        <input type="text" id="postTitle" name="postTitle" th:field="${post.title}" placeholder="Title...">
+        <br><br>
+        <textarea id="postToForum" name="postToForum" rows="10" cols="50" th:field="${post.story}" placeholder="Content...">
+
+			  </textarea>
+        <br><br>
+        <!label for="myfile">Want to upload an image?:<!/label>
+        <!input type="file" id="myImg" name="myImg">
+        <br>
+        <button onclick="goBack()">Cancel</button>
+        <button onclick="">Delete</button>
+        <input type="submit" value="Submit">
+    </form>
+    <script>
+        function goBack(){
+            window.history.back();
+        }
+    </script>
+</div>
+
+</body>
+</html>

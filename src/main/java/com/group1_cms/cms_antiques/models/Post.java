@@ -10,8 +10,9 @@ public class Post {
 	private User creator;
 	
 	public Post() {
-		title = "Post Title";
-		story = "Stuff about the item";
+		title = "";
+		story = "";
+		id = UUID.randomUUID().toString();
 		item = new Item();
 	}
 	
@@ -62,9 +63,16 @@ public class Post {
 	public void setCreator(User creator) {
 		this.creator = creator;
 	}
-	
-	
 
-	
+	@Override
+	public boolean equals(Object obj)
+	{
+		Post that = (Post)obj;
+		if (this.getId().equals( that.getId()) )
+		{
+			return true;
+		}
 
+		return false;
+	}
 }

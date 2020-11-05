@@ -40,12 +40,16 @@
 	</nav>
 	</div>
 
+	<div class = "jumbotron d-flex justify-content-center" style="margin-top:80px;">
+	<h1 th:text="${post.title}" ></h1>
+
+	</div>
+
 		<!--To display content of page-->
 		<div class="container-body">
-			<h2 class="title" th:text="${post.title}">Title</h2>
 			<div class="date">
-				<i>Posted by</i>
-				<h6 class="card-subtitle mb-2 text-muted" th:text="${post.creator.username}"></h6>
+				<h4><i>Posted by</i></h4>
+				<h3 class="card-subtitle mb-2 text-muted" th:text="${post.creator.username}"></h3>
         </span>
 			</div>
 			<p class="content" th:utext="${post.story}">Post content</p>

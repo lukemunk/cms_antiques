@@ -1,6 +1,7 @@
 package com.group1_cms.cms_antiques.repositories;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
@@ -24,7 +25,11 @@ public class PostsRepository {
 		
 		posts = new ArrayList<Post>();
 		posts.add(new Post("Doll On loose",
-				"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", 
+				"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore " +
+						"et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi " +
+						"ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit " +
+						"esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, " +
+						"sunt in culpa qui officia deserunt mollit anim id est laborum.",
 				new Item("Doll", "Collectible"),
 				user1));
 		posts.add(new Post("Old Chair", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Convallis posuere morbi leo urna molestie at elementum eu. Aliquam faucibus purus in massa tempor nec feugiat nisl pretium. Facilisis magna etiam tempor orci eu lobortis elementum nibh. Neque laoreet suspendisse interdum consectetur. In fermentum et sollicitudin ac. Pellentesque sit amet porttitor eget dolor morbi. Et ultrices neque ornare aenean euismod elementum. Ut consequat semper viverra nam libero justo laoreet sit amet. Fermentum et sollicitudin ac orci phasellus egestas tellus rutrum. Ut tristique et egestas quis ipsum suspendisse ultrices gravida dictum. Volutpat commodo sed egestas egestas fringilla phasellus faucibus scelerisque eleifend. In hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit. Ac placerat vestibulum lectus mauris ultrices. Pellentesque pulvinar pellentesque habitant morbi tristique senectus et. Viverra aliquet eget sit amet. Penatibus et magnis dis parturient. Integer malesuada nunc vel risus commodo. Aliquam eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis.\r\n" +
@@ -93,11 +98,27 @@ public class PostsRepository {
 		posts.add(new Post("Animal Farm", "", new Item("Painting 10", "Art"),user2));
 	}
 	
-	public ArrayList<Post> getPosts(int numberOfPosts){
+	public ArrayList<Post> getPosts(String categoryIN, String search, int page, int numberOfPosts)
+	{
+		int offset = (page - 1) * 10;
 		ArrayList<Post> posts = new ArrayList<Post>();
-		this.posts.stream()
-		.limit(numberOfPosts)
-		.forEachOrdered(posts::add);
+
+		if (categoryIN.equalsIgnoreCase("all"))
+		{
+			this.posts.stream()
+					.skip(offset)
+					.limit(numberOfPosts)
+					.forEachOrdered(posts::add);
+		}
+		else
+		{
+			this.posts.stream()
+					.filter(post -> post.getItem().getCategory().equalsIgnoreCase(categoryIN))
+					.skip(offset)
+					.limit(numberOfPosts)
+					.forEachOrdered(posts::add);
+		}
+
 		return posts;
 	}
 
@@ -109,29 +130,32 @@ public class PostsRepository {
 	}
 
 	public ArrayList<Post> updatePost(Post postIN){
-		ArrayList<Post> posts = new ArrayList<Post>();
 		Post oldPost = null;
-		if (posts.contains(postIN))
-		{
+		User user1 = new User();
+		user1.setUsername("Bobloblaw");
+		postIN.setCreator(user1);
+		boolean exists = false;
+
 			// Removes old post
-			for (Post x: posts)
+			for (Post x: this.posts)
 			{
 				if (postIN.equals(x))
 				{
 					oldPost = x;
+					exists = true;
 				}
 			}
 			if (oldPost != null)
 			{
 				posts.remove(oldPost);
+				posts.add(postIN);
 			}
 
-			// Adds the new post
+		if (!exists)
+		{
 			posts.add(postIN);
 		}
 
-		this.posts.stream()
-				.forEachOrdered(posts::add);
 		return posts;
 	}
 	
@@ -164,4 +188,20 @@ public ArrayList<Post> getPostsFromCategory(int numberOfPosts, String category){
 
     	return newPost;
     }
+
+    public void deletePost(Post post)
+    {
+    	// Handle deletion of posts
+		// To do
+    }
+
+	public List<String> getAllCategories()
+	{
+		List<String> categoryList = new ArrayList<>();
+		categoryList.add("all");
+		categoryList.add("furniture");
+		categoryList.add("jewelry");
+		categoryList.add("clothing");
+		return categoryList;
+	}
 }
