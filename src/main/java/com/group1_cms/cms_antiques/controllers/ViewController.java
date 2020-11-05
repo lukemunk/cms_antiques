@@ -9,7 +9,6 @@ import com.group1_cms.cms_antiques.services.RoleService;
 import com.group1_cms.cms_antiques.services.UserService;
 import com.group1_cms.cms_antiques.spring.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -47,7 +46,7 @@ public class ViewController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/")
     public ModelAndView publicHomePage(){
-        ModelAndView modelAndView = new ModelAndView("home");
+        ModelAndView modelAndView = new ModelAndView("index");
         return modelAndView;
     }
 
