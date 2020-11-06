@@ -5,6 +5,8 @@ import com.group1_cms.cms_antiques.models.Item;
 import com.group1_cms.cms_antiques.models.Post;
 import com.group1_cms.cms_antiques.services.PostsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,12 +37,15 @@ public class PostContentController
     {
         Post post = postsService.findById(id);
         ModelAndView newView = new ModelAndView("posts/view");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
 
         if (post == null) {
             // Handle no post found
             return new ModelAndView("redirect:/posts/all/1");
         }
         newView.addObject("post", post);
+        newView.addObject("username", currentPrincipalName);
         return newView;
     }
 
@@ -115,7 +120,8 @@ public class PostContentController
 
         if(category == null)
             category = "all";
-        
+
+
         try {
             if(pages<=0)
                 pages = 1;

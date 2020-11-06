@@ -28,7 +28,7 @@
 				<a class="nav-link" href="/posts/clothing">Clothing</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" href="/postToForums" sec:authorize="isAuthenticated()">New Post</a>
+				<a class="nav-link" th:action="showEdit()" th:if="${username.equals(post.creator.username)}" sec:authorize="isAuthenticated()" >New Post</a>
 			</li>
 		</ul>
 
@@ -55,7 +55,7 @@
 			<p class="content" th:utext="${post.story}">Post content</p>
 		</div>
 
-	<div class="container-body" sec:authorize="isAuthenticated()">
+	<div class="container-body" sec:authorize="isAuthenticated()" id="editArea">
 	<form method="post" th:action="@{/posts/view/editpost_{id}(id=${post.id})}" th:object="${post}">
 		<label for="postTitle">Post title:</label>
 		<input type="text" id="postTitle" name="postTitle" th:field="${post.title}">
@@ -83,6 +83,18 @@
 	<script>
 		function goBack(){
 			window.history.back();
+		}
+
+		function showEdit()
+		{
+			if (document.getElementById("greenBoxComputer").style.display !== "none")
+			{
+				document.getElementById("greenBoxComputer").style.display = "none"
+			}
+			else
+			{
+				document.getElementById("greenBoxComputer").style.display = "block";
+			}
 		}
 	</script>
 	</div>
