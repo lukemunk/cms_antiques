@@ -2,20 +2,20 @@ package com.group1_cms.cms_antiques.repositories;
 
 import com.group1_cms.cms_antiques.models.Role;
 import com.group1_cms.cms_antiques.models.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UserRepository {
 
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private static final String USER_ID_KEY = "id";
     private static final String USER_ID_BINDING_KEY = ":" + USER_ID_KEY;
@@ -87,6 +87,7 @@ public class UserRepository {
             "WHERE 1=1";
 
     private static final String WHERE_USERNAME_OR_EMAIL_EQUALS_USERNAME = "u.username = " + USERNAME_BINDING_KEY + " OR u.email = " + EMAIL_BINDING_KEY;
+    private static final String UPDATE_USER_PASSWORD = "UPDATE User SET password = :password WHERE username = :username OR email = :email";
 
     public UserRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate){
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
@@ -131,7 +132,7 @@ public class UserRepository {
         StringBuilder recordSql = getSqlInsertStatement("User", primaryKeys, sqlColumns, columnNameToBindingValue, true);
 
         namedParameterJdbcTemplate.update(recordSql.toString(), bindingValues);
-        return user; //TODO edit return
+        return user;
     }
 
     public User addUserRoles(User user, Role role){
@@ -154,6 +155,16 @@ public class UserRepository {
         UserRowCallBackHandler callBackHandler = new UserRowCallBackHandler();
         namedParameterJdbcTemplate.query(sql, parameterSource, callBackHandler);
         return callBackHandler.getUser();
+    }
+
+    public void updateUserPassword(String username, String password){
+        String sql = UPDATE_USER_PASSWORD;
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource
+                .addValue(PASSWORD_KEY, password)
+                .addValue(USERNAME_KEY, username)
+                .addValue(EMAIL_KEY, username);
+        namedParameterJdbcTemplate.update(sql, parameterSource);
     }
 
     private void addSqlItem(List<String> columns, Map<String, String> sqlValues, MapSqlParameterSource bindingValues,
@@ -199,4 +210,5 @@ public class UserRepository {
         }
         return insertStatement;
     }
+
 }

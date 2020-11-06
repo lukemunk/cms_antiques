@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class PermissionRepository {
 
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private static final String PERMISSION_ID_KEY = "id";
     private static final String PERMISSION_ID_BINDING_KEY = ":" + PERMISSION_ID_KEY;
