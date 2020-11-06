@@ -113,6 +113,16 @@ public class PostContentController
         // Gets the number of pages
         pages = (int)Math.ceil((double)postsService.getAllPostsCount(category, searchIN) / 10);
 
+        if(category == null)
+            category = "all";
+        
+        try {
+            if(pages<=0)
+                pages = 1;
+        } catch (NumberFormatException nfe) {
+            pages = 1;
+        }
+
         if (searchIN == null)
         {
             // Do nothing

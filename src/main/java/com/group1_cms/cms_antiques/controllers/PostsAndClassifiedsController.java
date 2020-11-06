@@ -26,22 +26,15 @@ import com.group1_cms.cms_antiques.services.ClassifiedsService;
 
 @Controller
 public class PostsAndClassifiedsController {
-	
-	private PostsService postsService;
+
 
 	private ClassifiedAdsService classifiedAdsService;
 
 	@Autowired
 	public PostsAndClassifiedsController(PostsService postsService, ClassifiedAdsService classifiedAdsService) {
-		this.postsService = postsService;
 		this.classifiedAdsService = classifiedAdsService;
 	}
 
-	
-	@RequestMapping(value="/public/postForum")
-	public String postForum() {
-		return "public/postForum.html";
-	}
 	
 	@RequestMapping(value = "/classified_ads", method = RequestMethod.GET)
 	   public String redirect() {
