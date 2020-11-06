@@ -145,6 +145,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/register").permitAll()
                 .antMatchers("/login-error").permitAll()
                 .antMatchers("/posts/**").permitAll()
+                .antMatchers("/posts/newpost").authenticated()
                 .antMatchers("/").permitAll()
                 .antMatchers("/admin/**").hasAuthority("Admin_Permissions")
                 .antMatchers("/admin/viewRestricted/**").hasAuthority("View_Restricted")

@@ -3,31 +3,32 @@ package com.group1_cms.cms_antiques.models;
 import java.util.UUID;
 
 public class Post {
-	private String id;
+	private UUID id;
 	private String title;
 	private String story;
 	private Item item;
 	private User creator;
 	
 	public Post() {
-		title = "Post Title";
-		story = "Stuff about the item";
+		title = "";
+		story = "";
+		id = UUID.randomUUID();
 		item = new Item();
 	}
 	
 	public Post(String title, String story, Item item, User creator) {
-		id = UUID.randomUUID().toString();
+		id = UUID.randomUUID();
 		this.title = title;
 		this.story = story;
 		this.item = item;
 		this.creator = creator;
 	}
 
-	public String getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
@@ -62,9 +63,16 @@ public class Post {
 	public void setCreator(User creator) {
 		this.creator = creator;
 	}
-	
-	
 
-	
+	@Override
+	public boolean equals(Object obj)
+	{
+		Post that = (Post)obj;
+		if (this.getId().equals( that.getId()) )
+		{
+			return true;
+		}
 
+		return false;
+	}
 }
