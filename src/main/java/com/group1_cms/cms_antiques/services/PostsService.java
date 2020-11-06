@@ -22,16 +22,12 @@ public class PostsService {
 		
 	}
 	
-	public ArrayList<Post> getPosts(String category, String search, int page){
+	public List<Post> getPosts(String category, String search, int page){
 		return postsRepository.getPosts(category, search, page, 10);
 	}
 
-	public ArrayList<Post> getAllPosts(){
-		return postsRepository.getAllPosts();
-	}
-	
-	public ArrayList<Post> getPostsFromCategory(String category){
-		return postsRepository.getPostsFromCategory(10, category);
+	public int getAllPostsCount(String category, String search){
+		return postsRepository.getAllPostsCount(category, search);
 	}
 
 	public Post findById(String id)

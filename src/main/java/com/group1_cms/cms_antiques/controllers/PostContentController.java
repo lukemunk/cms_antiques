@@ -12,6 +12,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -25,7 +26,7 @@ public class PostContentController
     public PostContentController(PostsService postsService)
     {
         this.postsService = postsService;
-        postCount = postsService.getAllPosts().stream().count();
+        postCount = postsService.getAllPostsCount("All", "");
     }
 
     // Returns a post Page where they can also edit the post
@@ -59,6 +60,10 @@ public class PostContentController
     public ModelAndView postToForums(@PathVariable("id") String id, @ModelAttribute(value="post") Post post)
     {
         ModelAndView newView = new ModelAndView("redirect:/posts/view/" + id);
+        if (post.getItem().getId() == null)
+        {
+            post.getItem().setId(UUID.randomUUID());
+        }
 
         if (post == null) {
             // Handle no post found
@@ -89,7 +94,7 @@ public class PostContentController
     @RequestMapping(value="/posts")
     public ModelAndView posts(Model model){
         // Gets the number of pages
-        int pages = (int)Math.ceil((double)postsService.getAllPosts().stream().count() / 10);
+        int pages = (int)Math.ceil((double)postsService.getAllPostsCount("all", "") / 10);
 
             ModelAndView newView = new ModelAndView("redirect:posts/all/1");
 
@@ -106,14 +111,8 @@ public class PostContentController
         int pages = 0;
         String search = "";
         // Gets the number of pages
-        if (category.equalsIgnoreCase("all"))
-        {
-            pages = (int)Math.ceil((double)postsService.getAllPosts().stream().count() / 10);
-        }
-        else
-        {
-            pages = (int)Math.ceil((double)postsService.getAllPosts().stream().filter(post -> post.getItem().getCategory().equalsIgnoreCase(category)).count() / 10);
-        }
+        pages = (int)Math.ceil((double)postsService.getAllPostsCount(category, searchIN) / 10);
+
         if (searchIN == null)
         {
             // Do nothing

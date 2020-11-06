@@ -28,7 +28,7 @@
 				<a class="nav-link" href="/posts/clothing">Clothing</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" href="/postToForums">New Post</a>
+				<a class="nav-link" href="/postToForums" sec:authorize="isAuthenticated()">New Post</a>
 			</li>
 		</ul>
 
@@ -55,7 +55,7 @@
 			<p class="content" th:utext="${post.story}">Post content</p>
 		</div>
 
-	<div class="container-body">
+	<div class="container-body" sec:authorize="isAuthenticated()">
 	<form method="post" th:action="@{/posts/view/editpost_{id}(id=${post.id})}" th:object="${post}">
 		<label for="postTitle">Post title:</label>
 		<input type="text" id="postTitle" name="postTitle" th:field="${post.title}">
@@ -64,8 +64,17 @@
 
 			  </textarea>
 		<br><br>
-		<!label for="myfile">Want to upload an image?:<!/label>
-		<!input type="file" id="myImg" name="myImg">
+		<br>
+		<label for="itemName">Item:</label>
+		<input type="text" id="itemName" name="itemName" th:field="*{item.name}" required>
+
+		<label for="itemCategory">Category:</label>
+		<select id="itemCategory" name="itemCategory" th:field="*{item.category}">
+			<!-- TODO: Make dynamic -->
+			<option value="furniture">Furniture</option>
+			<option value="jewelry">Jewelry</option>
+			<option value="clothing">Clothing</option>
+		</select>
 		<br>
 		<button onclick="goBack()">Cancel</button>
 		<button th:formaction="@{/posts/view/deletepost_{id}(id=${post.id})}">Delete</button>

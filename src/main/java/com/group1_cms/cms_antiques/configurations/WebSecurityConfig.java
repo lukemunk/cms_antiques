@@ -137,6 +137,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/register").permitAll()
                 .antMatchers("/login-error").permitAll()
                 .antMatchers("/posts/**").permitAll()
+                .antMatchers("/posts/newpost").authenticated()
                 .antMatchers("**").permitAll()
                 .anyRequest().authenticated()
                 .and()

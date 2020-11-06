@@ -38,12 +38,6 @@ public class PostsAndClassifiedsController {
 	}
 
 	
-	@RequestMapping(value="/posts/{category}")
-	public String category(Model model, @PathVariable String category) {
-		model.addAttribute("posts", postsService.getPostsFromCategory(category));
-		return "public/posts.html";
-	}
-	
 	@RequestMapping(value="/public/postForum")
 	public String postForum() {
 		return "public/postForum.html";

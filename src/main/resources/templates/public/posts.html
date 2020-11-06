@@ -30,8 +30,8 @@
 	    </li>
 	    <li class="nav-item">
 
-	      <a class="nav-link" href="/posts/newpost">New Post</a>
-<!-  sec:authorize="hasAuthority('post')" >
+	      <a class="nav-link" href="/posts/newpost" sec:authorize="isAuthenticated()">New Post</a>
+<!-  " >
 	    </li>
 	  </ul>
 	  
