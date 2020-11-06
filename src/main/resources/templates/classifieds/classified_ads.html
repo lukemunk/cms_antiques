@@ -48,7 +48,7 @@
 	                <div class="col-sm-7">
 	                    <div class="card-body">
 	                        <h4 class="card-title" th:text="${ad.title}"></h4>
-	                        <h6 class="card-subtitle mb-2 text-muted" th:text="${'-' + ad.creator.userName}"></h6>
+	                        <h6 class="card-subtitle mb-2 text-muted" th:text="${'-' + ad.creator.username}"></h6>
 	                        <h5 class="card-subtitle mb-2" th:text="${ad.item.name}"></h5>
 	                        <h5 th:text="${ad.price}"></h5>
 	                        <p class="card-text" th:text="${#strings.abbreviate(ad.description,300)}"></p>

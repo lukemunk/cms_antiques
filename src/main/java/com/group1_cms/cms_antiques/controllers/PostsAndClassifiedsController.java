@@ -139,8 +139,9 @@ public class PostsAndClassifiedsController {
 			model.addAttribute("classifiedAd", classifiedAd);
 			
 			
+			
 		}
-		
+		model.addAttribute("categories", classifiedAdsService.getAllCategories());
 		
 		return "classifieds/postToClassifieds.html";
 	}

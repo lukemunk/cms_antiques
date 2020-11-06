@@ -26,9 +26,10 @@
 				  <label for="itemCategory">Category:</label>
 				  <select id="itemCategory" name="itemCategory" th:field="*{item.category}">
 				  <!-- TODO: Make dynamic -->
-				  	<option value="furniture">Furniture</option>
-				  	<option value="jewelry">Jewelry</option>
-				  	<option value="clothing">Clothing</option>
+				  	
+					  	<option th:each="category: ${categories}"th:value="${category}" th:text="${category}"></option>
+					  	
+				  	
 				  </select>
 				  <br>
 				  <br>

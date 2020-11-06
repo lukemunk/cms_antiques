@@ -26,7 +26,7 @@ public class FileUploadUtil {
    
    public static void deleteFile(String folderPath, String imagePath) {
 	   
-	   Path deletePath = Paths.get(imagePath);
+	   		Path deletePath = Paths.get(imagePath);
 
 			try {
 			    Files.delete(deletePath);

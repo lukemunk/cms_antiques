@@ -4,6 +4,7 @@
     <footer th:fragment="pagination">
     
     <!-- Requires the variables "page" and "totalPages" to work -->
+    <!-- TODO: Breaks if it gets 0 for total pages -->
         <nav aria-label="Results Pages">
 		  <ul class="pagination pagination-lg justify-content-center m-4">
 		    <li th:unless="${page <= 1}" class="page-item"><a class="page-link" th:href="@{./{number}?search={search}(number=${page-1}, search=${search})}">Previous</a></li>
