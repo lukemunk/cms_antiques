@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
 	<meta charset="ISO-8859-1">
 	<title>Posts</title>
@@ -9,38 +9,44 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
- 
+
+<div class="container">
 	<nav class="navbar navbar-expand-sm bg-light fixed-top">
 	
-		 <a href="#" class="navbar-brand">Brand</a>
+		 <a href="/" class="navbar-brand">Home</a>
 	  
 	  <ul class="nav nav-pills">
 	    <li class="nav-item">
 	      <a class="nav-link" href="/posts">All Posts</a>
 	    </li>
 	    <li class="nav-item">
-	      <a class="nav-link" href="/posts/furniture">Furniture</a>
+	      <a class="nav-link" href="/posts/furniture/1">Furniture</a>
 	    </li>
 	    <li class="nav-item">
-	      <a class="nav-link" href="/posts/jewelry">Jewelry</a>
+	      <a class="nav-link" href="/posts/jewelry/1">Jewelry</a>
 	    </li>
 	    <li class="nav-item">
-	      <a class="nav-link" href="/posts/clothing">Clothing</a>
+	      <a class="nav-link" href="/posts/clothing/1">Clothing</a>
 	    </li>
 	    <li class="nav-item">
 
-	      <a class="nav-link" href="/postToForums">New Post</a>
-
+	      <a class="nav-link" href="/posts/newpost" sec:authorize="isAuthenticated()">New Post</a>
+<!-  " >
 	    </li>
 	  </ul>
 	  
 	  <form class="form-inline" action="#">
-	    <input class="form-control mr-sm-2" type="text" placeholder="Search">
+	    <input class="form-control mr-sm-2" type="text" placeholder="Search" id="search" name="search">
 	    <button class="btn btn-success" type="submit">Search</button>
 	  </form>
 		
 	</nav>
- 
+</div>
+
+<h1 th:text="${category}"  class = "jumbotron d-flex justify-content-center" style="margin-top:80px;"></h1>
+
+<div th:insert="fragments/pagination :: pagination"></div>
+
 		<div th:each="post: ${posts}">
 			<div class="card m-2">
 			  <div class="card-body">
@@ -48,10 +54,12 @@
 			    <h6 class="card-subtitle mb-2 text-muted" th:text="${post.creator.username}"></h6>
 			    <h6 class="card-subtitle mb-2 text-muted" th:text="${post.item.name}"></h6>
 			    <p class="card-text" th:text="${#strings.abbreviate(post.story,500)}"></p>
-			    <a th:href="@{/post/{title}(title=${post.id})}" class="stretched-link"></a>
+			    <a th:href="@{/posts/view/{title}(title=${post.id})}" class="stretched-link"></a>
 			  </div>
 			</div>
 		</div>
 	</div>
+
+<div th:insert="fragments/pagination :: pagination"></div>
 </body>
 </html>

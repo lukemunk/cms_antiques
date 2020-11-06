@@ -1,0 +1,24 @@
+
+.navbarMenu{
+    background-image: linear-gradient(to bottom, #0099F5, #0BC5DE);
+    border-bottom: 1.5px solid #0D22FA;
+    border-top: 1px solid #0D22FA;
+}
+
+.logoImg{
+    border: white;
+    border-style: double;
+}
+
+.navText{
+    font-size: 18px;
+}
+
+body{
+    padding-top: 104px;
+}
+
+#logoRow{
+    margin-left: 0px!important;
+    margin-right: 0px!important;
+}

@@ -2,6 +2,7 @@ package com.group1_cms.cms_antiques.services;
 
 import com.group1_cms.cms_antiques.models.Role;
 import com.group1_cms.cms_antiques.models.User;
+import com.group1_cms.cms_antiques.models.UserPasswordDto;
 import com.group1_cms.cms_antiques.repositories.RoleRepository;
 import com.group1_cms.cms_antiques.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,6 +110,15 @@ public class UserService implements UserDetailsService {
             return false;
         }
         return true;
+    }
+
+    public void resetUserPassword(UserPasswordDto userPasswordDto){
+
+        if(userPasswordDto != null && userPasswordDto.getPassword() != null){
+            userRepository.updateUserPassword(userPasswordDto.getUserName(),
+                    passwordEncoder.encode(userPasswordDto.getPassword()));
+        }
+        return;
     }
 
     public User getUserFromUserDetails(UserDetails userDetails){

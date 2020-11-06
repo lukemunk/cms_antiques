@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Posts</title>
+	 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+ 
+	<nav class="navbar navbar-expand-sm bg-light fixed-top">
+	
+		 <a href="#" class="navbar-brand">Brand</a>
+	  
+	  <ul class="nav nav-pills">
+	    <li class="nav-item">
+	      <a class="nav-link" href="/classifieds">All Classifieds</a>
+	    </li>
+	    <li class="nav-item">
+	      <a class="nav-link" href="/classifieds/furniture">Furniture</a>
+	    </li>
+	    <li class="nav-item">
+	      <a class="nav-link" href="/classifieds/jewelry">Jewelry</a>
+	    </li>
+	    <li class="nav-item">
+	      <a class="nav-link" href="/classifieds/clothing">Clothing</a>
+	    </li>
+	    <li class="nav-item">
+	      <a class="nav-link" href="#">New Classifieds Ad</a>
+	    </li>
+	  </ul>
+	  
+	  <form class="form-inline" action="/action_page.php">
+	    <input class="form-control mr-sm-2" type="text" placeholder="Search">
+	    <button class="btn btn-success" type="submit">Search</button>
+	  </form>
+	
+	</nav>
+ 
+		<div th:each="classifieds ad: ${classifieds}">
+			<div class="card m-2">
+			  <div class="card-body">
+			    <h5 class="card-title" th:text="${classifieds.title}"></h5>
+			    <h6 class="card-subtitle mb-2 text-muted" th:text="${classifieds.creator.userName}"></h6>
+			    <h6 class="card-subtitle mb-2 text-muted" th:text="${classifieds.item.name}"></h6>
+			    <h6 class="card-subtitle mb-2 text-muted" th:text="${classifieds.price}"></h6>
+			    <p class="card-text" th:text="${#strings.abbreviate(classifieds.description,500)}"></p>
+			    <a th:href="@{/classifieds/{title}(title=${classifieds.id})}" class="stretched-link"></a>
+			  </div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -22,18 +22,32 @@ public class PostsService {
 		
 	}
 	
-	public ArrayList<Post> getPosts(){
-		return postsRepository.getPosts(10);
-	}
-	
-	public ArrayList<Post> getPostsFromCategory(String category){
-		return postsRepository.getPostsFromCategory(10, category);
+	public List<Post> getPosts(String category, String search, int page){
+		return postsRepository.getPosts(category, search, page, 10);
 	}
 
-	public Post findById(Long id)
+	public int getAllPostsCount(String category, String search){
+		return postsRepository.getAllPostsCount(category, search);
+	}
+
+	public Post findById(String id)
 	{
 		Post newPost = postsRepository.getPostByID(id);
 		return newPost;
 	}
 
+	public void updatePost(Post postIN)
+	{
+		postsRepository.updatePost(postIN);
+	}
+
+    public void deletePost(Post post)
+    {
+    	postsRepository.deletePost(post);
+    }
+
+	public List<String> getAllCategories()
+	{
+		return postsRepository.getAllCategories();
+	}
 }

@@ -7,9 +7,12 @@ import com.group1_cms.cms_antiques.services.PostsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -17,63 +20,130 @@ import java.util.stream.Collectors;
 public class PostContentController
 {
     private PostsService postsService;
+    private long postCount = 0;
 
     @Autowired
     public PostContentController(PostsService postsService)
     {
         this.postsService = postsService;
+        postCount = postsService.getAllPostsCount("All", "");
     }
 
-    // Returns a post Page
+    // Returns a post Page where they can also edit the post
     @RequestMapping("posts/view/{id}")
-    public String view(@PathVariable("id") Long id, Model model) {
+    public ModelAndView view(@PathVariable("id") String id, Model model)
+    {
         Post post = postsService.findById(id);
+        ModelAndView newView = new ModelAndView("posts/view");
+
         if (post == null) {
             // Handle no post found
-            return "redirect:/";
+            return new ModelAndView("redirect:/posts/all/1");
         }
-        model.addAttribute("post", post);
-        return "posts/view";
+        newView.addObject("post", post);
+        return newView;
+    }
+
+    // Returns a page where they can create a new post
+    @RequestMapping("posts/newpost")
+    public ModelAndView newPost( Model model)
+    {
+        Post post = new Post();
+        ModelAndView newView = new ModelAndView("posts/newpost");
+
+        newView.addObject("post", post);
+        return newView;
     }
 
     // Gets new Post, saves it, redirects to where it is at
-    @RequestMapping("postToForums/{id}")
-    public String postToForums(@PathVariable("id") Long id, Model model)
+    @RequestMapping("posts/view/editpost_{id}")
+    public ModelAndView postToForums(@PathVariable("id") String id, @ModelAttribute(value="post") Post post)
     {
-        Post post = (Post)model;
-        if (post == null) {
-            // Handle no post found
-            return "redirect:/";
+        ModelAndView newView = new ModelAndView("redirect:/posts/view/" + id);
+        if (post.getItem().getId() == null)
+        {
+            post.getItem().setId(UUID.randomUUID());
         }
 
-        postsService.getPosts().add(post);
+        if (post == null) {
+            // Handle no post found
+            return new ModelAndView("redirect:/posts/all/1");
+        }
+        postsService.updatePost(post);
 
-        model.addAttribute("post", post);
-        return "posts/view";
+
+        newView.addObject("post", post);
+        return newView;
     }
 
-    //region Post List
-    @GetMapping(path = "posts/{Category}",
-            produces = "application/json")
-    public String getPostsCategory(Model model, @PathVariable String Category)
+    // Gets new Post, saves it, redirects to where it is at
+    @RequestMapping("posts/view/deletepost_{id}")
+    public ModelAndView deletePost(@PathVariable("id") String id, @ModelAttribute(value="post") Post post)
     {
-        model.addAttribute("posts", postsService.getPostsFromCategory(Category));
-        return "public/posts.html";
+        ModelAndView newView = new ModelAndView("redirect:/posts/all/1");
+
+        if (post == null) {
+            // Handle no post found
+            return new ModelAndView("redirect:/posts/all/1");
+        }
+        postsService.deletePost(post);
+
+        return newView;
     }
 
-    @GetMapping(path = "posts/",
+    @RequestMapping(value="/posts")
+    public ModelAndView posts(Model model){
+        // Gets the number of pages
+        int pages = (int)Math.ceil((double)postsService.getAllPostsCount("all", "") / 10);
+
+            ModelAndView newView = new ModelAndView("redirect:posts/all/1");
+
+        return newView;
+    }
+
+    @GetMapping(path = "posts/{category}/{page}",
             produces = "application/json")
-    public String getAllPosts(Model model,
-                              @RequestParam("page") Optional<Integer> page,
-                              @RequestParam("size") Optional<Integer> size)
-    {	int currentPage = page.orElse(1);
-        int pageSize = size.orElse(5);
+    public ModelAndView getAllPosts(Model model,
+                              @RequestParam(required = false) String searchIN,
+                              @PathVariable(required = false) String category,
+                              @PathVariable String page)
+    {
+        int pages = 0;
+        String search = "";
+        // Gets the number of pages
+        pages = (int)Math.ceil((double)postsService.getAllPostsCount(category, searchIN) / 10);
+
+        if(category == null)
+            category = "all";
         
+        try {
+            if(pages<=0)
+                pages = 1;
+        } catch (NumberFormatException nfe) {
+            pages = 1;
+        }
+
+        if (searchIN == null)
+        {
+            // Do nothing
+        }
+        else
+        {
+            search = searchIN;
+        }
+
+        ModelAndView newView = new ModelAndView("public/posts.html");
+
+        newView.addObject("page", Integer.parseInt(page));
+        newView.addObject("totalPages", pages);
+        newView.addObject("search", search);
+        newView.addObject("category", category.substring(0, 1).toUpperCase() + category.substring(1));
+        newView.addObject("categories", postsService.getAllCategories());
 
         // Gets posts in limited order
-        List<Post> tenPosts = postsService.getPosts().stream().limit(10).collect(Collectors.toList());
-        model.addAttribute("tenPosts", tenPosts);
-        return "index";
+        newView.addObject("posts", postsService.getPosts(category, search, Integer.parseInt(page)));
+
+        return newView;
     }
     //endregion
 

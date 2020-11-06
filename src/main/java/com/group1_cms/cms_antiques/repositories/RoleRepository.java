@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class RoleRepository {
 
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private static final String ROLE_ID_KEY = "id";
     private static final String ROLE_ID_BINDING_KEY = ":" + ROLE_ID_KEY;

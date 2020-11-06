@@ -22,35 +22,19 @@ import com.group1_cms.cms_antiques.models.Item;
 import com.group1_cms.cms_antiques.models.ItemImage;
 import com.group1_cms.cms_antiques.services.ClassifiedAdsService;
 import com.group1_cms.cms_antiques.services.PostsService;
+import com.group1_cms.cms_antiques.services.ClassifiedsService;
 
 @Controller
 public class PostsAndClassifiedsController {
-	
-	private PostsService postsService;
+
+
 	private ClassifiedAdsService classifiedAdsService;
 
 	@Autowired
 	public PostsAndClassifiedsController(PostsService postsService, ClassifiedAdsService classifiedAdsService) {
-		this.postsService = postsService;
 		this.classifiedAdsService = classifiedAdsService;
 	}
-	
-	@RequestMapping(value="/posts")
-	public String posts(Model model){
-		model.addAttribute("posts", postsService.getPosts());
-		return "public/posts.html";
-	}
-	
-	@RequestMapping(value="/posts/{category}")
-	public String category(Model model, @PathVariable String category) {
-		model.addAttribute("posts", postsService.getPostsFromCategory(category));
-		return "public/posts.html";
-	}
-	
-	@RequestMapping(value="/public/postForum")
-	public String postForum() {
-		return "public/postForum.html";
-	}
+
 	
 	@RequestMapping(value = "/classified_ads", method = RequestMethod.GET)
 	   public String redirect() {
@@ -145,6 +129,5 @@ public class PostsAndClassifiedsController {
 		
 		return "classifieds/postToClassifieds.html";
 	}
-	
 	
 }
