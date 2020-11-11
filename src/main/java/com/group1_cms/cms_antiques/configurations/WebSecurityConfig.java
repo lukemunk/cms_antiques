@@ -147,6 +147,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/posts/**").permitAll()
                 .antMatchers("/posts/newpost").authenticated()
                 .antMatchers("/").permitAll()
+                .antMatchers("/swagger-ui.html").permitAll()
+                .antMatchers("/v2/api-docs").permitAll()
                 .antMatchers("/admin/**").hasAuthority("Admin_Permissions")
                 .antMatchers("/admin/viewRestricted/**").hasAuthority("View_Restricted")
                 .antMatchers("/admin/modifyClassifieds").hasAuthority("Modify_Classifieds")
