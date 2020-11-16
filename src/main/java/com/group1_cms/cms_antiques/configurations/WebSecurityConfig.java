@@ -144,7 +144,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login").permitAll()
                 .antMatchers("/register").permitAll()
                 .antMatchers("/login-error").permitAll()
-                .antMatchers("/posts/**").permitAll()
+                .antMatchers("/posts/**").authenticated()
                 .antMatchers("/posts/newpost").authenticated()
                 .antMatchers("/").permitAll()
                 .antMatchers("/swagger-ui.html").permitAll()

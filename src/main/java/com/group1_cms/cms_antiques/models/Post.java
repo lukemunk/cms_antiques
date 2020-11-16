@@ -1,5 +1,6 @@
 package com.group1_cms.cms_antiques.models;
 
+import java.util.List;
 import java.util.UUID;
 
 public class Post {
@@ -8,6 +9,7 @@ public class Post {
 	private String story;
 	private Item item;
 	private User creator;
+	private List<String> tags;
 	
 	public Post() {
 		title = "";
@@ -22,6 +24,16 @@ public class Post {
 		this.story = story;
 		this.item = item;
 		this.creator = creator;
+	}
+
+	public List<String> getTags()
+	{
+		return tags;
+	}
+
+	public void setTags(List<String> tags)
+	{
+		this.tags = tags;
 	}
 
 	public UUID getId() {
