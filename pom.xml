@@ -113,6 +113,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>    
+              	  <mainClass>com.group1_cms.cms_antiques.CmsAntiquesApplication</mainClass>
+   		        </configuration>
+                
             </plugin>
         </plugins>
     </build>
