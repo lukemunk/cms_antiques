@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 	<html xmlns:th="http://www.thymeleaf.org">
 	<head>
-		<link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
-	    <link href="../css/headerStyles.css" th:href="@{/css/headerStyles.css}" rel="stylesheet"/>
-	    <link href="../css/footerStyles.css" th:href="@{/css/footerStyles.css}" rel="stylesheet"/>
-	    <link href="../css/all.min.css" th:href="@{/css/all.min.css}" rel="stylesheet"/>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		 <link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+		 <link href="../css/headerStyles.css" th:href="@{/css/headerStyles.css}" rel="stylesheet"/>
+		 <link href="../css/footerStyles.css" th:href="@{/css/footerStyles.css}" rel="stylesheet"/>
+	   	<link href="../css/all.min.css" th:href="@{/css/all.min.css}" rel="stylesheet"/>
 	</head>
 	
 		<body>
@@ -22,46 +26,78 @@
 				<label for="postToClassifieds">Please enter your content here:</label><br>
 				<textarea id="postToClassifieds" name="postToClassifieds" rows="10" cols="50" th:field="${classifiedAd.description}">
 				  
-				  </textarea>
-				  <br><br>
-				  <label for="itemName">Item:</label>
-				  <input type="text" id="itemName" name="itemName" th:field="*{item.name}" required>
+				</textarea>
+				<br><br>
+				<label for="itemName">Item:</label>
+				<input type="text" id="itemName" name="itemName" th:field="*{item.name}" required>
 				  
-				  <label for="itemCategory">Category:</label>
-				  <select id="itemCategory" name="itemCategory" th:field="*{item.category}">
-				  <!-- TODO: Make dynamic -->
+				<label for="itemCategory">Category:</label>
+				<select id="itemCategory" name="itemCategory" th:field="*{item.category}">
 				  	
-					  	<option th:each="category: ${categories}"th:value="${category}" th:text="${category}"></option>
-					  	
-				  	
-				  </select>
-				  <br>
-				  <br>
+					 <option th:each="category: ${categories}"th:value="${category}" th:text="${category}"></option>
+				
+				</select>
+				<br>
+				<br>
 				  
-				  <label for="price">Price:</label>
-				  <input type="text" id="price" name="price" th:field="*{price}" required>
-				  <br>
-				  <br>
-				  
-				  <label for="image">Want to upload an image?:</label>
+				<label for="price">Price:</label>
+				<input type="text" id="price" name="price" th:field="*{price}" required>
+				<br>
+				<br>
+			  
+			  	<label for="image">Want to upload an image?:</label>
 				<input type="file" id="image" name="image" accept="image/png, image/jpeg">
 				<br>
 				<br>
+				<label for="tag">Tag</label>
+				<input type="text" id="tag" name="tag" th:object="${tag}">
+				<button name="addTag">Add Tag</button>
+				
+				<fieldset id="tags">
+					<div th:each="tag, stat: ${classifiedAd.tags}">
+						<input type="hidden" th:field="${classifiedAd.tags[__${stat.index}__]}">
+						<div th:text="${tag}"></div>
+					</div>
+				</fieldset>
+				
+				<br>
+				<br>
 				 
-				<button onclick="goBack()">Cancel</button>
+				<button onclick="return goBack()">Cancel</button>
 				<input type="submit" value="Submit">
 				
 				<br>
 				<br>
 				<input th:unless="${newClassified}" type="submit" value="Delete Classified" th:formaction="@{/delete_classified}">
 				
+				
 			</form>
-			<!--TODO: Prevent it from saving when you click cancel-->
-			<script>
-			
-			function goBack(){
-				window.location.replace("/classified_ads/all/1");
-			}
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+			<script>			
+				function goBack(){
+					window.history.back();
+					return false;
+				}
+				
+				
+				function replaceTags(html){
+					$('#tags').replaceWith($(html));
+				}
+				
+				$('button[name="addTag"]').click(function(event){
+					//console.log("add tag");
+					//console.log($('form').serialize());
+					
+					
+					var data = $('form').serialize();
+					
+					$.post('/add_tag', data, replaceTags);
+					document.getElementById("tag").value="";
+					return false;
+				});
+				
+				
+				
 			</script>
 		
 		

@@ -10,6 +10,8 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.group1_cms.cms_antiques.models.Item;
 import com.group1_cms.cms_antiques.models.Post;
@@ -77,7 +79,7 @@ public class PostsRepository
 
 	//region SQL Insert Statements
 	private static final String SAVEPOST = "INSERT INTO Post(id, title, story, user_id, item_id)\r\n" +
-			"VALUE(UUID_TO_BIN(:postId), :title, :story, :userId, UUID_TO_BIN(:itemId))";
+			"VALUE(UUID_TO_BIN(:postId), :title, :story, (Select id from User WHERE username = :username), UUID_TO_BIN(:itemId))";
 	private static final String SAVEITEM = "INSERT INTO Item (id, name, category_id)"+
 			"VALUE(UUID_TO_BIN(:itemId ), :itemName, (SELECT id FROM Category WHERE name = :categoryName))";
 	//endregion
@@ -142,11 +144,18 @@ public class PostsRepository
 	//region Save/Update/Delete Posts
 	public void updatePost(Post postIN)
 	{
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username;
+		if(principal instanceof UserDetails) {
+			username = ((UserDetails)principal).getUsername();
+		} else {
+			username = principal.toString();
+		}
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("postId", postIN.getId().toString());
 		parameters.put("title", postIN.getTitle());
 		parameters.put("story", postIN.getStory());
-		parameters.put("userId",2);
+		parameters.put("username",username);
 		parameters.put("itemId", postIN.getItem().getId().toString());
 		parameters.put("itemName", postIN.getItem().getName());
 		parameters.put("categoryName", postIN.getItem().getCategory());

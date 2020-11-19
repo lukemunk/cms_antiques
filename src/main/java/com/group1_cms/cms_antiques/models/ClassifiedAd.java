@@ -1,6 +1,7 @@
 package com.group1_cms.cms_antiques.models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ public class ClassifiedAd {
 	private List<String> tags;
 	
 	public ClassifiedAd() {
-		
+		tags = new ArrayList<String>();
 	}
 	
 	public ClassifiedAd(String title, String description, String price, Item item, User creator, LocalDateTime endDate) {
@@ -26,6 +27,9 @@ public class ClassifiedAd {
 		this.item = item;
 		this.creator = creator;
 		this.endDate = endDate;
+		
+		
+		
 	}
 
 	public List<String> getTags()

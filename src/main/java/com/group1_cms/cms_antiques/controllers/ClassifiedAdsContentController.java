@@ -59,6 +59,8 @@ public class ClassifiedAdsContentController {
 		return new ModelAndView("redirect:classified_ads/all/1");
 	}
 	
+	
+	
 	@RequestMapping(value="/classified_ads", method = RequestMethod.POST)
 	public ModelAndView postClassifieds(@ModelAttribute("classifiedAd") ClassifiedAd classifiedAd, 
 			@RequestParam("image") MultipartFile multipartFile) throws IOException{
@@ -80,7 +82,7 @@ public class ClassifiedAdsContentController {
 			String uploadDir = "item_images/" + image.getId();
 			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 		}
-		//TODO: make service save image, not controller
+		
 		classifiedAdsService.saveClassifiedAd(classifiedAd);
 		
 
@@ -116,6 +118,14 @@ public class ClassifiedAdsContentController {
 		return newView;
 	}
 	
+	@RequestMapping(value="/add_tag", method = RequestMethod.POST)
+	public ModelAndView addTag(@ModelAttribute("classifiedAd") ClassifiedAd classifiedAd, @ModelAttribute("tag") String tag) {
+		ModelAndView newView = new ModelAndView("classifieds/edit_classified::#tags");
+		classifiedAd.getTags().add(tag);
+		newView.addObject(classifiedAd);
+		
+		return newView;
+	}
 	
 	
 	@RequestMapping(value={"classified_ads/new", "classified_ads/edit/{id}"}, method = RequestMethod.GET )

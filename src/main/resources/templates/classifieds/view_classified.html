@@ -14,29 +14,23 @@
 	
 	</head>
 		<body>
-			<!-- <nav class="navbar navbar-expand-sm bg-light fixed-top">
-	
-				 <a href="/" class="navbar-brand">Brand</a>
-			  
-			  <ul class="nav nav-pills">
-			    <li class="nav-item">
-			      <a class="nav-link" href="/classified_ads/all/1">All Classified Ads</a>
-			    </li>
-			    <li th:each="category: ${categories}">
-			    	<a class="nav-link" th:text="${category}" th:href="@{/classified_ads/{category}/1(category=${category})}"></a>
-			  </ul>
-			  
-			  
 			
-			</nav> -->
 			<div th:replace="fragments/header_footer_fragment :: header"></div>
-
 			<h1 th:text="${ad.title}"  class = "jumbotron d-flex justify-content-center" style="margin-top:10px;"></h1>
+			<div class="container-body">
+				<div class="date">
+						<h4><i>Posted by</i></h4>
+						<h3 class="card-subtitle mb-2 text-muted" th:text="${ad.creator.username}"></h3>
+						<p th:text="${ad.item.name}"></p>
+						<p th:text="${ad.price}"></p>
+		        
+				</div>
+				<p class="content" th:utext="${ad.description}">Post content</p>
+			</div>
+
 			
-			<p th:text="${ad.creator.username}"></p>
-			<p th:text="${ad.item.name}"></p>
-			<p th:text="${ad.price}"></p>
-			<p th:text="${ad.description}"></p>
+			
+			
 			<img th:unless="${ad.item.itemImage.fileName} eq ${''}"   th:src="@{${ad.item.itemImage.filePath}}">
 			<br>
 			
