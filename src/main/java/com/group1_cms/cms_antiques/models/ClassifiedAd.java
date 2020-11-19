@@ -1,6 +1,7 @@
 package com.group1_cms.cms_antiques.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public class ClassifiedAd {
@@ -11,6 +12,7 @@ public class ClassifiedAd {
 	private Item item;
 	private User creator;
 	private LocalDateTime endDate;
+	private List<String> tags;
 	
 	public ClassifiedAd() {
 		
@@ -24,6 +26,16 @@ public class ClassifiedAd {
 		this.item = item;
 		this.creator = creator;
 		this.endDate = endDate;
+	}
+
+	public List<String> getTags()
+	{
+		return tags;
+	}
+
+	public void setTags(List<String> tags)
+	{
+		this.tags = tags;
 	}
 	
 	public UUID getId() {
