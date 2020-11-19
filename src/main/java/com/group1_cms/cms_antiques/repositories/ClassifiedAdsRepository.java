@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 import com.group1_cms.cms_antiques.models.ClassifiedAd;
@@ -74,7 +76,8 @@ public class ClassifiedAdsRepository {
 	//Inserts
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	private static final String saveClassifiedAdSql = "INSERT INTO Classified(id, title, description, price, user_id, item_id)\r\n" + 
-			"VALUE(UUID_TO_BIN(:classifiedAdId), :title, :description, :price, :userId, UUID_TO_BIN(:itemId))";
+			"VALUE(UUID_TO_BIN(:classifiedAdId), :title, :description, :price, "
+			+ "(Select id from User WHERE username = :username), UUID_TO_BIN(:itemId))";
 	private static final String saveItemSql = "INSERT INTO Item (id, name, category_id)"+
 			"VALUE(UUID_TO_BIN( :itemId ), :itemName, (SELECT id FROM Category WHERE name = :categoryName))";
 	private static final String saveItemImgSql = "INSERT INTO Item_Image (id, file_path, item_id)\r\n" + 
@@ -93,7 +96,6 @@ public class ClassifiedAdsRepository {
 			+ "name = :itemName,\r\n"
 			+ "category_id = (SELECT id FROM Category WHERE name = :categoryName);";
 			
-	//TODO: Make it so an item can have more than one image
 	private static final String updateItemImgSql = "UPDATE\r\n"
 			+ "file_path = :imagePath;";
 			
@@ -135,14 +137,19 @@ public class ClassifiedAdsRepository {
 	
 	public void saveClassifiedAd(ClassifiedAd classifiedAd) {
 		
-		
-		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username;
+		if(principal instanceof UserDetails) {
+			username = ((UserDetails)principal).getUsername();
+		} else {
+			username = principal.toString();
+		}
 		 Map<String, Object> parameters = new HashMap<String, Object>();
 		 parameters.put("classifiedAdId", classifiedAd.getId().toString());
 		 parameters.put("title", classifiedAd.getTitle());
 		 parameters.put("description", classifiedAd.getDescription());
 		 parameters.put("price", classifiedAd.getPrice()); 
-		 parameters.put("userId",2); 
+		 parameters.put("username", username); 
 		 parameters.put("itemId", classifiedAd.getItem().getId().toString());
 		 parameters.put("itemName", classifiedAd.getItem().getName());
 		 parameters.put("imagePath",
@@ -154,7 +161,8 @@ public class ClassifiedAdsRepository {
 		 
 		 
 		 jdbcTemplate.update(saveItemSql+onDuplicate+updateItemSql, parameters);
-		 jdbcTemplate.update(saveItemImgSql+onDuplicate+updateItemImgSql, parameters);
+		 if(classifiedAd.getItem().getItemImage().getFileName() != null)
+			 jdbcTemplate.update(saveItemImgSql+onDuplicate+updateItemImgSql, parameters);
 		 jdbcTemplate.update(saveClassifiedAdSql+onDuplicate+updateClassifiedAdSql, parameters);
 	}
 	

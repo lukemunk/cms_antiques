@@ -7,7 +7,9 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.group1_cms.cms_antiques.configurations.FileUploadUtil;
 import com.group1_cms.cms_antiques.models.ClassifiedAd;
+import com.group1_cms.cms_antiques.models.ItemImage;
 import com.group1_cms.cms_antiques.repositories.ClassifiedAdsRepository;
 
 @Service
@@ -59,6 +61,9 @@ public class ClassifiedAdsService {
 	}
 	
 	public void deleteClassifiedAd(ClassifiedAd classifiedAd) {
+		ItemImage image = classifiedAd.getItem().getItemImage();
+		if(!image.getFileName().equals(""))
+			FileUploadUtil.deleteFile("item_images/"+image.getId()+"/", "item_images/"+image.getId()+"/"+image.getFileName());
 		classifiedAdsRepository.deleteClassifiedAd(classifiedAd);
 	}
 	

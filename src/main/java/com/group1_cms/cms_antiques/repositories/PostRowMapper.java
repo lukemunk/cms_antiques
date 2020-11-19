@@ -25,11 +25,8 @@ public class PostRowMapper implements RowMapper<Post>
         item.setName(rs.getString("item"));
         item.setCategory(rs.getString("category"));
 
-        ItemImage image = new ItemImage();
-        if(rs.getString("Image Id") != null)
-            image.setId(UUID.fromString(rs.getString("Image Id")));
-        image.setFileName(rs.getString("file_path"));
-        item.setItemImage(image);
+       
+       
         currentPost.setItem(item);
 
         User user = new User();

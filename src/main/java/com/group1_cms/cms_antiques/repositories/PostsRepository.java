@@ -47,12 +47,13 @@ public class PostsRepository
 	//region SQL GETPOSTBYID
 	private static final String GETPOSTSBYID = "SELECT BIN_TO_UUID(ca.id) AS 'Post Id',ca.title, ca.story, \r\n" +
 			"			BIN_TO_UUID(i.id) AS 'Item Id', i.name AS 'Item', c.name AS 'Category', \r\n" +
-			"			BIN_TO_UUID(u.id) AS 'User Id', u.username, \r\n" +
+			"			BIN_TO_UUID(u.id) AS 'User Id', u.username \r\n" +
 			"			FROM Post ca\r\n" +
 			"				INNER JOIN Item i ON ca.item_id = i.id  \r\n" +
 			"				INNER JOIN Category c ON i.category_id = c.id \r\n" +
 			"				INNER JOIN User u ON ca.user_id = u.id \r\n" +
 			"			WHERE ca.id = UUID_TO_BIN(:postID); ";
+	
 	//endregion
 
 	//region SQL GETTOTALPOSTCOUNT

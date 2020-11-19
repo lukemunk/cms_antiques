@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 	<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+	    <link href="../css/headerStyles.css" th:href="@{/css/headerStyles.css}" rel="stylesheet"/>
+	    <link href="../css/footerStyles.css" th:href="@{/css/footerStyles.css}" rel="stylesheet"/>
+	    <link href="../css/all.min.css" th:href="@{/css/all.min.css}" rel="stylesheet"/>
+	</head>
 	
 		<body>
 		
-			<center><h1>Classifieds</h1></center>
-			
-			
-			
+			<div th:replace="fragments/header_footer_fragment :: header"></div>
 		
-
 			<form method="post" th:action="@{/classified_ads}" th:object="${classifiedAd}"  enctype="multipart/form-data">
 				<input type="hidden" id="id" name="id" th:field="*{id}">
 				<input type="hidden" id="itemId" name="itemId" th:field="*{item.id}">
 				<input type="hidden" id="imageId" name = "imageId" th:field="*{item.itemImage.id}">
+				<input type="hidden" id="imageFile" name = "imageFile" th:field="*{item.itemImage.fileName}">
 				<label for="adTitle">Ad title:</label>
 				<input type="text" id="adTitle" name="adTitle" th:field="*{title}" required>
 				<br><br>
@@ -50,11 +53,14 @@
 				
 				<br>
 				<br>
-				<input type="submit" value="Delete Classified" th:formaction="@{/delete_classified}">
+				<input th:unless="${newClassified}" type="submit" value="Delete Classified" th:formaction="@{/delete_classified}">
+				
 			</form>
+			<!--TODO: Prevent it from saving when you click cancel-->
 			<script>
+			
 			function goBack(){
-				window.history.back();
+				window.location.replace("/classified_ads/all/1");
 			}
 			</script>
 		

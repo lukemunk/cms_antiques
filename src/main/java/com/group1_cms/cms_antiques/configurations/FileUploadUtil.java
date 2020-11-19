@@ -36,15 +36,16 @@ public class FileUploadUtil {
 			            + " due to...");
 			    e.printStackTrace();
 			}
-			
-			deletePath = Paths.get(folderPath);
-			try {
-			    Files.delete(deletePath);
-			} catch (IOException e) {
-			    System.err.println("Unable to delete "
-			            + deletePath.toAbsolutePath().toString()
-			            + " due to...");
-			    e.printStackTrace();
+			if(folderPath != null) {
+				deletePath = Paths.get(folderPath);
+				try {
+				    Files.delete(deletePath);
+				} catch (IOException e) {
+				    System.err.println("Unable to delete "
+				            + deletePath.toAbsolutePath().toString()
+				            + " due to...");
+				    e.printStackTrace();
+				}
 			}
 	 
    }
