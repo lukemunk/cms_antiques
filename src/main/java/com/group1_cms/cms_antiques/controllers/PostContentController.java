@@ -7,11 +7,13 @@ import com.group1_cms.cms_antiques.services.PostsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -65,19 +67,36 @@ public class PostContentController
     public ModelAndView postToForums(@PathVariable("id") String id, @ModelAttribute(value="post") Post post)
     {
         ModelAndView newView = new ModelAndView("redirect:/posts/view/" + id);
-        if (post.getItem().getId() == null)
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+        Collection authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+
+        if(principal instanceof UserDetails) {
+            username = ((UserDetails)principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        // Checks to make sure this is the post creator
+        if (username.equals(post.getCreator()) || authorities.contains("Admin"))
         {
-            post.getItem().setId(UUID.randomUUID());
+            if (post.getItem().getId() == null)
+            {
+                post.getItem().setId(UUID.randomUUID());
+            }
+
+            if (post == null)
+            {
+                // Handle no post found
+                return new ModelAndView("redirect:/posts/all/1");
+            }
+            postsService.updatePost(post);
+
+
+            newView.addObject("post", post);
         }
 
-        if (post == null) {
-            // Handle no post found
-            return new ModelAndView("redirect:/posts/all/1");
-        }
-        postsService.updatePost(post);
-
-
-        newView.addObject("post", post);
         return newView;
     }
 
