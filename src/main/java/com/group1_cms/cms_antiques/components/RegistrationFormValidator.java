@@ -8,10 +8,6 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 public class RegistrationFormValidator implements Validator {
-    @Override
-    public boolean supports(Class<?> aClass) {
-        return User.class.equals(aClass);
-    }
 
     private UserService userService;
 
@@ -21,15 +17,20 @@ public class RegistrationFormValidator implements Validator {
     }
 
     @Override
+    public boolean supports(Class<?> aClass) {
+        return User.class.equals(aClass);
+    }
+
+    @Override
     public void validate(Object target, Errors errors) {
         User user = (User) target;
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "firstName", "FirstNameRequired");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "LastNameRequired");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "UsernameRequired");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "EmailRequired");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "PasswordRequired");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordConfirm", "PasswordConfirmRequired");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "firstName", "Required.FirstName");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "RequiredLastName");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "Required.Username");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "Required.Email");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "Required.Password");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordConfirm", "Required.PasswordConfirm");
 
         if (user.getPassword().length() < 8 && user.getPassword().length() > 0){
             errors.rejectValue("password", "Invalid.Password");
@@ -39,6 +40,9 @@ public class RegistrationFormValidator implements Validator {
         }
         if(userService.checkForDuplicateUser(user.getUsername())){
             errors.rejectValue("username", "Duplicate.Username");
+        }
+        if(userService.checkForDuplicateUser(user.getEmail())){
+            errors.rejectValue("email", "Duplicate.Email");
         }
     }
 }

@@ -27,9 +27,9 @@ public class PasswordResetFormValidator implements Validator {
     public void validate(Object target, Errors errors) {
         UserPasswordDto userPasswordDto = (UserPasswordDto) target;
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "currentPassword", "CurrentPasswordRequired");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NewPasswordRequired");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordConfirm", "ConfirmNewPasswordRequired");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "currentPassword", "Required.CurrentPassword");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "Required.NewPassword");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordConfirm", "Required.NewPasswordConfirm");
 
         if(userPasswordDto.getCurrentPassword().length() > 0 && !passwordEncoder.matches(userPasswordDto.getCurrentPassword(), userPasswordDto.getEncryptedCurrentPassword())){
             errors.rejectValue("currentPassword", "Diff.CurrentPassword");
