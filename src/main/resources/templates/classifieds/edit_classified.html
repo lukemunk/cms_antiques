@@ -79,27 +79,17 @@
 					return false;
 				}
 				
-				
 				function replaceTags(html){
 					$('#tags').replaceWith($(html));
 				}
 				
 				$('button[name="addTag"]').click(function(event){
-					//console.log("add tag");
-					//console.log($('form').serialize());
-					
-					
 					var data = $('form').serialize();
-					
 					$.post('/add_tag', data, replaceTags);
 					document.getElementById("tag").value="";
 					return false;
 				});
 				
-				
-				
 			</script>
-		
-		
 		</body>
 	</html>

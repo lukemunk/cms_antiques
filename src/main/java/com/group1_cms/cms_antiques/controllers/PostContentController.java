@@ -46,6 +46,7 @@ public class PostContentController
         }
         newView.addObject("post", post);
         newView.addObject("username", currentPrincipalName);
+        newView.addObject("categories", postsService.getAllCategories());
         return newView;
     }
 
@@ -57,6 +58,7 @@ public class PostContentController
         ModelAndView newView = new ModelAndView("posts/newpost");
 
         newView.addObject("post", post);
+        newView.addObject("categories", postsService.getAllCategories());
         return newView;
     }
 
@@ -78,6 +80,7 @@ public class PostContentController
 
 
         newView.addObject("post", post);
+        newView.addObject("categories", postsService.getAllCategories());
         return newView;
     }
 
