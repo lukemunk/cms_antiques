@@ -1,37 +1,35 @@
 package com.group1_cms.cms_antiques.services;
 
-import com.group1_cms.cms_antiques.models.Role;
-import com.group1_cms.cms_antiques.models.User;
-import com.group1_cms.cms_antiques.models.UserPasswordDto;
-import com.group1_cms.cms_antiques.repositories.RoleRepository;
+import com.group1_cms.cms_antiques.models.*;
 import com.group1_cms.cms_antiques.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.core.userdetails.User.UserBuilder;
 
 import java.time.ZonedDateTime;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final RoleService roleSerivce;
+    private final StateService stateService;
+    private final CityService cityService;
+    private final AddressService addressService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository,
-                       PasswordEncoder passwordEncoder){
+    public UserService(UserRepository userRepository, RoleService roleService, StateService stateService,
+                       CityService cityService, AddressService addressService, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+        this.roleSerivce = roleService;
+        this.stateService = stateService;
+        this.cityService = cityService;
+        this.addressService = addressService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -42,7 +40,7 @@ public class UserService implements UserDetailsService {
         if(userFromDb.getId() != null){ //check to see if user is already in database
             userToSave.setId(userFromDb.getId()); //set the users id to that of user in database to prevent multiples
             if(passwordEncoder.matches(userToSave.getPassword(), userFromDb.getPassword())){ //check if the password is the same
-                userToSave.setPassword(userFromDb.getPassword()); //if it is, the set it to the same encrypted password from database
+                userToSave.setPassword(userFromDb.getPassword()); //if it is, then set it to the same encrypted password from database
             }
             else{
                 userToSave.setPassword(passwordEncoder.encode(userToSave.getPassword())); //If the user changed their password
@@ -64,7 +62,7 @@ public class UserService implements UserDetailsService {
 
     public User saveNewUser(User user){
         Map<UUID, Role> userRole = new LinkedHashMap<>();
-        Role role = roleRepository.getRoleByName("ROLE_Member");
+        Role role = roleSerivce.findRoleByName("ROLE_Member");
         userRole.put(role.getId(), role);
         user.setRoles(userRole);
         user.setEnabled(true);
@@ -76,7 +74,7 @@ public class UserService implements UserDetailsService {
 
     public User saveDefaultAdminUser(User user){
         Map<UUID, Role> adminRole = new LinkedHashMap<>();
-        Role role = roleRepository.getRoleByName("ROLE_Admin");
+        Role role = roleSerivce.findRoleByName("ROLE_Admin");
         adminRole.put(role.getId(), role);
         user.setRoles(adminRole);
         user.setEnabled(true);
@@ -119,6 +117,65 @@ public class UserService implements UserDetailsService {
                     passwordEncoder.encode(userPasswordDto.getPassword()));
         }
         return;
+    }
+
+    public UserProfileDto getUserWithProfileInfo(String username){
+        UserProfileDto userProfileDto = new UserProfileDto();
+        User user = userRepository.getUserAndAddressAndCityAndStateByUserName(username);
+        userProfileDto.setFirstName(user.getFirstName());
+        userProfileDto.setLastName(user.getLastName());
+        userProfileDto.setUserName(user.getUsername());
+        userProfileDto.setEmail(user.getEmail());
+        if(user.getPhoneNum() != null){
+            userProfileDto.setPhoneNum(user.getPhoneNum());
+        }
+        if(user.getImagePath() != null){
+            userProfileDto.setImagePath(user.getImagePath());
+        }
+        if(user.getAddress() != null){
+            userProfileDto.setAddressLine1(user.getAddress().getStreetAddress());
+            if(user.getAddress().getStreetAddressLine2() != null){
+                userProfileDto.setAddressLine2(user.getAddress().getStreetAddressLine2());
+            }
+            userProfileDto.setCityName(user.getAddress().getCity().getName());
+            userProfileDto.setZipcode(user.getAddress().getCity().getPostalCode());
+            userProfileDto.setStateName(user.getAddress().getCity().getState().getName());
+            userProfileDto.setAddressProvided(true);
+        }
+        else{
+            userProfileDto.setAddressProvided(false
+            );
+        }
+        return userProfileDto;
+    }
+
+    public User saveUserProfile(UserProfileDto userProfileDto){
+        User userToSave = userRepository.getUserAndAddressAndCityAndStateByUserName(userProfileDto.getOlduserName());
+        State stateFromDb;
+        City cityToSave = new City();
+        Address addressToSave = new Address();
+        userToSave.setModifiedOn(ZonedDateTime.now());
+        userToSave.setUsername(userProfileDto.getUserName());
+        userToSave.setFirstName(userProfileDto.getFirstName());
+        userToSave.setLastName(userProfileDto.getLastName());
+        userToSave.setEmail(userProfileDto.getEmail());
+        userToSave.setPhoneNum(userProfileDto.getPhoneNum());
+        if(userToSave.getAddress() != null && !userProfileDto.isAddressProvided()){
+            userToSave.getAddress().setId(null);
+            userToSave.setModifiedOn(ZonedDateTime.now());
+           // userRepository.setUserAddressIdToNullOnAddressDelete(userToSave.getUsername());
+        }
+        else if(userProfileDto.getAddressLine1() != "" && userProfileDto.getAddressLine1() != null){
+            stateFromDb = stateService.findStateByName(userProfileDto.getStateName());
+            cityToSave.setName(userProfileDto.getCityName());
+            cityToSave.setPostalCode(userProfileDto.getZipcode());
+            cityToSave = cityService.saveCity(cityToSave, stateFromDb);
+            addressToSave.setStreetAddress(userProfileDto.getAddressLine1());
+            addressToSave.setStreetAddressLine2(userProfileDto.getAddressLine2());
+            addressToSave = addressService.saveAddress(addressToSave, cityToSave);
+            userToSave.setAddress(addressToSave);
+        }
+       return userRepository.save(userToSave);
     }
 
     public User getUserFromUserDetails(UserDetails userDetails){

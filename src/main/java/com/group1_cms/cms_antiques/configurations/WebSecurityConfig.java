@@ -3,13 +3,10 @@ package com.group1_cms.cms_antiques.configurations;
 import com.group1_cms.cms_antiques.components.PasswordResetFormValidator;
 import com.group1_cms.cms_antiques.components.RegistrationFormValidator;
 import com.group1_cms.cms_antiques.components.StartupDatabaseLoader;
+import com.group1_cms.cms_antiques.components.UserProfileFormValidator;
 import com.group1_cms.cms_antiques.models.Role;
-import com.group1_cms.cms_antiques.repositories.PermissionRepository;
-import com.group1_cms.cms_antiques.repositories.RoleRepository;
-import com.group1_cms.cms_antiques.repositories.UserRepository;
-import com.group1_cms.cms_antiques.services.PermissionService;
-import com.group1_cms.cms_antiques.services.RoleService;
-import com.group1_cms.cms_antiques.services.UserService;
+import com.group1_cms.cms_antiques.repositories.*;
+import com.group1_cms.cms_antiques.services.*;
 import com.group1_cms.cms_antiques.spring.security.CustomAuthenticationSuccessHandler;
 import com.group1_cms.cms_antiques.spring.security.JwtFilter;
 import com.group1_cms.cms_antiques.spring.security.JwtTokenProvider;
@@ -44,8 +41,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Bean
-    public StartupDatabaseLoader getDatabaseLoader(RoleService roleService, PermissionService permissionService, UserService userService){
-        StartupDatabaseLoader startupDatabaseLoader = new StartupDatabaseLoader(roleService, permissionService, userService);
+    public StartupDatabaseLoader getDatabaseLoader(RoleService roleService, PermissionService permissionService,
+                                                   UserService userService, StateService stateService){
+        StartupDatabaseLoader startupDatabaseLoader = new StartupDatabaseLoader(roleService, permissionService, userService, stateService);
         return startupDatabaseLoader;
     }
 
@@ -56,8 +54,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserService getUserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder){
-        UserService userService = new UserService(userRepository, roleRepository, passwordEncoder);
+    public UserService getUserService(UserRepository userRepository, RoleService roleService, StateService stateService,
+                                      CityService cityService, AddressService addressService,PasswordEncoder passwordEncoder){
+        UserService userService = new UserService(
+                userRepository, roleService, stateService, cityService, addressService, passwordEncoder);
         return userService;
     }
 
@@ -86,8 +86,49 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public StateRepository stateRepository(){
+        StateRepository stateRepository = new StateRepository(namedParameterJdbcTemplate);
+        return stateRepository;
+    }
+
+    @Bean
+    public StateService stateService(StateRepository stateRepository){
+        StateService stateService = new StateService(stateRepository);
+        return stateService;
+    }
+
+    @Bean
+    public CityRepository cityRepository(){
+        CityRepository cityRepository = new CityRepository(namedParameterJdbcTemplate);
+        return cityRepository;
+    }
+
+    @Bean
+    public CityService cityService(CityRepository cityRepository){
+        CityService cityService = new CityService(cityRepository);
+        return cityService;
+    }
+
+    @Bean
+    public AddressRepository addressRepository(){
+        AddressRepository addressRepository = new AddressRepository(namedParameterJdbcTemplate);
+        return addressRepository;
+    }
+
+    @Bean
+    public AddressService addressService(AddressRepository addressRepository){
+        AddressService addressService = new AddressService(addressRepository);
+        return addressService;
+    }
+
+    @Bean
     public RegistrationFormValidator getRegistrationFormValidator(UserService userService){
         return new RegistrationFormValidator(userService);
+    }
+
+    @Bean
+    public UserProfileFormValidator getUserProfileFormValidator(UserService userService){
+        return new UserProfileFormValidator(userService);
     }
 
     @Bean

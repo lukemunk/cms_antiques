@@ -1,0 +1,24 @@
+label{
+    color: #0B56DE
+}
+i{
+    color: #0b56DE
+}
+
+#formHeading{
+    color: #0D22FA;
+}
+
+#submitBtn{
+    background-color: #0099F5;
+}
+.form-error{
+    font-size: small;
+}
+.info-addressHeadings{
+    color: #0b56DE;
+    border-color: #80bdff;
+}
+.userImg{
+    margin-top: 5rem;
+}

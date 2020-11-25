@@ -2,9 +2,11 @@ package com.group1_cms.cms_antiques.components;
 
 import com.group1_cms.cms_antiques.models.Permission;
 import com.group1_cms.cms_antiques.models.Role;
+import com.group1_cms.cms_antiques.models.State;
 import com.group1_cms.cms_antiques.models.User;
 import com.group1_cms.cms_antiques.services.PermissionService;
 import com.group1_cms.cms_antiques.services.RoleService;
+import com.group1_cms.cms_antiques.services.StateService;
 import com.group1_cms.cms_antiques.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -13,6 +15,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 public class StartupDatabaseLoader implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -20,12 +23,15 @@ public class StartupDatabaseLoader implements ApplicationListener<ContextRefresh
     private RoleService roleService;
     private PermissionService permissionService;
     private UserService userService;
+    private StateService stateService;
 
     @Autowired
-    public StartupDatabaseLoader(RoleService roleService, PermissionService permissionService, UserService userService){
+    public StartupDatabaseLoader(RoleService roleService, PermissionService permissionService, UserService userService,
+                                 StateService stateService){
         this.roleService = roleService;
         this.permissionService = permissionService;
         this.userService = userService;
+        this.stateService = stateService;
     }
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
@@ -108,7 +114,13 @@ public class StartupDatabaseLoader implements ApplicationListener<ContextRefresh
         roleService.addPermissionsToRole(admin, adminPermissionList);
         roleService.addPermissionsToRole(moderator, moderatorPermissionList);
 
-        userService.saveDefaultAdminUser(defaultAdmin);
+       // userService.saveDefaultAdminUser(defaultAdmin);
+
+        List<State> stateList = new ArrayList<>();
+        addStatesToList(stateList);
+        for (State state: stateList) {
+            stateService.saveState(state);
+        }
 
         isInitialized = true;
     }
@@ -121,5 +133,60 @@ public class StartupDatabaseLoader implements ApplicationListener<ContextRefresh
         admin.setUsername(username);
         admin.setEmail(email);
         return admin;
+    }
+
+    private void addStatesToList(List<State> states){
+
+        states.add(new State("Alabama"));
+        states.add(new State("Alaska"));
+        states.add(new State("Arizona"));
+        states.add(new State("Arkansas"));
+        states.add(new State("California"));
+        states.add(new State("Colorado"));
+        states.add(new State("Connecticut"));
+        states.add(new State("Delaware"));
+        states.add(new State("District of Columbia"));
+        states.add(new State("Florida"));
+        states.add(new State("Georgia"));
+        states.add(new State("Hawaii"));
+        states.add(new State("Idaho"));
+        states.add(new State("Illinois"));
+        states.add(new State("Indiana"));
+        states.add(new State("Iowa"));
+        states.add(new State("Kansas"));
+        states.add(new State("Kentucky"));
+        states.add(new State("Louisiana"));
+        states.add(new State("Maine"));
+        states.add(new State("Maryland"));
+        states.add(new State("Massachusetts"));
+        states.add(new State("Michigan"));
+        states.add(new State("Minnesota"));
+        states.add(new State("Mississippi"));
+        states.add(new State("Missouri"));
+        states.add(new State("Montana"));
+        states.add(new State("Nebraska"));
+        states.add(new State("Nevada"));
+        states.add(new State("New Hampshire"));
+        states.add(new State("New Jersey"));
+        states.add(new State("New Mexico"));
+        states.add(new State("New York"));
+        states.add(new State("North Carolina"));
+        states.add(new State("North Dakota"));
+        states.add(new State("Ohio"));
+        states.add(new State("Oklahoma"));
+        states.add(new State("Oregon"));
+        states.add(new State("Pennsylvania"));
+        states.add(new State("Rhode Island"));
+        states.add(new State("South Carolina"));
+        states.add(new State("South Dakota"));
+        states.add(new State("Tennessee"));
+        states.add(new State("Texas"));
+        states.add(new State("Utah"));
+        states.add(new State("Vermont"));
+        states.add(new State("Virginia"));
+        states.add(new State("Washington"));
+        states.add(new State("West Virginia"));
+        states.add(new State("Wisconsin"));
+        states.add(new State("Wyoming"));
     }
 }

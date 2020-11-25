@@ -1,9 +1,7 @@
 package com.group1_cms.cms_antiques.models;
 
 import java.time.ZonedDateTime;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class State {
 
@@ -12,6 +10,12 @@ public class State {
     private Map<UUID, City> cities;
     private ZonedDateTime createdOn;
     private ZonedDateTime modifiedOn;
+
+    public State(){ }
+
+    public State(String name){
+        this.name = name;
+    }
 
     public UUID getId() {
         return id;
@@ -29,7 +33,18 @@ public class State {
         this.name = name;
     }
 
-    public Map<UUID, City> getCities() {
+    public City getCityById(UUID id){
+        if(cities != null){
+            return cities.get(id);
+        }
+        return null;
+    }
+
+    public Map<UUID, City> getCities()
+    {
+        if(cities == null){
+            cities = new HashMap<>();
+        }
         return cities;
     }
 

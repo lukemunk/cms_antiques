@@ -43,6 +43,12 @@ public class User implements UserDetails {
 
     private String imagePath;
 
+    private String imageDownloadUri;
+
+    private String imgFileType;
+
+    private Long imgFileSize;
+
     private Address address;
 
     @JsonIgnore
@@ -128,9 +134,31 @@ public class User implements UserDetails {
         this.imagePath = imagePath;
     }
 
-    public Address getAddress() {
-        return address;
+    public String getImageDownloadUri() {
+        return imageDownloadUri;
     }
+
+    public void setImageDownloadUri(String imageDownloadUri) {
+        this.imageDownloadUri = imageDownloadUri;
+    }
+
+    public String getImgFileType() {
+        return imgFileType;
+    }
+
+    public void setImgFileType(String imgFileType) {
+        this.imgFileType = imgFileType;
+    }
+
+    public Long getImgFileSize() {
+        return imgFileSize;
+    }
+
+    public void setImgFileSize(Long imgFileSize) {
+        this.imgFileSize = imgFileSize;
+    }
+
+    public Address getAddress() { return address; }
 
     public void setAddress(Address address) {
         this.address = address;
