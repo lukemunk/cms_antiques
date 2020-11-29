@@ -116,7 +116,7 @@ public class PostContentController
     }
 
     @RequestMapping(value="/posts")
-    public ModelAndView posts(Model model){
+    public ModelAndView posts(){
         // Gets the number of pages
         int pages = (int)Math.ceil((double)postsService.getAllPostsCount("all", "") / 10);
 
