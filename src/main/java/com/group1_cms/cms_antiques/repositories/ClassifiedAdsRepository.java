@@ -77,6 +77,8 @@ public class ClassifiedAdsRepository {
 	
 	private static final String getAllCategoryNames = "SELECT name FROM Category;";
 	
+	private static final String getAllTags = "SELECT name FROM Tag;";
+	
 	private static final String getTagsForClassified = "SELECT t.name as 'tag'\r\n"
 			+ "FROM Classified ca\r\n"
 			+ "JOIN Classified_Tag ct on ct.classified_id = ca.id\r\n"
@@ -122,7 +124,6 @@ public class ClassifiedAdsRepository {
 	private static final String deleteItemImageWithIdSql = "DELETE FROM Item_Image WHERE id = UUID_TO_BIN(:imageId)";
 	private static final String deleteClassifiedAdTag = "DELETE FROM Classified_Tag WHERE classified_id = (UUID_TO_BIN(:classifiedAdId)) AND tag_id = (UUID_TO_BIN(:tagId))";
 	private static final String deleteAllClassifiedAdTags = "DELETE FROM Classified_Tag WHERE classified_id = (UUID_TO_BIN(:classifiedAdId))";
-	
 
 	
 	public ClassifiedAdsRepository(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -193,6 +194,8 @@ public class ClassifiedAdsRepository {
 			 jdbcTemplate.update(saveItemImgSql+onDuplicate+updateItemImgSql, parameters);
 		 jdbcTemplate.update(saveClassifiedAdSql+onDuplicate+updateClassifiedAdSql, parameters);
 		 
+		 jdbcTemplate.update(deleteAllClassifiedAdTags, parameters);
+		 
 		 for(String tag: classifiedAd.getTags()) {
 			 parameters.put("tag", tag);
 			 if(jdbcTemplate.query(getTagFromName, parameters, tagsResultSetExtractor).size() == 1)
@@ -220,6 +223,10 @@ public class ClassifiedAdsRepository {
 		return jdbcTemplate.query(getAllCategoryNames, new CategoryNameRowMapper());
 	}
 	
+	public List<String> getAllTags(){
+		return jdbcTemplate.query(getAllTags, new TagRowMapper());
+	}
+	
 	private class ClassifiedAdTotalRowMapper implements RowMapper<Integer>{
 
 		@Override
@@ -238,6 +245,16 @@ public class ClassifiedAdsRepository {
 		public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 			String category = rs.getString("name");
 			return category;
+		}
+		
+	}
+	
+	private class TagRowMapper implements RowMapper<String>{
+
+		@Override
+		public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+			String tag = rs.getString("name");
+			return tag;
 		}
 		
 	}

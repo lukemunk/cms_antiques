@@ -42,33 +42,34 @@
                             </li>
                         </ul>
                         <ul class="flex-grow-1 navbar-nav navText">
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="/posts">Posts</a>
-                            </li>
+                           
                             
                             
                             <!-- Added this for category selection in classifieds ---------------------------------------------- -->
-                             <li class="nav-item dropdown">
-                            	<a class="nav-link dropdown-toggle text-white" data-toggle="dropdown">
-                            		Classifieds
+                              <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-white" data-toggle="dropdown"  href="#">
+                            		Posts
                             	</a>
                             	<ul class="dropdown-menu">
                             		<li class="nav-item dropdown">
-                            			<a class="nav-link" href="/classified_ads/all/1">All</a>
+                            			<a class="nav-link" href="/posts/all/1">All</a>
                             		</li>
 									<li class="nav-item dropdown" th:each="category: ${categories}"> 
-										<a class="nav-link" th:text="${category}" th:href="@{/classified_ads/{category}/1(category=${category})}"></a>
+										<a class="nav-link" th:text="${category}" th:href="@{/posts/{category}/1(category=${category})}"></a>
 									</li>
                                 </ul>
                             	
                             </li>
                             
+                             <li class="nav-item">
+                                <a class="nav-link text-white" href="/classified_ads">Classifieds</a>
+                            </li>
                             
                             <li>
-						    	<a class="nav-link text-white" href="/classified_ads/new">Create New Ad</a>
+						    	<a class="nav-link text-white" href="/posts/newpost">Create New Post</a>
 						    </li>
 						    
-						    <form class="form-inline" method="get" th:action="@{/classified_ads/{category}/1 (category=${category})}">
+						    <form class="form-inline" method="get" th:action="@{/posts/{category}/1 (category=${category})}">
 							    <input class="form-control mr-sm-2" type="text" placeholder="Search" id="search" name="search">
 							    <button class="btn btn-primary" type="submit">Search</button>
 							  </form>

@@ -82,6 +82,10 @@ public class PostsRepository
 	private static final String GETALLCATEGORYNAMES = "SELECT name FROM Category;";
 	//endregion
 	
+	//region SQL GETALLTAGS
+		private static final String GETALLTAGS = "SELECT name FROM Tag;";
+	//endregion
+	
 	private static final String getTagsForPost = "SELECT t.name as 'tag'\r\n"
 			+ "FROM Post p\r\n"
 			+ "JOIN Post_Tag pt on pt.post_id = p.id\r\n"
@@ -168,6 +172,11 @@ public class PostsRepository
 	{
 		return jdbcTemplate.query(GETALLCATEGORYNAMES, new CategoryNameRowMapper());
 	}
+	
+	public List<String> getAllTags()
+	{
+		return jdbcTemplate.query(GETALLTAGS, new TagRowMapper());
+	}
 	//endregion
 
 	//region Save/Update/Delete Posts
@@ -191,6 +200,8 @@ public class PostsRepository
 
 		jdbcTemplate.update(SAVEITEM+DUPLICATE+UPDATEITEM, parameters);
 		jdbcTemplate.update(SAVEPOST+DUPLICATE+UPDATEPOST, parameters);
+		
+		jdbcTemplate.update(deleteAllPostTags, parameters);
 		
 		if(postIN.getTags() != null) {
 			for(String tag: postIN.getTags()) {
@@ -233,6 +244,16 @@ public class PostsRepository
 		public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 			String category = rs.getString("name");
 			return category;
+		}
+
+	}
+	
+	private class TagRowMapper implements RowMapper<String>{
+
+		@Override
+		public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+			String tag = rs.getString("name");
+			return tag;
 		}
 
 	}

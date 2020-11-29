@@ -126,6 +126,14 @@ public class ClassifiedAdsContentController {
 		return newView;
 	}
 	
+	@RequestMapping(value="/remove_tag", method = RequestMethod.POST)
+	public ModelAndView removeTag(@ModelAttribute("classifiedAd") ClassifiedAd classifiedAd, @RequestParam("removeTag") int index) {
+		ModelAndView newView = new ModelAndView("classifieds/edit_classified::#tags");
+		classifiedAd.getTags().remove(index);
+		newView.addObject(classifiedAd);
+		return newView;
+	}
+	
 	
 	@RequestMapping(value={"classified_ads/new", "classified_ads/edit/{id}"}, method = RequestMethod.GET )
 	public ModelAndView classifiedsForum(@PathVariable(required=false) String id, Authentication authentication) {
@@ -151,6 +159,7 @@ public class ClassifiedAdsContentController {
 			newView.addObject("newClassified", false);
 		}
 		newView.addObject("categories", classifiedAdsService.getAllCategories());
+		newView.addObject("allTags", classifiedAdsService.getAllTags());
 		
 		return newView;
 	}

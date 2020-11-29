@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,9 +45,11 @@ public class PostContentController
             // Handle no post found
             return new ModelAndView("redirect:/posts/all/1");
         }
+        
         newView.addObject("post", post);
         newView.addObject("username", currentPrincipalName);
         newView.addObject("categories", postsService.getAllCategories());
+        newView.addObject("allTags", postsService.getAllTags());
         return newView;
     }
 
@@ -59,6 +62,7 @@ public class PostContentController
 
         newView.addObject("post", post);
         newView.addObject("categories", postsService.getAllCategories());
+        newView.addObject("allTags", postsService.getAllTags());
         return newView;
     }
 
@@ -77,10 +81,13 @@ public class PostContentController
             return new ModelAndView("redirect:/posts/all/1");
         }
         postsService.updatePost(post);
-
+        
 
         newView.addObject("post", post);
+        
         newView.addObject("categories", postsService.getAllCategories());
+       
+        
         return newView;
     }
 
