@@ -5,8 +5,22 @@ x-db-variables:  &db-variables
   MYSQL_PASSWORD: 'password'
   MYSQL_PORT:
 services:
+  myapp:
+    build: .
+    restart: on-failure
+    expose:
+      - "8080"
+    ports:
+      - 8088:8080
+    environment:
+      <<: *db-variables
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/cs4230
+    depends_on:
+      - mysql
+    volumes:
+      - ./target/:/usr/local/tomcat/webapps
   mysql:
-    image: mysql:8.0.20
+    image: mysql:8.0.21
     volumes:
       - cs4230-db:/var/lib/mysql
     ports:
