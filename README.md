@@ -44,4 +44,5 @@ and an Edit option will appear on the post
  
 -Link to Docker Compose How To Guide
  https://docs.docker.com/compose/gettingstarted/#:~:text=Get%20started%20with%20Docker%20Compose.%201%20Step%201%3A,to%20add%20a%20bind%20mount%20%F0%9F%94%97.%20More%20items
+
 -If you do not have any category or tag options in your database you will not be able to create content
