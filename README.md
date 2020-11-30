@@ -1,7 +1,7 @@
 # cms_antiques
 [Running the app](https://via.placeholder.com/15/1589F0/000000?text=+) 
 
-Requires Java IDE or Docker
+Requires Java IDE and MySQL or Docker
 
 ```dif
 1) Docker
