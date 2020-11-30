@@ -1,5 +1,6 @@
-# cms_antiques
-[Running the app](https://via.placeholder.com/15/1589F0/000000?text=+) 
+# CMS Antiques
+
+# [Running the app](https://via.placeholder.com/15/1589F0/000000?text=+) 
 
 Requires Java IDE and MySQL or Docker
 
@@ -22,7 +23,7 @@ Requires Java IDE and MySQL or Docker
 After that you can view posts, if you want to create posts, view classifieds, or modify your account you'll need to sign in
 The default Admin account is "admin" and "password"
 
-[Accounts/Permissions/Using Website](https://via.placeholder.com/15/c5f015/000000?text=+)
+# [Accounts/Permissions/Using Website](https://via.placeholder.com/15/c5f015/000000?text=+)
 
 There are Admin accounts as well as User accounts
 
@@ -36,11 +37,11 @@ It'll take you to a page where you can create the content and save it
 To edit a post or classified go to the post/classified you made (or any if you're an admin)
 and an Edit option will appear on the post
 
-[Security](https://via.placeholder.com/15/1589F0/000000?text=+)
+# [Security](https://via.placeholder.com/15/1589F0/000000?text=+)
 
 // To do, add how our security is set up and works
 
-[Support](https://via.placeholder.com/15/1589F0/000000?text=+)
+# [Support](https://via.placeholder.com/15/1589F0/000000?text=+)
  
 -Link to Docker Compose How To Guide
  https://docs.docker.com/compose/gettingstarted/#:~:text=Get%20started%20with%20Docker%20Compose.%201%20Step%201%3A,to%20add%20a%20bind%20mount%20%F0%9F%94%97.%20More%20items
