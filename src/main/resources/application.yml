@@ -19,6 +19,9 @@ security:
       ttl: 30m
 server:
   port: 8080
+  error:
+    whitelabel:
+      enabled: false
 app:
   api:
     title: CMS APIs

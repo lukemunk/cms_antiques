@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>404</title>
+    <link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+</head>
+
+<body>
+
+<div class="container">
+    <nav class="navbar navbar-expand-sm bg-light fixed-top">
+
+        <a href="/" class="navbar-brand">Home</a>
+
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link" href="/posts">All Posts</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/posts/furniture">Furniture</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/posts/jewelry">Jewelry</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/posts/clothing">Clothing</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" sec:authorize="isAuthenticated()" >New Post</a>
+            </li>
+        </ul>
+
+        <form class="form-inline" action="/action_page.php">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search">
+            <button class="btn btn-success" type="submit">Search</button>
+        </form>
+
+    </nav>
+</div>
+
+<div class = "jumbotron d-flex justify-content-center" style="margin-top:80px;">
+    <h1>404</h1>
+
+</div>
+
+</div>
+
+</body>
+</html>

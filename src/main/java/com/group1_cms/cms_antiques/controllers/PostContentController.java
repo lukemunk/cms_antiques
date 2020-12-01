@@ -42,6 +42,12 @@ public class PostContentController
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
 
+        // Redirects them to edit page if they are the creator or an Admin
+        if (post.getCreator().equals(authentication.getName()) || authentication.getAuthorities().contains("ADMIN"))
+        {
+            newView = new ModelAndView("posts/editpost");
+        }
+
         if (post == null) {
             // Handle no post found
             return new ModelAndView("redirect:/posts/all/1");
@@ -66,38 +72,48 @@ public class PostContentController
     @RequestMapping("posts/view/editpost_{id}")
     public ModelAndView postToForums(@PathVariable("id") String id, @ModelAttribute(value="post") Post post)
     {
-        ModelAndView newView = new ModelAndView("redirect:/posts/view/" + id);
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username;
-        Collection authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-
-
-        if(principal instanceof UserDetails) {
-            username = ((UserDetails)principal).getUsername();
-        } else {
-            username = principal.toString();
-        }
-
-        // Checks to make sure this is the post creator
-        if (username.equals(post.getCreator()) || authorities.contains("Admin"))
+        try
         {
-            if (post.getItem().getId() == null)
+            ModelAndView newView = new ModelAndView("redirect:/posts/view/" + id);
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String username;
+            Collection authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+
+            if (principal instanceof UserDetails)
             {
-                post.getItem().setId(UUID.randomUUID());
+                username = ((UserDetails) principal).getUsername();
+            } else
+            {
+                username = principal.toString();
             }
 
-            if (post == null)
+            // Checks to make sure this is the post creator
+            if (username.equals(post.getCreator()) || authorities.contains("Admin"))
             {
-                // Handle no post found
-                return new ModelAndView("redirect:/posts/all/1");
+                if (post.getItem().getId() == null)
+                {
+                    post.getItem().setId(UUID.randomUUID());
+                }
+
+                if (post == null)
+                {
+                    // Handle no post found
+                    return new ModelAndView("redirect:/posts/all/1");
+                }
+                postsService.updatePost(post);
+
+
+                newView.addObject("post", post);
             }
-            postsService.updatePost(post);
 
-
-            newView.addObject("post", post);
+            return newView;
         }
-
-        return newView;
+        catch (Exception e)
+        {
+            ModelAndView newView = new ModelAndView("redirect:/posts");
+            return newView;
+        }
     }
 
     // Gets new Post, saves it, redirects to where it is at
