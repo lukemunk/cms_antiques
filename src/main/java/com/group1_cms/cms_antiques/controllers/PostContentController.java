@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -52,8 +53,11 @@ public class PostContentController
             // Handle no post found
             return new ModelAndView("redirect:/posts/all/1");
         }
+        
         newView.addObject("post", post);
         newView.addObject("username", currentPrincipalName);
+        newView.addObject("categories", postsService.getAllCategories());
+        newView.addObject("allTags", postsService.getAllTags());
         return newView;
     }
 
@@ -65,6 +69,8 @@ public class PostContentController
         ModelAndView newView = new ModelAndView("posts/newpost");
 
         newView.addObject("post", post);
+        newView.addObject("categories", postsService.getAllCategories());
+        newView.addObject("allTags", postsService.getAllTags());
         return newView;
     }
 
@@ -105,6 +111,7 @@ public class PostContentController
 
 
                 newView.addObject("post", post);
+                newView.addObject("categories", postsService.getAllCategories());
             }
 
             return newView;
@@ -114,6 +121,7 @@ public class PostContentController
             ModelAndView newView = new ModelAndView("redirect:/posts");
             return newView;
         }
+
     }
 
     // Gets new Post, saves it, redirects to where it is at

@@ -50,13 +50,19 @@
 				<br>
 				<br>
 				<label for="tag">Tag</label>
-				<input type="text" id="tag" name="tag" th:object="${tag}">
+				<!--  <input type="text" id="tag" name="tag" th:object="${tag}"> -->
+				<select id="tag" name="tag" th:object="${tag}">
+				  	
+					 <option th:each="tag: ${allTags}"th:value="${tag}" th:text="${tag}"></option>
+				
+				</select>
 				<button name="addTag">Add Tag</button>
 				
 				<fieldset id="tags">
 					<div th:each="tag, stat: ${classifiedAd.tags}">
 						<input type="hidden" th:field="${classifiedAd.tags[__${stat.index}__]}">
-						<div th:text="${tag}"></div>
+						<span th:text="${tag}"></span> <button  th:attr="onclick=|return clicked(${stat.index})|">Remove Tag</button>
+						<br>
 					</div>
 				</fieldset>
 				
@@ -79,27 +85,26 @@
 					return false;
 				}
 				
-				
 				function replaceTags(html){
 					$('#tags').replaceWith($(html));
 				}
 				
 				$('button[name="addTag"]').click(function(event){
-					//console.log("add tag");
-					//console.log($('form').serialize());
-					
-					
 					var data = $('form').serialize();
-					
 					$.post('/add_tag', data, replaceTags);
-					document.getElementById("tag").value="";
 					return false;
 				});
 				
 				
+				function clicked(index){
+					var data = $('form').serialize();
+					data += '&removeTag=' + index;
+					
+					$.post('/remove_tag', data, replaceTags);
+					
+					return false;
+				}
 				
 			</script>
-		
-		
 		</body>
 	</html>

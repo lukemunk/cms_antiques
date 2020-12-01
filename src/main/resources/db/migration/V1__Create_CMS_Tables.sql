@@ -49,17 +49,22 @@ modified_on TIMESTAMP DEFAULT '1970-01-01 00:00:01' ON UPDATE CURRENT_TIMESTAMP,
 CONSTRAINT Pk_Item PRIMARY KEY(id)
 )ENGINE=INNODB;
 
-CREATE TABLE TagList(
+CREATE TABLE Tag(
 id BINARY(16) NOT NULL,
 name VARCHAR(255) NOT NULL,
-postId BINARY(16) NOT NULL,
 CONSTRAINT Pk_Item PRIMARY KEY(id)
 )ENGINE=INNODB;
 
-CREATE TABLE Tag(
-tagID BINARY(16) NOT NULL,
-postId BINARY(16) NOT NULL,
-CONSTRAINT Pk_Item PRIMARY KEY(tagID)
+CREATE TABLE Post_Tag(
+tag_id BINARY(16) NOT NULL,
+post_id BINARY(16) NOT NULL,
+CONSTRAINT Pk_Item PRIMARY KEY(tag_id, post_id)
+)ENGINE=INNODB;
+
+CREATE TABLE Classified_Tag(
+tag_id BINARY(16) NOT NULL,
+classified_id BINARY(16) NOT NULL,
+CONSTRAINT Pk_Item PRIMARY KEY(tag_id, classified_id)
 )ENGINE=INNODB;
 
 CREATE TABLE Post(
@@ -176,3 +181,19 @@ FOREIGN KEY(user_id) REFERENCES User(id);
 ALTER TABLE User_Role
 ADD CONSTRAINT Fk_User_RoleJunctionTable_Role_id
 FOREIGN KEY(role_id) REFERENCES Role(id);
+
+ALTER TABLE Post_Tag
+ADD CONSTRAINT Fk_Post_TagJunctionTable_Tag_id
+FOREIGN KEY(tag_id) REFERENCES Tag(id);
+
+ALTER TABLE Post_Tag
+ADD CONSTRAINT Fk_Post_TagJunctionTable_Post_id
+FOREIGN KEY(post_id) REFERENCES Post(id);
+
+ALTER TABLE Classified_Tag
+ADD CONSTRAINT Fk_Classified_TagJunctionTable_Tag_id
+FOREIGN KEY(tag_id) REFERENCES Tag(id);
+
+ALTER TABLE Classified_Tag
+ADD CONSTRAINT Fk_Classified_TagJunctionTable_Classified_id
+FOREIGN KEY(classified_id) REFERENCES Classified(id);
