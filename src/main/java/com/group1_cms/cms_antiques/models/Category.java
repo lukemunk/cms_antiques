@@ -1,25 +1,18 @@
 package com.group1_cms.cms_antiques.models;
 
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
-public class Permission {
+public class Category {
 
     private UUID id;
     private String name;
-    private Map<UUID, Role> roles;
+    private Map<UUID, Item> items;
     private ZonedDateTime createdOn;
     private ZonedDateTime modifiedOn;
 
-    public Permission() {
-    }
-
-    public Permission(String name) {
-        this.name = name;
-    }
+    public Category(){ };
 
     public UUID getId() {
         return id;
@@ -37,22 +30,12 @@ public class Permission {
         this.name = name;
     }
 
-    public Role getRoleById(UUID id){
-        if(roles != null){
-            return roles.get(id);
-        }
-        return null;
+    public Map<UUID, Item> getItems() {
+        return items;
     }
 
-    public Map<UUID, Role> getRoles() {
-        if(roles == null){
-            roles = new HashMap<>();
-        }
-        return roles;
-    }
-
-    public void setRoles(Map<UUID, Role> roles) {
-        this.roles = roles;
+    public void setItems(Map<UUID, Item> items) {
+        this.items = items;
     }
 
     public ZonedDateTime getCreatedOn() {

@@ -3,7 +3,7 @@
 <html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>View Users</title>
+    <title>View States</title>
     <link type="text/css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
     <link type="text/css" th:href="@{/css/homePageStyles.css}" rel="stylesheet"/>
     <link type="text/css" th:href="@{/css/headerStyles.css}" rel="stylesheet"/>
@@ -23,30 +23,24 @@
 <div class="container">
     <div class="row my-4">
         <div class="col">
-            <div class="h1 tableTitle my-auto">Users</div>
+            <div class="h1 tableTitle my-auto">States</div>
         </div>
         <div class="col my-auto text-right">
-            <a id="createBtn" class="btn text-white" th:href="@{/admin/createUpdate/user/{id}(id = 0)}"><i class="fas fa-plus">&nbsp;Create New</i></a>
+            <a id="createBtn" class="btn text-white" th:href="@{/admin/createUpdate/state/{id}(id = 0)}"><i class="fas fa-plus">&nbsp;Create New</i></a>
         </div>
     </div>
-    <table id="userTable" class="table table-sm table-striped">
-        <thead class="">
-        <tr class="tableHeaderFooter">
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone Number</th>
+    <table id="stateTable" class="table table-sm table-striped border">
+        <thead>
+        <tr>
+            <th>State Name</th>
             <th>Created On</th>
-            <th>Locked</th>
             <th></th>
         </tr>
         </thead>
-        <tfoot class="tableHeaderFooter">
+        <tfoot>
         <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone Number</th>
+            <th>State Name</th>
             <th>Created On</th>
-            <th>Locked</th>
             <th></th>
         </tr>
         </tfoot>
@@ -70,7 +64,7 @@
                         if(data.success){
                             iziToast.show({
                                 title: 'Success',
-                                message: 'User was successfully deleted',
+                                message: 'State was successfully deleted',
                                 position: 'topRight',
                                 timeout: 500000,
                                 color: 'blue'
@@ -79,11 +73,11 @@
                         }
                         else{
                             iziToast.show({
-                               title: 'Failed',
-                               message: 'User was not successfully deleted',
-                               position: 'topRight',
-                               timeout: 500000,
-                               color: 'blue'
+                                title: 'Failed',
+                                message: 'State was not successfully deleted',
+                                position: 'topRight',
+                                timeout: 500000,
+                                color: 'blue'
                             });
                         }
                     }
@@ -92,26 +86,23 @@
         });
     }
     $(document).ready( function () {
-        $('#userTable').DataTable({
+        $('#stateTable').DataTable({
             "ajax" : {
                 "type": "GET",
-                "url": "/admin/viewRestricted/getUsersTable",
+                "url": "/admin/viewRestricted/getStatesTable",
                 "contentType": "application/json; charset=utf-8",
                 "dataSrc": "",
             },
             "columns" : [
-                { "data": "fullName_lastFirst", "width": "15%" },
-                { "data": "email", "width": "20%" },
-                { "data": "phoneNumber", "width": "15%" },
-                { "data": "createdOn", "width": "15%" },
-                { "data": "locked", "width": "10%" },
+                { "data": "stateName", "width": "40%" },
+                { "data": "createdOn", "width": "35%" },
                 { "data": "id",
                     "render": function (data) {
                         return `<div class="text-center">
-                                <a href="/admin/createUpdate/user/${data}" class="btn mr-1" id="updateBtn" style="cursor:pointer; width:90px">
+                                <a href="/admin/createUpdate/state/${data}" class="btn mr-1" id="updateBtn" style="cursor:pointer; width:90px">
                                     <i class="far fa-edit"></i>Edit
                                 </a>
-                                <a onClick=Delete('/admin/delete/user/${data}') class="btn" id="deleteBtn" style="cursor:pointer; width:90px">
+                                <a onClick=Delete('/admin/delete/state/${data}') class="btn" id="deleteBtn" style="cursor:pointer; width:90px">
                                     <i class="far fa-trash-alt"></i>Delete
                                 </a>
                             </div>`;
@@ -119,7 +110,6 @@
             ]
         });
     });
-
 </script>
 </body>
 </html>

@@ -3,13 +3,11 @@ package com.group1_cms.cms_antiques.controllers;
 import com.group1_cms.cms_antiques.components.PasswordResetFormValidator;
 import com.group1_cms.cms_antiques.components.RegistrationFormValidator;
 import com.group1_cms.cms_antiques.components.UserProfileFormValidator;
+import com.group1_cms.cms_antiques.models.Post;
 import com.group1_cms.cms_antiques.models.User;
 import com.group1_cms.cms_antiques.models.UserPasswordDto;
 import com.group1_cms.cms_antiques.models.UserProfileDto;
-import com.group1_cms.cms_antiques.services.PermissionService;
-import com.group1_cms.cms_antiques.services.RoleService;
-import com.group1_cms.cms_antiques.services.StateService;
-import com.group1_cms.cms_antiques.services.UserService;
+import com.group1_cms.cms_antiques.services.*;
 import com.group1_cms.cms_antiques.spring.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -32,6 +31,7 @@ public class ViewController {
     private UserService userService;
     private RoleService roleService;
     private PermissionService permissionService;
+    private PostsService postsService;
     private StateService stateService;
     private JwtTokenProvider jwtTokenProvider;
     private PasswordResetFormValidator passwordResetFormValidator;
@@ -40,7 +40,7 @@ public class ViewController {
     @Autowired
     public ViewController(RegistrationFormValidator registrationFormValidator, PasswordResetFormValidator passwordResetFormValidator,
                           UserProfileFormValidator userProfileFormValidator, UserService userService, RoleService roleService, PermissionService permissionService,
-                          StateService stateService, JwtTokenProvider jwtTokenProvider){
+                          StateService stateService, PostsService postsService, JwtTokenProvider jwtTokenProvider){
         this.registrationFormValidator = registrationFormValidator;
         this.passwordResetFormValidator = passwordResetFormValidator;
         this.userProfileFormValidator = userProfileFormValidator;
@@ -49,12 +49,15 @@ public class ViewController {
         this.permissionService = permissionService;
         this.stateService = stateService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.postsService = postsService;
     }
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/")
     public ModelAndView publicHomePage(){
+      //  List<Post> postList = postsService.getPosts("all", null, 0);
         ModelAndView modelAndView = new ModelAndView("index");
+      //  modelAndView.addObject("posts",postList);
         return modelAndView;
     }
 

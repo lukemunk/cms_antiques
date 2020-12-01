@@ -1,0 +1,24 @@
+
+#createBtn{
+    background-color: #0099F5;
+    cursor: pointer;
+}
+#updateBtn{
+    border-color: #0099F5;
+    border-style: solid;
+    color: #0056DE!important;
+    cursor: pointer;
+}
+#deleteBtn{
+    border-color: #b21f2d;
+    border-style: solid;
+    color: #bd2130;
+    cursor: pointer;
+}
+.tableTitle{
+    color: #0B56DE;
+}
+.tableHeaderFooter{
+    color: #0B56DE!important;
+}
+

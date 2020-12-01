@@ -59,12 +59,29 @@ public class RoleRepository {
 
     private static final String SELECT_ROLE_WITH_PERMISSIONS = "SELECT BIN_TO_UUID(r.id, 1) as id," +
             "r.name as role_name, " +
+            "r.created_on, " +
+            "r.modified_on, " +
             "BIN_TO_UUID(p.id, 1) as permission_id, " +
             "p.name as permission_name " +
             "FROM Role r " +
             "LEFT JOIN Role_Permission rp on r.id = rp.role_id " +
             "LEFT JOIN Permission p on rp.permission_id = p.id " +
-            "WHERE r.name = " + ROLE_NAME_BINDING_KEY;
+            "WHERE ";
+
+    private static final String SELECT_ALL_ROLES = "SELECT BIN_TO_UUID(id, 1) as id, " +
+            "name, " +
+            "created_on, " +
+            "modified_on " +
+            "FROM Role";
+
+    private static final String DELETE_ROLE_BY_ID = "DELETE FROM Role " +
+            "WHERE id = UUID_TO_BIN(" + ROLE_ID_BINDING_KEY + ", 1)";
+
+    private static final String REMOVE_ROLE_PERMISSIONS = "DELETE FROM Role_Permission " +
+            "WHERE role_id = UUID_TO_BIN(:role_id, 1)";
+
+    private static final String WHERE_ROLENAME_EQUALS_NAME = " r.name = " + ROLE_NAME_BINDING_KEY;
+    private static final String WHERE_ROLEID_EQUALS_ID = " r.id = " + "UUID_TO_BIN(" + ROLE_ID_BINDING_KEY + ", 1)";
 
     public RoleRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate){
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
@@ -75,7 +92,7 @@ public class RoleRepository {
         parameterSource.addValue(ROLE_NAME_KEY, name);
         Role roleToReturn = null;
         try{
-            roleToReturn = namedParameterJdbcTemplate.queryForObject(SELECT_ROLE_BY_NAME, parameterSource, new RoleMapper());
+            roleToReturn = namedParameterJdbcTemplate.queryForObject(SELECT_ROLE_BY_NAME, parameterSource, new RoleRowMapper());
         }
         catch(EmptyResultDataAccessException e){
             return null;
@@ -85,19 +102,41 @@ public class RoleRepository {
     }
 
     public Role getRoleWithPermissionsByName(String name){
+        String sql = SELECT_ROLE_WITH_PERMISSIONS + WHERE_ROLENAME_EQUALS_NAME;
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         RolePermissionsCallBackHandler roleWithPermissionCallBackHandler = new RolePermissionsCallBackHandler();
         parameterSource.addValue(ROLE_NAME_KEY, name);
-        Role roleToReturn = null;
         try{
-            namedParameterJdbcTemplate.query(SELECT_ROLE_WITH_PERMISSIONS, parameterSource, roleWithPermissionCallBackHandler);
-            roleToReturn = roleWithPermissionCallBackHandler.getRole();
+            namedParameterJdbcTemplate.query(sql, parameterSource, roleWithPermissionCallBackHandler);
+            return roleWithPermissionCallBackHandler.getRole();
         }
         catch(EmptyResultDataAccessException ex){
             return null;
         }
+    }
 
-        return roleToReturn;
+    public Role findRoleById(String id){
+        String sql = SELECT_ROLE_WITH_PERMISSIONS + WHERE_ROLEID_EQUALS_ID;
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        RolePermissionsCallBackHandler callBackHandler = new RolePermissionsCallBackHandler();
+        parameterSource.addValue(ROLE_ID_KEY, id);
+        try{
+            namedParameterJdbcTemplate.query(sql, parameterSource, callBackHandler);
+            return callBackHandler.getRole();
+        }
+        catch(EmptyResultDataAccessException ex){
+            return null;
+        }
+    }
+
+    public List<Role> getRoles(){
+        RoleRowMapper roleRowMapper = new RoleRowMapper();
+        try{
+            return namedParameterJdbcTemplate.query(SELECT_ALL_ROLES, roleRowMapper);
+        }
+        catch(EmptyResultDataAccessException ex){
+            return null;
+        }
     }
     
     public Role save(Role role){
@@ -127,6 +166,18 @@ public class RoleRepository {
 
         StringBuilder recordSql = getSqlInsertStatement("Role_Permission", role_permission_primaryKeys, sqlColumns, columnNameToBindingValue, false);
         namedParameterJdbcTemplate.update(recordSql.toString(), bindingValues);
+    }
+
+    public int deleteRoleById(String role_id){
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue(ROLE_ID_KEY, role_id);
+        return namedParameterJdbcTemplate.update(DELETE_ROLE_BY_ID, parameterSource);
+    }
+
+    public void deleteRole_Permission(String role_id){
+        MapSqlParameterSource bindingValues= new MapSqlParameterSource();
+        bindingValues.addValue("role_id", role_id);
+        namedParameterJdbcTemplate.update(REMOVE_ROLE_PERMISSIONS, bindingValues);
     }
 
     private void addSqlItem(List<String> columns, Map<String, String> sqlValues, MapSqlParameterSource bindingValues,
@@ -174,7 +225,7 @@ public class RoleRepository {
         return insertStatement;
     }
 
-    private static final class RoleMapper implements RowMapper<Role>{
+    private static final class RoleRowMapper implements RowMapper<Role>{
 
         @Override
         public Role mapRow(ResultSet rs, int i) throws SQLException {
@@ -215,6 +266,12 @@ public class RoleRepository {
             if(role.getName() == null){
                 role.setName(rs.getString("role_name"));
             }
+            if(role.getCreatedOn() == null){
+                role.setCreatedOn(createZonedDateTime(rs, "created_on"));
+            }
+            if(role.getModifiedOn() == null){
+                role.setModifiedOn(createZonedDateTime(rs, "modified_on"));
+            }
             UUID permissionId = getUUIDFromResultSet(rs, "permission_id");
             Permission currentPermission = new Permission();
             if(permissionId != null){
@@ -231,6 +288,14 @@ public class RoleRepository {
             String uuid = rs.getString(key);
             if(uuid != null) {
                 return UUID.fromString(uuid);
+            }
+            return null;
+        }
+
+        private ZonedDateTime createZonedDateTime(ResultSet rs, String key) throws SQLException{
+            Timestamp value = rs.getTimestamp(key);
+            if(value != null){
+                return ZonedDateTime.ofInstant(value.toInstant(), ZoneId.of("UTC"));
             }
             return null;
         }

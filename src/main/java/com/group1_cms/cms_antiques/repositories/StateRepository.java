@@ -1,6 +1,7 @@
 package com.group1_cms.cms_antiques.repositories;
 
 import com.group1_cms.cms_antiques.models.City;
+import com.group1_cms.cms_antiques.models.Role;
 import com.group1_cms.cms_antiques.models.State;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,10 +38,12 @@ public class StateRepository {
         primaryKeys.add(STATE_ID_BINDING_KEY);
     }
 
-    private static final String SELECT_ALL_STATES = "SELECT BIN_TO_UUID(id, 1)as state_id, " +
-        "name as state_name " +
+    private static final String SELECT_ALL_STATES = "SELECT BIN_TO_UUID(id, 1)as id, " +
+        "name," +
+        "created_on, " +
+        "modified_on " +
         "FROM State " +
-        "ORDER BY state_name";
+        "ORDER BY name";
 
     private static final String SELECT_STATE_WITH_CITIES = "SELECT BIN_TO_UUID(s.id , 1) as state_id, " +
         "s.name as state_name, " +
@@ -47,12 +52,24 @@ public class StateRepository {
         "FROM State s LEFT JOIN " +
         "City c ON s.id = c.state_id";
 
-    private static final String SELECT_STATE_BY_NAME = "SELECT BIN_TO_UUID(id , 1) as state_id, " +
-        "name as state_name " +
+    private static final String SELECT_STATE_BY_NAME = "SELECT BIN_TO_UUID(id , 1) as id, " +
+        "name, " +
+        "created_on, " +
+        "modified_on " +
         "FROM State " +
         "WHERE name = " + NAME_BINDING_KEY;
 
-    private static final String WHERE_NAME_EQUALS_NAME = " WHERE state_name = " + NAME_BINDING_KEY;
+    private static final String SELECT_STATE_BY_ID = "SELECT BIN_TO_UUID(id, 1) as id, " +
+        "name, " +
+        "created_on, " +
+        "modified_on " +
+        "FROM State " +
+        "WHERE id = UUID_TO_BIN(" + STATE_ID_BINDING_KEY + ", 1)";
+
+    private static final String DELETE_STATE_BY_ID = "DELETE FROM State " +
+            "WHERE id = UUID_TO_BIN(" + STATE_ID_BINDING_KEY + ", 1)";
+
+    private static final String WHERE_NAME_EQUALS_NAME = " WHERE name = " + NAME_BINDING_KEY;
 
 
     @Autowired
@@ -118,6 +135,19 @@ public class StateRepository {
         return stateToReturn;
     }
 
+    public State getStateById(String id){
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue(STATE_ID_KEY, id);
+        StateRowMapper stateRowMapper = new StateRowMapper();
+        State stateToReturn = null;
+        try{
+            return namedParameterJdbcTemplate.queryForObject(SELECT_STATE_BY_ID, parameterSource, stateRowMapper);
+        }
+        catch(EmptyResultDataAccessException e){
+            return null;
+        }
+    }
+
 
     public State save(State state){
         List<String> sqlColumns = new ArrayList<>();
@@ -137,6 +167,12 @@ public class StateRepository {
         namedParameterJdbcTemplate.update(recordSql.toString(), bindingValues);
 
         return state;
+    }
+
+    public int deleteStateById(String state_id){
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue(STATE_ID_KEY, state_id);
+        return namedParameterJdbcTemplate.update(DELETE_STATE_BY_ID, parameterSource);
     }
 
     private void addSqlItem(List<String> columns, Map<String, String> sqlValues, MapSqlParameterSource bindingValues,
@@ -225,15 +261,18 @@ public class StateRepository {
         @Override
         public State mapRow(ResultSet rs, int i) throws SQLException {
             State state = new State();
-            UUID stateId = getUUIDFromResultSet(rs, "state_id");
-            String stateName = rs.getString("state_name");
-            if(stateId != null){
-                state.setId(stateId);
-            }
-            if(stateName != null){
-                state.setName(stateName);
-            }
+            state.setId(getUUIDFromResultSet(rs, "id"));
+            state.setName(rs.getString("name"));
+            state.setCreatedOn(createZonedDateTime(rs,"created_on"));
+            state.setModifiedOn(createZonedDateTime(rs, "modified_on"));
             return state;
+        }
+        private ZonedDateTime createZonedDateTime(ResultSet rs, String key) throws SQLException{
+            Timestamp value = rs.getTimestamp(key);
+            if(value != null){
+                return ZonedDateTime.ofInstant(value.toInstant(), ZoneId.of("UTC"));
+            }
+            return null;
         }
         private UUID getUUIDFromResultSet(ResultSet rs, String key) throws SQLException{
             String uuid = rs.getString(key);
