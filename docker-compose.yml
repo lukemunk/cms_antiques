@@ -9,9 +9,9 @@ services:
     build: .
     restart: on-failure
     expose:
-      - "8080"
+      - '8080'
     ports:
-      - 8088:8080
+      - 8080:8080
     environment:
       <<: *db-variables
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql/cs4230
@@ -19,6 +19,7 @@ services:
       - mysql
     volumes:
       - ./target/:/usr/local/tomcat/webapps
+    command: mvn clean spring-boot:run
   mysql:
     image: mysql:8.0.21
     volumes:
