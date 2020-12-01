@@ -98,7 +98,7 @@ public class PostContentController
             }
             //TODO:Post creator is null. Need to pull the post from the database so you can see who the creator is. Also need exception if the post is a new post.
             // Checks to make sure this is the post creator
-            if (username.equals(post.getCreator().getUsername()) || authorities.contains("Admin"))
+            if (username.equals(post.getCreator().getUsername()) || authorities.contains("Admin_Permissions"))
             {
             	System.out.println("\n\n\n\n\nI am the creator\n\n\n\n\n");
                 if (post.getItem().getId() == null)
