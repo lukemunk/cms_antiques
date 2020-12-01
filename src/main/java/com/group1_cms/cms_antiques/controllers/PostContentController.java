@@ -42,9 +42,10 @@ public class PostContentController
         ModelAndView newView = new ModelAndView("posts/view");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
+        //System.out.println("\n\n\n\n\n\n\n"+post.getCreator().getUsername()+"\n"+authentication.getName()+"\n"+authentication.getAuthorities()+"\n\n\n\n\n");
 
         // Redirects them to edit page if they are the creator or an Admin
-        if (post.getCreator().equals(authentication.getName()) || authentication.getAuthorities().contains("ADMIN"))
+        if (post.getCreator().getUsername().equals(authentication.getName()) || authentication.getAuthorities().contains("Modify_Posts"))
         {
             newView = new ModelAndView("posts/editpost");
         }
@@ -80,10 +81,12 @@ public class PostContentController
     {
         try
         {
+        	System.out.println("\n\n\nController\n"+post.getTitle()+"\n\n\n");
             ModelAndView newView = new ModelAndView("redirect:/posts/view/" + id);
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String username;
             Collection authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+            
 
 
             if (principal instanceof UserDetails)
@@ -93,10 +96,11 @@ public class PostContentController
             {
                 username = principal.toString();
             }
-
+            //TODO:Post creator is null. Need to pull the post from the database so you can see who the creator is. Also need exception if the post is a new post.
             // Checks to make sure this is the post creator
-            if (username.equals(post.getCreator()) || authorities.contains("Admin"))
+            if (username.equals(post.getCreator().getUsername()) || authorities.contains("Admin"))
             {
+            	System.out.println("\n\n\n\n\nI am the creator\n\n\n\n\n");
                 if (post.getItem().getId() == null)
                 {
                     post.getItem().setId(UUID.randomUUID());
@@ -118,6 +122,7 @@ public class PostContentController
         }
         catch (Exception e)
         {
+        	System.out.println(e);
             ModelAndView newView = new ModelAndView("redirect:/posts");
             return newView;
         }

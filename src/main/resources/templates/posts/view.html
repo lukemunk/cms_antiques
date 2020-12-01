@@ -35,87 +35,9 @@
 			<p class="content" th:utext="${post.story}">Post content</p>
 		</div>
 
-	<!-- <div class="container-body" sec:authorize="isAuthenticated()" id="editArea">
-	<form method="post" th:action="@{/posts/view/editpost_{id}(id=${post.id})}" th:object="${post}">
-		<label for="postTitle">Post title:</label>
-		<input type="text" id="postTitle" name="postTitle" th:field="${post.title}">
-		<br><br>
-		<textarea id="postToForum" name="postToForum" rows="10" cols="50" th:field="${post.story}">
+	
 
-			  </textarea>
-		<br><br>
-		<br>
-		<label for="itemName">Item:</label>
-		<input type="text" id="itemName" name="itemName" th:field="*{item.name}" required>
-
-		<label for="itemCategory">Category:</label>
-		<select id="itemCategory" name="itemCategory" th:field="*{item.category}">
-		  	
-			 <option th:each="category: ${categories}"th:value="${category}" th:text="${category}"></option>
-		
-		</select>
-		<br>
-		<label for="tag">Tag</label>
-		 <input type="text" id="tag" name="tag" th:object="${tag}">
-		<select id="tag" name="tag" th:object="${tag}">
-		  	
-			 <option th:each="tag: ${allTags}"th:value="${tag}" th:text="${tag}"></option>
-		
-		</select>
-		<button name="addTag">Add Tag</button>
-		
-		<fieldset id="tags">
-			<div th:each="tag, stat: ${post.tags}">
-				<input type="hidden" th:field="${post.tags[__${stat.index}__]}">
-				<span th:text="${tag}"></span> <button  th:attr="onclick=|return clicked(${stat.index})|">Remove Tag</button>
-			</div>
-		</fieldset>
-		<br>
-		<button onclick="return goBack()">Cancel</button>
-		<button th:formaction="@{/posts/view/deletepost_{id}(id=${post.id})}">Delete</button>
-		<input type="submit" value="Submit">
-	</form>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
-
-	<script>
-		function goBack(){
-			window.history.back();
-			return false;
-		}
-
-
-		function showEdit()
-		{
-			if (document.getElementById("greenBoxComputer").style.display !== "none")
-			{
-				document.getElementById("greenBoxComputer").style.display = "none"
-			}
-			else
-			{
-				document.getElementById("greenBoxComputer").style.display = "block";
-			}
-		}
-		
-		function replaceTags(html){
-			$('#tags').replaceWith($(html));
-		}
-		
-		$('button[name="addTag"]').click(function(event){
-			var data = $('form').serialize();
-			$.post('/add_tag', data, replaceTags);
-			return false;
-		});
-		
-		function clicked(index){
-			var data = $('form').serialize();
-			data += '&removeTag=' + index;
-			
-			$.post('/remove_tag', data, replaceTags);
-			
-			return false;
-		}
-
-	</script>
+	
 	</div>
 	
 	</body>
