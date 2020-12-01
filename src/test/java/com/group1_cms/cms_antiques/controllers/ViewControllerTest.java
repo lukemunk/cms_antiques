@@ -560,11 +560,9 @@ class ViewControllerTest
     void editProfile() throws Exception
     {
         // Mocks our services
-        State newState = new State("testState");
-        ArrayList<State> newList = new ArrayList<>();
+        List<StateDto> newList = new ArrayList<>();
         ModelAndView newModandView = new ModelAndView("/");
         newModandView.addObject("stateList", newList);
-        newList.add(newState);
         stateService = Mockito.mock(StateService.class);
         viewController = Mockito.mock(ViewController.class);
         mockMvc = MockMvcBuilders.standaloneSetup(viewController).build();
