@@ -1,0 +1,33 @@
+version: '3.4'
+x-db-variables:  &db-variables
+  MYSQL_DATABASE: 'cs4230'
+  MYSQL_USER: 'cs4230-user'
+  MYSQL_PASSWORD: 'password'
+  MYSQL_PORT:
+services:
+  myapp:
+    build: .
+    restart: on-failure
+    expose:
+      - '8080'
+    ports:
+      - 8080:8080
+    environment:
+      <<: *db-variables
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/cs4230
+    depends_on:
+      - mysql
+    volumes:
+      - ./target/:/usr/local/tomcat/webapps
+    command: mvn clean spring-boot:run
+  mysql:
+    image: mysql:8.0.21
+    volumes:
+      - cs4230-db:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      <<: *db-variables
+      MYSQL_ROOT_PASSWORD: 'password'
+volumes:
+  cs4230-db:

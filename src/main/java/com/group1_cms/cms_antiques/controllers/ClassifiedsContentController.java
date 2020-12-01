@@ -1,6 +1,5 @@
 package com.group1_cms.cms_antiques.controllers;
 
-import com.group1_cms.cms_antiques.models.Item;
 import com.group1_cms.cms_antiques.models.Classifieds;
 import com.group1_cms.cms_antiques.services.ClassifiedsService;
 

@@ -50,4 +50,9 @@ public class PostsService {
 	{
 		return postsRepository.getAllCategories();
 	}
+	
+	public List<String> getAllTags()
+	{
+		return postsRepository.getAllTags();
+	}
 }

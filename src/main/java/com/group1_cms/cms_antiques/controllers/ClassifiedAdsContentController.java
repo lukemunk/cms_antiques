@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +23,6 @@ import com.group1_cms.cms_antiques.models.ClassifiedAd;
 import com.group1_cms.cms_antiques.models.Item;
 import com.group1_cms.cms_antiques.models.ItemImage;
 import com.group1_cms.cms_antiques.services.ClassifiedAdsService;
-import com.group1_cms.cms_antiques.services.PostsService;
 
 @Controller
 public class ClassifiedAdsContentController {
@@ -85,10 +83,11 @@ public class ClassifiedAdsContentController {
 		
 		classifiedAdsService.saveClassifiedAd(classifiedAd);
 		
+		ModelAndView newView = new ModelAndView("redirect:classified_ads/view/"+classifiedAd.getId());
 
 		
 		
-		return new ModelAndView("redirect:classified_ads/all/1");
+		return newView;
 		
 	}
 	
@@ -127,6 +126,14 @@ public class ClassifiedAdsContentController {
 		return newView;
 	}
 	
+	@RequestMapping(value="/remove_tag", method = RequestMethod.POST)
+	public ModelAndView removeTag(@ModelAttribute("classifiedAd") ClassifiedAd classifiedAd, @RequestParam("removeTag") int index) {
+		ModelAndView newView = new ModelAndView("classifieds/edit_classified::#tags");
+		classifiedAd.getTags().remove(index);
+		newView.addObject(classifiedAd);
+		return newView;
+	}
+	
 	
 	@RequestMapping(value={"classified_ads/new", "classified_ads/edit/{id}"}, method = RequestMethod.GET )
 	public ModelAndView classifiedsForum(@PathVariable(required=false) String id, Authentication authentication) {
@@ -146,12 +153,13 @@ public class ClassifiedAdsContentController {
 					|| authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equalsIgnoreCase("Admin_Permissions")))
 				newView.addObject("classifiedAd", classifiedAd);
 			else
-				return new ModelAndView("redirect:classified_ads/all/1");
+				return new ModelAndView("redirect:/classified_ads/view/{id}");
 			
 			
 			newView.addObject("newClassified", false);
 		}
 		newView.addObject("categories", classifiedAdsService.getAllCategories());
+		newView.addObject("allTags", classifiedAdsService.getAllTags());
 		
 		return newView;
 	}

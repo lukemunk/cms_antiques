@@ -4,46 +4,19 @@
 	<meta charset="ISO-8859-1">
 	<title>Posts</title>
 	 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	 <link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+	<link href="../css/headerStyles.css" th:href="@{/css/headerStyles.css}" rel="stylesheet"/>
+	<link href="../css/footerStyles.css" th:href="@{/css/footerStyles.css}" rel="stylesheet"/>
+	<link href="../css/all.min.css" th:href="@{/css/all.min.css}" rel="stylesheet"/>
 </head>
 <body>
 
-<div class="container">
-	<nav class="navbar navbar-expand-sm bg-light fixed-top">
-	
-		 <a href="/" class="navbar-brand">Home</a>
-	  
-	  <ul class="nav nav-pills">
-	    <li class="nav-item">
-	      <a class="nav-link" href="/posts">All Posts</a>
-	    </li>
-	    <li class="nav-item">
-	      <a class="nav-link" href="/posts/furniture/1">Furniture</a>
-	    </li>
-	    <li class="nav-item">
-	      <a class="nav-link" href="/posts/jewelry/1">Jewelry</a>
-	    </li>
-	    <li class="nav-item">
-	      <a class="nav-link" href="/posts/clothing/1">Clothing</a>
-	    </li>
-	    <li class="nav-item">
+<div th:insert="fragments/posts_header :: header"></div>
 
-	      <a class="nav-link" href="/posts/newpost" sec:authorize="isAuthenticated()">New Post</a>
-<!-  " >
-	    </li>
-	  </ul>
-	  
-	  <form class="form-inline" action="#">
-	    <input class="form-control mr-sm-2" type="text" placeholder="Search" id="search" name="search">
-	    <button class="btn btn-success" type="submit">Search</button>
-	  </form>
-		
-	</nav>
-</div>
-
-<h1 th:text="${category}"  class = "jumbotron d-flex justify-content-center" style="margin-top:80px;"></h1>
+<h1 th:text="${category}"  class = "jumbotron d-flex justify-content-center" style="margin-top:10px;"></h1>
 
 <div th:insert="fragments/pagination :: pagination"></div>
 
@@ -58,7 +31,6 @@
 			  </div>
 			</div>
 		</div>
-	</div>
 
 <div th:insert="fragments/pagination :: pagination"></div>
 </body>

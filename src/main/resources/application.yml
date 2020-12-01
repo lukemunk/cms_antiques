@@ -19,3 +19,16 @@ security:
       ttl: 30m
 server:
   port: 8080
+  error:
+    whitelabel:
+      enabled: false
+app:
+  api:
+    title: CMS APIs
+    version: 1.0.0
+    description: CMS APIs
+    base-package: com.group1_cms.cms_antiques.controllers
+    contact-name: Group1
+    contact-email: group1@gmail.com
+    swagger:
+      enable: true

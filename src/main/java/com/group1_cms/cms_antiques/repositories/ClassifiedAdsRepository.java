@@ -20,6 +20,7 @@ public class ClassifiedAdsRepository {
 	private NamedParameterJdbcTemplate jdbcTemplate;
 	private ClassifiedAdRowMapper classifiedAdRowMapper;
 	private ClassifiedAdTotalRowMapper totalRowMapper;
+	private TagsResultSetExtractor tagsResultSetExtractor;
 	
 	//Number of Results Per Page
 	//---------------------------------------------------------------------------------------------------------------------------------------------
@@ -35,14 +36,17 @@ public class ClassifiedAdsRepository {
 			"	INNER JOIN Item i ON ca.item_id = i.id \r\n" + 
 			"	INNER JOIN Category c ON i.category_id = c.id \r\n" + 
 			"	INNER JOIN User u ON ca.user_id = u.id\r\n" + 
-			"	LEFT JOIN Item_Image im on im.item_id = i.id\r\n" + 
+			"	LEFT JOIN Item_Image im on im.item_id = i.id\r\n" +
+			"	LEFT JOIN Classified_Tag ct ON ca.id = ct.classified_id\r\n" + 
+			"	LEFT JOIN Tag t ON t.id = ct.tag_id\r\n"+
 			"WHERE (ca.title LIKE :search\r\n" + 
-			"	OR ca.description LIKE :search\r\n" + 
+			"	OR t.name LIKE :search\r\n" +
 			"	OR i.name LIKE :search	\r\n" + 
 			"	OR u.username LIKE :search)\r\n" + 
 			"	AND\r\n" + 
 			"	(c.name = :category\r\n" + 
 			"	OR :category = 'all')\r\n" + 
+			"GROUP BY ca.id, ca.title, ca.price, ca.description, i.id, i.name, c.name, u.id, u.username, im.id, im.file_path\r\n"+
 			"ORDER BY ca.created_on DESC\r\n"+ 
 			" limit "+ RESULTSPERPAGE +" offset :offset;";
 	
@@ -72,6 +76,16 @@ public class ClassifiedAdsRepository {
 			"	OR c.name = :category);";
 	
 	private static final String getAllCategoryNames = "SELECT name FROM Category;";
+	
+	private static final String getAllTags = "SELECT name FROM Tag;";
+	
+	private static final String getTagsForClassified = "SELECT t.name as 'tag'\r\n"
+			+ "FROM Classified ca\r\n"
+			+ "JOIN Classified_Tag ct on ct.classified_id = ca.id\r\n"
+			+ "JOIN Tag t on t.id = ct.tag_id\r\n"
+			+ "WHERE ca.id=UUID_TO_BIN(:classifiedId)";
+	
+	private static final String getTagFromName = "SELECT name AS 'Tag', id FROM Tag WHERE name=:tag";
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	//Inserts
 	//---------------------------------------------------------------------------------------------------------------------------------------------
@@ -82,6 +96,8 @@ public class ClassifiedAdsRepository {
 			"VALUE(UUID_TO_BIN( :itemId ), :itemName, (SELECT id FROM Category WHERE name = :categoryName))";
 	private static final String saveItemImgSql = "INSERT INTO Item_Image (id, file_path, item_id)\r\n" + 
 			"VALUE(UUID_TO_BIN(:imageId), :imagePath, UUID_TO_BIN(:itemId))";
+	private static final String saveClassifiedTag = "INSERT INTO Classified_Tag(classified_id, tag_id)\r\n"+
+			"VALUE(UUID_TO_BIN(:classifiedAdId), (SELECT id FROM Tag WHERE name=:tag))";
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	//Update
 	//---------------------------------------------------------------------------------------------------------------------------------------------
@@ -98,6 +114,7 @@ public class ClassifiedAdsRepository {
 			
 	private static final String updateItemImgSql = "UPDATE\r\n"
 			+ "file_path = :imagePath;";
+	private static final String doNothing = "UPDATE tag_id=tag_id;";
 			
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	//Delete
@@ -105,13 +122,15 @@ public class ClassifiedAdsRepository {
 	private static final String deleteClassifiedAdWithIdSql = "DELETE FROM Classified WHERE id = UUID_TO_BIN(:classifiedAdId)";
 	private static final String deleteItemWithIdSql = "DELETE FROM Item WHERE id = UUID_TO_BIN(:itemId)";
 	private static final String deleteItemImageWithIdSql = "DELETE FROM Item_Image WHERE id = UUID_TO_BIN(:imageId)";
-	
+	private static final String deleteClassifiedAdTag = "DELETE FROM Classified_Tag WHERE classified_id = (UUID_TO_BIN(:classifiedAdId)) AND tag_id = (UUID_TO_BIN(:tagId))";
+	private static final String deleteAllClassifiedAdTags = "DELETE FROM Classified_Tag WHERE classified_id = (UUID_TO_BIN(:classifiedAdId))";
 
 	
 	public ClassifiedAdsRepository(NamedParameterJdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.classifiedAdRowMapper = new ClassifiedAdRowMapper();
 		this.totalRowMapper = new ClassifiedAdTotalRowMapper();
+		this.tagsResultSetExtractor = new TagsResultSetExtractor();
 	}
 	
 	public List<ClassifiedAd> getClassifiedAds(String category, String search, int offset){
@@ -119,13 +138,23 @@ public class ClassifiedAdsRepository {
 		parameters.put("category", category);
 		parameters.put("search", "%"+search+"%");
 		parameters.put("offset", offset);
-		return jdbcTemplate.query(getClassifiedAdsSql, parameters, classifiedAdRowMapper);
+		List<ClassifiedAd> ads = jdbcTemplate.query(getClassifiedAdsSql, parameters, classifiedAdRowMapper);
+		
+		for(ClassifiedAd ad: ads) {
+			parameters.put("classifiedId", ad.getId().toString());
+			ad.setTags(jdbcTemplate.query(getTagsForClassified, parameters, tagsResultSetExtractor));
+		}
+		return ads;
 	}
 	
 	public ClassifiedAd getClassifiedAdById(UUID id) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("classifiedId", id.toString());
-		return jdbcTemplate.queryForObject(getClassifiedAdById, parameters, classifiedAdRowMapper);
+		ClassifiedAd ad = jdbcTemplate.queryForObject(getClassifiedAdById, parameters, classifiedAdRowMapper);
+		ad.setTags(jdbcTemplate.query(getTagsForClassified, parameters, tagsResultSetExtractor));
+		
+		
+		return ad;
 	}
 	
 	public int getTotalClassifiedAds(String category, String search) {
@@ -164,6 +193,15 @@ public class ClassifiedAdsRepository {
 		 if(classifiedAd.getItem().getItemImage().getFileName() != null)
 			 jdbcTemplate.update(saveItemImgSql+onDuplicate+updateItemImgSql, parameters);
 		 jdbcTemplate.update(saveClassifiedAdSql+onDuplicate+updateClassifiedAdSql, parameters);
+		 
+		 jdbcTemplate.update(deleteAllClassifiedAdTags, parameters);
+		 
+		 for(String tag: classifiedAd.getTags()) {
+			 parameters.put("tag", tag);
+			 if(jdbcTemplate.query(getTagFromName, parameters, tagsResultSetExtractor).size() == 1)
+				 jdbcTemplate.update(saveClassifiedTag+onDuplicate+doNothing, parameters);
+		 }
+		 
 	}
 	
 	public void deleteClassifiedAd(ClassifiedAd classifiedAd) {
@@ -173,13 +211,20 @@ public class ClassifiedAdsRepository {
 		 parameters.put("itemId", classifiedAd.getItem().getId().toString());
 		 parameters.put("imageId",
 				 classifiedAd.getItem().getItemImage().getId().toString());
+		 
+		 jdbcTemplate.update(deleteAllClassifiedAdTags, parameters);
 		 jdbcTemplate.update(deleteItemImageWithIdSql, parameters);
 		 jdbcTemplate.update(deleteClassifiedAdWithIdSql, parameters);
 		 jdbcTemplate.update(deleteItemWithIdSql, parameters);
+		 jdbcTemplate.update(deleteAllClassifiedAdTags, parameters);
 	}
 	
 	public List<String> getAllCategories(){
 		return jdbcTemplate.query(getAllCategoryNames, new CategoryNameRowMapper());
+	}
+	
+	public List<String> getAllTags(){
+		return jdbcTemplate.query(getAllTags, new TagRowMapper());
 	}
 	
 	private class ClassifiedAdTotalRowMapper implements RowMapper<Integer>{
@@ -200,6 +245,16 @@ public class ClassifiedAdsRepository {
 		public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 			String category = rs.getString("name");
 			return category;
+		}
+		
+	}
+	
+	private class TagRowMapper implements RowMapper<String>{
+
+		@Override
+		public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+			String tag = rs.getString("name");
+			return tag;
 		}
 		
 	}

@@ -70,4 +70,8 @@ public class ClassifiedAdsService {
 	public List<String> getAllCategories(){
 		return classifiedAdsRepository.getAllCategories();
 	}
+	
+	public List<String> getAllTags(){
+		return classifiedAdsRepository.getAllTags();
+	}
 }

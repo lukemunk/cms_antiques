@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -41,13 +42,23 @@ public class PostContentController
         ModelAndView newView = new ModelAndView("posts/view");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
+        //System.out.println("\n\n\n\n\n\n\n"+post.getCreator().getUsername()+"\n"+authentication.getName()+"\n"+authentication.getAuthorities()+"\n\n\n\n\n");
+
+        // Redirects them to edit page if they are the creator or an Admin
+        if (post.getCreator().getUsername().equals(authentication.getName()) || authentication.getAuthorities().contains("Modify_Posts"))
+        {
+            newView = new ModelAndView("posts/editpost");
+        }
 
         if (post == null) {
             // Handle no post found
             return new ModelAndView("redirect:/posts/all/1");
         }
+        
         newView.addObject("post", post);
         newView.addObject("username", currentPrincipalName);
+        newView.addObject("categories", postsService.getAllCategories());
+        newView.addObject("allTags", postsService.getAllTags());
         return newView;
     }
 
@@ -59,6 +70,8 @@ public class PostContentController
         ModelAndView newView = new ModelAndView("posts/newpost");
 
         newView.addObject("post", post);
+        newView.addObject("categories", postsService.getAllCategories());
+        newView.addObject("allTags", postsService.getAllTags());
         return newView;
     }
 
@@ -66,38 +79,54 @@ public class PostContentController
     @RequestMapping("posts/view/editpost_{id}")
     public ModelAndView postToForums(@PathVariable("id") String id, @ModelAttribute(value="post") Post post)
     {
-        ModelAndView newView = new ModelAndView("redirect:/posts/view/" + id);
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username;
-        Collection authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-
-
-        if(principal instanceof UserDetails) {
-            username = ((UserDetails)principal).getUsername();
-        } else {
-            username = principal.toString();
-        }
-
-        // Checks to make sure this is the post creator
-        if (username.equals(post.getCreator()) || authorities.contains("Admin"))
+        try
         {
-            if (post.getItem().getId() == null)
+        	System.out.println("\n\n\nController\n"+post.getTitle()+"\n\n\n");
+            ModelAndView newView = new ModelAndView("redirect:/posts/view/" + id);
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String username;
+            Collection authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+            
+
+
+            if (principal instanceof UserDetails)
             {
-                post.getItem().setId(UUID.randomUUID());
+                username = ((UserDetails) principal).getUsername();
+            } else
+            {
+                username = principal.toString();
+            }
+            //TODO:Post creator is null. Need to pull the post from the database so you can see who the creator is. Also need exception if the post is a new post.
+            // Checks to make sure this is the post creator
+            if (username.equals(post.getCreator().getUsername()) || authorities.contains("Admin"))
+            {
+            	System.out.println("\n\n\n\n\nI am the creator\n\n\n\n\n");
+                if (post.getItem().getId() == null)
+                {
+                    post.getItem().setId(UUID.randomUUID());
+                }
+
+                if (post == null)
+                {
+                    // Handle no post found
+                    return new ModelAndView("redirect:/posts/all/1");
+                }
+                postsService.updatePost(post);
+
+
+                newView.addObject("post", post);
+                newView.addObject("categories", postsService.getAllCategories());
             }
 
-            if (post == null)
-            {
-                // Handle no post found
-                return new ModelAndView("redirect:/posts/all/1");
-            }
-            postsService.updatePost(post);
-
-
-            newView.addObject("post", post);
+            return newView;
+        }
+        catch (Exception e)
+        {
+        	System.out.println(e);
+            ModelAndView newView = new ModelAndView("redirect:/posts");
+            return newView;
         }
 
-        return newView;
     }
 
     // Gets new Post, saves it, redirects to where it is at
@@ -116,7 +145,7 @@ public class PostContentController
     }
 
     @RequestMapping(value="/posts")
-    public ModelAndView posts(Model model){
+    public ModelAndView posts(){
         // Gets the number of pages
         int pages = (int)Math.ceil((double)postsService.getAllPostsCount("all", "") / 10);
 

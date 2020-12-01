@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.group1_cms.cms_antiques.models.ClassifiedAd;
 import com.group1_cms.cms_antiques.models.Item;
 import com.group1_cms.cms_antiques.models.Post;
 import com.group1_cms.cms_antiques.models.User;
@@ -23,6 +24,7 @@ public class PostsRepository
 	private PostRowMapper postRowMapper;
 	private PostsTotalRowMapper totalPostRowMapper;
 	private NamedParameterJdbcTemplate jdbcTemplate;
+	private TagsResultSetExtractor tagsResultSetExtractor;
 
 	// Pagination limit
 	private static final String MAXRESULTS = "10";
@@ -35,13 +37,16 @@ public class PostsRepository
 			"	INNER JOIN Item i ON ca.item_id = i.id \r\n" +
 			"	INNER JOIN Category c ON i.category_id = c.id \r\n" +
 			"	INNER JOIN User u ON ca.user_id = u.id\r\n" +
+			"	LEFT JOIN Classified_Tag ct ON ca.id = ct.classified_id\r\n" + 
+			"	LEFT JOIN Tag t ON t.id = ct.tag_id\r\n"+
 			"WHERE (ca.title LIKE :search\r\n" +
-			"	OR ca.story LIKE :search\r\n" +
+			"	OR t.name LIKE :search\r\n" +
 			"	OR i.name LIKE :search	\r\n" +
 			"	OR u.username LIKE :search)\r\n" +
 			"	AND\r\n" +
 			"	(c.name = :category\r\n" +
 			"	OR :category = 'all')\r\n" +
+			"GROUP BY ca.id, ca.title, ca.story, i.id, i.name, c.name, u.id, u.username\r\n"+
 			"ORDER BY ca.created_on DESC\r\n"+
 			" limit "+ MAXRESULTS +" offset :offset;";
 	//endregion
@@ -76,12 +81,26 @@ public class PostsRepository
 	//region SQL GETALLCATEGORYNAMES
 	private static final String GETALLCATEGORYNAMES = "SELECT name FROM Category;";
 	//endregion
+	
+	//region SQL GETALLTAGS
+		private static final String GETALLTAGS = "SELECT name FROM Tag;";
+	//endregion
+	
+	private static final String getTagsForPost = "SELECT t.name as 'tag'\r\n"
+			+ "FROM Post p\r\n"
+			+ "JOIN Post_Tag pt on pt.post_id = p.id\r\n"
+			+ "JOIN Tag t on t.id = pt.tag_id\r\n"
+			+ "WHERE p.id=UUID_TO_BIN(:postID)";
+	
+	private static final String getTagFromName = "SELECT name AS 'Tag', id FROM Tag WHERE name=:tag";
 
 	//region SQL Insert Statements
 	private static final String SAVEPOST = "INSERT INTO Post(id, title, story, user_id, item_id)\r\n" +
 			"VALUE(UUID_TO_BIN(:postId), :title, :story, (Select id from User WHERE username = :username), UUID_TO_BIN(:itemId))";
 	private static final String SAVEITEM = "INSERT INTO Item (id, name, category_id)"+
 			"VALUE(UUID_TO_BIN(:itemId ), :itemName, (SELECT id FROM Category WHERE name = :categoryName))";
+	private static final String savePostTag = "INSERT INTO Post_Tag(post_id, tag_id)\r\n"+
+			"VALUE(UUID_TO_BIN(:postId), (SELECT id FROM Tag WHERE name=:tag))";
 	//endregion
 
 	//region SQL Update Statements
@@ -95,10 +114,14 @@ public class PostsRepository
 			+ "name = :itemName,\r\n"
 			+ "category_id = (SELECT id FROM Category WHERE name = :categoryName);";
 	//endregion
+	
+	private static final String doNothing = "UPDATE tag_id=tag_id;";
 
 	//region SQL Deletion statements
 	private static final String DELETEPOST = "DELETE FROM Post WHERE id = UUID_TO_BIN(:postId)";
 	private static final String DELETEITEM = "DELETE FROM Item WHERE id = UUID_TO_BIN(:itemId)";
+	private static final String deletePostTag = "DELETE FROM Post_Tag WHERE post_id = (UUID_TO_BIN(:postId)) AND tag_id = (UUID_TO_BIN(:tagId))";
+	private static final String deleteAllPostTags = "DELETE FROM Post_Tag WHERE post_id = (UUID_TO_BIN(:postId))";
 	//endregion
 
 	// Set up
@@ -107,6 +130,7 @@ public class PostsRepository
 		this.jdbcTemplate = jdbcTemplate;
 		this.postRowMapper = new PostRowMapper();
 		this.totalPostRowMapper = new PostsTotalRowMapper();
+		this.tagsResultSetExtractor = new TagsResultSetExtractor();
 	}
 
 	//region GET posts and get by ID as well as count and categories
@@ -117,14 +141,23 @@ public class PostsRepository
 		parameters.put("category", categoryIN);
 		parameters.put("search", "%"+search+"%");
 		parameters.put("offset", offset);
-		return jdbcTemplate.query(GETPOSTS, parameters, postRowMapper);
+		List<Post> posts = jdbcTemplate.query(GETPOSTS, parameters, postRowMapper);
+		for(Post post: posts) {
+			parameters.put("postID", post.getId().toString());
+			post.setTags(jdbcTemplate.query(getTagsForPost, parameters, tagsResultSetExtractor));
+		}
+		
+		return posts;
 	}
 
 	public Post getPostByID(String id)
 	{
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("postID", id.toString());
-		return jdbcTemplate.queryForObject(GETPOSTSBYID, parameters, postRowMapper);
+		Post post = jdbcTemplate.queryForObject(GETPOSTSBYID, parameters, postRowMapper);
+		post.setTags(jdbcTemplate.query(getTagsForPost, parameters, tagsResultSetExtractor));
+		
+		return post;
 	}
 
 	public int getAllPostsCount(String category, String search)
@@ -138,6 +171,11 @@ public class PostsRepository
 	public List<String> getAllCategories()
 	{
 		return jdbcTemplate.query(GETALLCATEGORYNAMES, new CategoryNameRowMapper());
+	}
+	
+	public List<String> getAllTags()
+	{
+		return jdbcTemplate.query(GETALLTAGS, new TagRowMapper());
 	}
 	//endregion
 
@@ -162,6 +200,16 @@ public class PostsRepository
 
 		jdbcTemplate.update(SAVEITEM+DUPLICATE+UPDATEITEM, parameters);
 		jdbcTemplate.update(SAVEPOST+DUPLICATE+UPDATEPOST, parameters);
+		
+		jdbcTemplate.update(deleteAllPostTags, parameters);
+		
+		if(postIN.getTags() != null) {
+			for(String tag: postIN.getTags()) {
+				 parameters.put("tag", tag);
+				 if(jdbcTemplate.query(getTagFromName, parameters, tagsResultSetExtractor).size() == 1)
+					 jdbcTemplate.update(savePostTag+DUPLICATE+doNothing, parameters);
+			 }
+		}
 	}
 
 	public void deletePost(Post post)
@@ -169,6 +217,7 @@ public class PostsRepository
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("classifiedAdId", post.getId().toString());
 		parameters.put("itemId", post.getItem().getId().toString());
+		jdbcTemplate.update(deleteAllPostTags, parameters);
 		jdbcTemplate.update(DELETEITEM, parameters);
 		jdbcTemplate.update(DELETEPOST, parameters);
 	}
@@ -195,6 +244,16 @@ public class PostsRepository
 		public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 			String category = rs.getString("name");
 			return category;
+		}
+
+	}
+	
+	private class TagRowMapper implements RowMapper<String>{
+
+		@Override
+		public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+			String tag = rs.getString("name");
+			return tag;
 		}
 
 	}
