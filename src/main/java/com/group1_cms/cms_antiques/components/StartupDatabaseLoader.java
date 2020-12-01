@@ -114,7 +114,7 @@ public class StartupDatabaseLoader implements ApplicationListener<ContextRefresh
         roleService.addPermissionsToRole(admin, adminPermissionList);
         roleService.addPermissionsToRole(moderator, moderatorPermissionList);
 
-        //userService.saveDefaultAdminUser(defaultAdmin);
+        userService.saveDefaultAdminUser(defaultAdmin);
 
         List<State> stateList = new ArrayList<>();
         addStatesToList(stateList);
