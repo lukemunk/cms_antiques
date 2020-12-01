@@ -1,6 +1,7 @@
 package com.group1_cms.cms_antiques.models;
 
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -36,7 +37,17 @@ public class Permission {
         this.name = name;
     }
 
+    public Role getRoleById(UUID id){
+        if(roles != null){
+            return roles.get(id);
+        }
+        return null;
+    }
+
     public Map<UUID, Role> getRoles() {
+        if(roles == null){
+            roles = new HashMap<>();
+        }
         return roles;
     }
 

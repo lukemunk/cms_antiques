@@ -1,9 +1,6 @@
 package com.group1_cms.cms_antiques.configurations;
 
-import com.group1_cms.cms_antiques.components.PasswordResetFormValidator;
-import com.group1_cms.cms_antiques.components.RegistrationFormValidator;
-import com.group1_cms.cms_antiques.components.StartupDatabaseLoader;
-import com.group1_cms.cms_antiques.components.UserProfileFormValidator;
+import com.group1_cms.cms_antiques.components.*;
 import com.group1_cms.cms_antiques.models.Role;
 import com.group1_cms.cms_antiques.repositories.*;
 import com.group1_cms.cms_antiques.services.*;
@@ -86,6 +83,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public CategoryRepository categoryRepository(){
+        CategoryRepository categoryRepository = new CategoryRepository(namedParameterJdbcTemplate);
+        return categoryRepository;
+    }
+
+    @Bean
+    public CategoryService categoryService(CategoryRepository categoryRepository){
+        CategoryService categoryService = new CategoryService(categoryRepository);
+        return categoryService;
+    }
+
+    @Bean
     public StateRepository stateRepository(){
         StateRepository stateRepository = new StateRepository(namedParameterJdbcTemplate);
         return stateRepository;
@@ -134,6 +143,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordResetFormValidator getPasswordResetFormValidator(UserService userService, PasswordEncoder passwordEncoder){
         return new PasswordResetFormValidator(userService, passwordEncoder());
+    }
+
+    @Bean
+    public UpdateCategoryFormValidator getUpdateCategoryFormValidator(){
+        return new UpdateCategoryFormValidator();
+    }
+
+    @Bean
+    public UpdateStateFormValidator getUpdateStateFormValidator(){
+        return new UpdateStateFormValidator();
+    }
+
+    @Bean
+    public UpdateRoleFormValidator getUpdateRoleFormValidator(){
+        return new UpdateRoleFormValidator();
+    }
+
+    @Bean
+    public UpdatePermissionFormValidator getUpdatePermissionFormValidator(){
+        return new UpdatePermissionFormValidator();
+    }
+
+    @Bean
+    public UpdateUserFormValidator getUpdateUserFormValidator(UserService userService){
+        return new UpdateUserFormValidator(userService);
     }
 
     @Override
@@ -191,8 +225,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/v2/api-docs").permitAll()
-                .antMatchers("/admin/**").hasAuthority("Admin_Permissions")
-                .antMatchers("/admin/viewRestricted/**").hasAuthority("View_Restricted")
+                //.antMatchers("/admin/**").permitAll()
+                .antMatchers("/admin/viewRestricted/getUsersTable").permitAll()
+               // .antMatchers("/admin/**").hasAuthority("Admin_Permissions")
+                .antMatchers("/admin/viewRestricted/**").permitAll()
                 .antMatchers("/admin/modifyClassifieds").hasAuthority("Modify_Classifieds")
                 .antMatchers("/admin/modifyPosts").hasAuthority("Modify_Posts")
                 .antMatchers("/admin/modifyCategory").hasAuthority("Modify_Category")
@@ -223,6 +259,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/**")
                 .antMatchers("/js/**")
                 .antMatchers("/webfonts/**")
+                .antMatchers("/DataTables/**")
                 .antMatchers("/appImages/**");
     }
 }

@@ -51,7 +51,6 @@ public class User implements UserDetails {
 
     private Address address;
 
-    @JsonIgnore
     private boolean locked = false;
 
     @JsonIgnore

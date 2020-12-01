@@ -1,0 +1,19 @@
+label{
+    color: #0B56DE
+}
+
+.formBtns{
+    margin-top: 20px;
+    margin-bottom: -10px;
+    background-color: #0099F5!important;
+}
+
+.form-heading{
+    margin-left: -15px;
+    margin-right: -15px;
+    padding-top: 4px;
+    height: 65px;
+}
+.form-error{
+    font-size: small;
+}

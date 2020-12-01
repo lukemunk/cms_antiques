@@ -26,7 +26,7 @@
                                 <ul class="dropdown-menu">
                                     <li class="dropdown-item"><a th:href="@{/member/accountProfile}">Profile</a></li>
                                     <li class="dropdown-item"><a th:href="@{/member/resetPassword}">Reset Password</a></li>
-                                    <li class="dropdown-item"><a href="#">Close Account</a></li>
+                                   <!-- <li class="dropdown-item"><a href="#">Close Account</a></li> -->
                                 </ul>
                             </li>
                             <li class="nav-item">
@@ -54,21 +54,17 @@
                                 <a class="nav-link text-white" href="#">Most Recent</a>
                             </li>
 
-                            <div sec:authorize="hasAuthority('Admin_Permissions')">
+                            <div sec:authorize="hasAuthority('View_Restricted')">
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle text-white" data-toggle="dropdown"  href="#">
                                         Admin
                                     </a>
                                     <ul class="dropdown-menu">
-
-                                        <li class="dropdown-item"><a href="#" >Edit Categories</a></li>
-                                        <li class="dropdown-item"><a href="#">Edit Posts</a></li>
-                                        <li class="dropdown-item"><a href="#">Edit Classifieds</a></li>
-                                        <li class="dropdown-item"><a href="#">Edit Users</a></li>
-                                        <li class="dropdown-item"><a href="#">Edit States</a></li>
-                                        <li class="dropdown-item"><a href="#">Edit Cities</a></li>
-                                        <li class="dropdown-item"><a href="#">Edit Role</a></li>
-                                        <li class="dropdown-item"><a href="#">Edit Permissions</a></li>
+                                        <li class="dropdown-item"><a th:href="@{/admin/viewRestricted/viewUsers}">View Users</a></li>
+                                        <li class="dropdown-item"><a th:href="@{/admin/viewRestricted/viewRoles}">View Roles</a></li>
+                                        <li class="dropdown-item"><a th:href="@{/admin/viewRestricted/viewPermissions}">View Permissions</a></li>
+                                        <li class="dropdown-item"><a th:href="@{/admin/viewRestricted/viewCategories}" >View Categories</a></li>
+                                        <li class="dropdown-item"><a th:href="@{/admin/viewRestricted/viewStates}">View States</a></li>
                                     </ul>
                                 </li>
                             </div>

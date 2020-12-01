@@ -12,6 +12,9 @@ i{
 #submitBtn{
     background-color: #0099F5;
 }
+#cancelBtn{
+    background-color: #0099F5;
+}
 .form-error{
     font-size: small;
 }

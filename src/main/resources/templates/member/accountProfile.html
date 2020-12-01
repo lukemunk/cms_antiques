@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org" th:with="lang=${#locale.language}" th:lang="${lang}">
 <head>
     <meta charset="UTF-8">
-    <title>Register</title>
+    <title>Save Profile</title>
     <link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
     <link href="../css/styles.css" th:href="@{/css/homePageStyles.css}" rel="stylesheet"/>
     <link href="../css/headerStyles.css" th:href="@{/css/headerStyles.css}" rel="stylesheet"/>
@@ -100,7 +100,7 @@
                                         <label class="col-form-label" th:for="*{stateName}">State<span class="text-danger">*</span></label>
                                         <select class="form-control" th:field="*{stateName}">
                                             <option value="">-Select an option-</option>
-                                            <option th:each="state: ${stateList}" th:value="${state.name}" th:text="${state.name}"></option>
+                                            <option th:each="state: ${stateList}" th:value="${state.stateName}" th:text="${state.stateName}"></option>
                                         </select>
                                         <span class="text-danger form-error" th:if="${#fields.hasErrors('stateName')}" th:errors="*{stateName}"></span>
                                     </div>
@@ -114,6 +114,9 @@
                             <div class="form-row">
                                 <div class="col-4 mx-auto text-center">
                                     <button class="btn btn-lg text-white mb-3" type="submit" id="submitBtn">Save Profile</button>
+                                </div>
+                                <div class="col-4 mx-auto text-center">
+                                    <a class="btn btn-lg text-white mb-3" id="cancelBtn" th:href="@{/}">Cancel</a>
                                 </div>
                             </div>
                         </div>
