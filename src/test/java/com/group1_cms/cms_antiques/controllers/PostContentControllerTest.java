@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.group1_cms.cms_antiques.models.Post;
 import com.group1_cms.cms_antiques.models.User;
 import com.group1_cms.cms_antiques.services.PostsService;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -14,6 +15,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.ModelAndView;
 
 
 import java.util.ArrayList;
@@ -62,8 +64,9 @@ public class PostContentControllerTest
         // Now tests to make sure the file is there, if so it'll return a 200 Code instead of a 404
         Model newModel = Mockito.mock(Model.class);
         newModel.addAttribute("post", newPost);
-        postContentController.view(newRandom.toString(), newModel);
+        ModelAndView newView = postContentController.view(newRandom.toString(), newModel);
 
+        Assert.assertEquals(newView.getViewName(), "posts/editpost");
     }
 
     @WithMockUser(value = "admin")
@@ -95,8 +98,9 @@ public class PostContentControllerTest
         // Now tests to make sure the file is there, if so it'll return a 200 Code instead of a 404
         Model newModel = Mockito.mock(Model.class);
         newModel.addAttribute("post", newPost);
-        postContentController.view(newRandom.toString(), newModel);
+        ModelAndView newView = postContentController.view(newRandom.toString(), newModel);
 
+        Assert.assertEquals(newView.getViewName(), "posts/view");
     }
 
     @WithMockUser(value = "admin")
@@ -110,7 +114,7 @@ public class PostContentControllerTest
         Authentication newAuth = Mockito.mock(Authentication.class);
         Mockito.when(newContext.getAuthentication()).thenReturn(newAuth);
         Mockito.when(newContext.getAuthentication().getName()).thenReturn("Bob Loblaw");
-        Mockito.when(newAuth.getAuthorities()).thenReturn(new ArrayList<>());
+        Mockito.lenient().when(newAuth.getAuthorities()).thenReturn(new ArrayList<>());
         SecurityContextHolder.setContext(newContext);
         // Creates new Post
         UUID newRandom = UUID.randomUUID();
@@ -124,11 +128,10 @@ public class PostContentControllerTest
         newPost.setCreator(newUser);
         posts.add(newPost);
         // Makes sure we receive the right post
-        Mockito.when(postsService.findById(newRandom.toString())).thenReturn(newPost);
-        // Now tests to make sure the file is there, if so it'll return a 200 Code instead of a 404
         Model newModel = Mockito.mock(Model.class);
-        postContentController.view(newRandom.toString(), newModel);
+        ModelAndView newView = postContentController.view(newRandom.toString(), newModel);
 
+        Assert.assertEquals(newView.getViewName(), "redirect:/posts/all/1");
     }
 
     @WithMockUser(value = "admin")
@@ -148,7 +151,9 @@ public class PostContentControllerTest
         // Makes sure we receive the right post
         //Mockito.when(postsService.getPosts("", "", 1)).thenReturn(posts);
         // Now tests to make sure the redirection is there, if so it'll return a 302 Code instead of a 404 or 200
-        postContentController.posts();
+        ModelAndView newView = postContentController.posts();
+
+        Assert.assertEquals(newView.getViewName(), "redirect:posts/all/1");
     }
 
     @WithMockUser(value = "admin")
@@ -173,7 +178,9 @@ public class PostContentControllerTest
         Mockito.lenient().when(postsService.getAllCategories()).thenReturn(newCats);
         // Now tests to make sure the redirection is there, if so it'll return a 302 Code instead of a 404 or 200
         Model newModel = Mockito.mock(Model.class);
-        postContentController.getAllPosts(newModel, null, null, "1");
+        ModelAndView newView = postContentController.getAllPosts(newModel, null, null, "1");
+
+        Assert.assertEquals(newView.getViewName(), "public/posts.html");
     }
     //endregion
 
@@ -193,8 +200,9 @@ public class PostContentControllerTest
 
         // Now tests to make sure the file is there, if so it'll return a 200 Code instead of a 404
         Model newModel = Mockito.mock(Model.class);
-        postContentController.newPost(newModel);
+        ModelAndView newView = postContentController.newPost(newModel);
 
+        Assert.assertEquals(newView.getViewName(), "posts/newpost");
     }
 
     @WithMockUser(value = "admin")
@@ -224,7 +232,10 @@ public class PostContentControllerTest
         newPost.setCreator(newUser);
         Mockito.when(postsService.findById(newRandom.toString())).thenReturn(newPost);
         Model newModel = Mockito.mock(Model.class);
-        postContentController.postToForums(newRandom.toString(), newPost);
+        ModelAndView newView = postContentController.postToForums(newRandom.toString(), newPost);
+
+
+        Assert.assertEquals(newView.getViewName(), "redirect:/posts/view/"+newRandom);
     }
 
     @WithMockUser(value = "admin")
@@ -254,7 +265,9 @@ public class PostContentControllerTest
         newPost.setCreator(newUser);
         Mockito.lenient().when(postsService.findById(newRandom.toString())).thenReturn(newPost);
         Model newModel = Mockito.mock(Model.class);
-        postContentController.postToForums(newRandom.toString(), null);
+        ModelAndView newView = postContentController.postToForums(newRandom.toString(), null);
+
+        Assert.assertEquals(newView.getViewName(), "redirect:/posts");
     }
 
     @WithMockUser(value = "admin")
@@ -284,7 +297,9 @@ public class PostContentControllerTest
         newPost.setCreator(newUser);
 
         Model newModel = Mockito.mock(Model.class);
-        postContentController.postToForums(newRandom.toString(), newPost);
+        ModelAndView newView = postContentController.postToForums(newRandom.toString(), newPost);
+
+        Assert.assertEquals(newView.getViewName(), "redirect:/posts");
     }
 
     @WithMockUser(value = "admin")
@@ -313,7 +328,9 @@ public class PostContentControllerTest
         newPost.setCreator(newUser);
 
         Model newModel = Mockito.mock(Model.class);
-        postContentController.postToForums(newRandom.toString(), newPost);
+        ModelAndView newView = postContentController.postToForums(newRandom.toString(), newPost);
+
+        Assert.assertEquals(newView.getViewName(), "redirect:/posts");
     }
 
     @WithMockUser(value = "admin")
@@ -325,14 +342,21 @@ public class PostContentControllerTest
         postContentController = new PostContentController(postsService);
         // Creates new Post
         UUID newRandom = UUID.randomUUID();
+        List<Post> posts = new ArrayList<>();
         Post newPost = new Post();
+        User newUser = new User();
+        // I fight for the users!
+        newUser.setUsername("Bob Loblaw");
         newPost.setId(newRandom);
         newPost.setTitle("TestPost");
-
+        newPost.setCreator(newUser);
+        Mockito.when(postsService.findById(newRandom.toString())).thenReturn(newPost);
         Model newModel = Mockito.mock(Model.class);
         postContentController.postToForums(newRandom.toString(), newPost);
         // Now update
-        postContentController.postToForums(newRandom.toString(), newPost);
+        ModelAndView newView = postContentController.postToForums(newRandom.toString(), newPost);
+
+        Assert.assertEquals(newView.getViewName(), "redirect:/posts/view/"+newRandom);
     }
 
     @WithMockUser(value = "admin")
@@ -351,7 +375,9 @@ public class PostContentControllerTest
         Model newModel = Mockito.mock(Model.class);
         postContentController.postToForums(newRandom.toString(), newPost);
         // Now update
-        postContentController.deletePost(newRandom.toString(), newPost);
+        ModelAndView newView = postContentController.deletePost(newRandom.toString(), newPost);
+
+        Assert.assertEquals(newView.getViewName(), "redirect:/posts/all/1");
     }
     //endregion
 
