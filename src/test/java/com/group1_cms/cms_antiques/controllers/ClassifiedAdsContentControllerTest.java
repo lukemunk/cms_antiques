@@ -157,7 +157,7 @@ class ClassifiedAdsContentControllerTest
         classifieds.add(newClassified);
         // Makes sure we receive the right Classified
         Mockito.when(classifiedAdsService.getClassifiedAds("goats", "", "1")).thenReturn(classifieds);
-        Mockito.when(classifiedAdsContentController.classifiedsForum(newRandom.toString(), testAuth)).thenReturn(new ModelAndView("/classifieds/edit_classified"));
+        Mockito.when(classifiedAdsContentController.classifiedsForm(newRandom.toString(), testAuth)).thenReturn(new ModelAndView("/classifieds/edit_classified"));
         // Now tests to make sure the authentication is legit; we are looking for a success
         mockMvc.perform(MockMvcRequestBuilders.get("/classified_ads/new", newRandom.toString(), testAuth)).andExpect(MockMvcResultMatchers.status().isOk());
 
@@ -224,7 +224,7 @@ class ClassifiedAdsContentControllerTest
         classifieds.add(newClassified);
         // Makes sure we receive the right Classified
         Mockito.when(classifiedAdsService.getClassifiedAds("goats", "", "1")).thenReturn(classifieds);
-        Mockito.when(classifiedAdsContentController.classifiedsForum(newRandom.toString(), testAuth)).thenReturn(new ModelAndView("/classifieds/edit_classified"));
+        Mockito.when(classifiedAdsContentController.classifiedsForm(newRandom.toString(), testAuth)).thenReturn(new ModelAndView("/classifieds/edit_classified"));
         // Now tests to make sure the authentication is legit; we are looking for a success
         mockMvc.perform(MockMvcRequestBuilders.get("/classified_ads/edit/" + newRandom, newRandom.toString(), testAuth)).andExpect(MockMvcResultMatchers.status().isOk());
 

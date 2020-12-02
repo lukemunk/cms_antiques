@@ -5,6 +5,7 @@ import com.group1_cms.cms_antiques.models.Item;
 import com.group1_cms.cms_antiques.models.Post;
 import com.group1_cms.cms_antiques.services.PostsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -81,7 +82,7 @@ public class PostContentController
     {
         try
         {
-        	System.out.println("\n\n\nController\n"+post.getTitle()+"\n\n\n");
+        	
             ModelAndView newView = new ModelAndView("redirect:/posts/view/" + id);
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String username;
@@ -96,11 +97,18 @@ public class PostContentController
             {
                 username = principal.toString();
             }
-            //TODO:Post creator is null. Need to pull the post from the database so you can see who the creator is. Also need exception if the post is a new post.
-            // Checks to make sure this is the post creator
+            
+           try {
+        	   
+           
+			post.setCreator(postsService.findById(post.getId().toString()).getCreator());
+			
+			 
+			// Checks to make sure this is the post creator
             if (username.equals(post.getCreator().getUsername()) || authorities.contains("Admin"))
             {
-            	System.out.println("\n\n\n\n\nI am the creator\n\n\n\n\n");
+            	
+            	
                 if (post.getItem().getId() == null)
                 {
                     post.getItem().setId(UUID.randomUUID());
@@ -111,18 +119,31 @@ public class PostContentController
                     // Handle no post found
                     return new ModelAndView("redirect:/posts/all/1");
                 }
+                
                 postsService.updatePost(post);
-
+                
 
                 newView.addObject("post", post);
                 newView.addObject("categories", postsService.getAllCategories());
             }
 
             return newView;
+           }
+           catch(EmptyResultDataAccessException e) {
+        	   if (post.getItem().getId() == null)
+               {
+                   post.getItem().setId(UUID.randomUUID());
+               }
+
+               postsService.updatePost(post);
+
+               newView.addObject("post", post);
+               newView.addObject("categories", postsService.getAllCategories());
+               return newView;
+           }
         }
         catch (Exception e)
         {
-        	System.out.println(e);
             ModelAndView newView = new ModelAndView("redirect:/posts");
             return newView;
         }
