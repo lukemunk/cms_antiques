@@ -1,12 +1,18 @@
 package com.group1_cms.cms_antiques.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.group1_cms.cms_antiques.configurations.FileUploadUtil;
 import com.group1_cms.cms_antiques.configurations.WebSecurityConfig;
 import com.group1_cms.cms_antiques.models.ClassifiedAd;
+import com.group1_cms.cms_antiques.models.Item;
+import com.group1_cms.cms_antiques.models.ItemImage;
+import com.group1_cms.cms_antiques.models.User;
 import com.group1_cms.cms_antiques.services.ClassifiedAdsService;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -34,17 +40,10 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-@AutoConfigureMockMvc
-@WebAppConfiguration
+@RunWith(MockitoJUnitRunner.class)
 class ClassifiedAdsContentControllerTest
 {
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
     private ClassifiedAdsContentController classifiedAdsContentController;
-
-    @MockBean
     private ClassifiedAdsService classifiedAdsService;
 
     private static ObjectMapper mapper = new ObjectMapper();
@@ -56,20 +55,47 @@ class ClassifiedAdsContentControllerTest
     {
         // Mocks our services
         classifiedAdsService = Mockito.mock(ClassifiedAdsService.class);
-        classifiedAdsContentController = Mockito.mock(ClassifiedAdsContentController.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(classifiedAdsContentController).build();
+        classifiedAdsContentController = new ClassifiedAdsContentController(classifiedAdsService);
+        Authentication newAuth = Mockito.mock(Authentication.class);
         // Creates new Classified
         UUID newRandom = UUID.randomUUID();
         List<ClassifiedAd> classifieds = new ArrayList<>();
         ClassifiedAd newClassified = new ClassifiedAd();
         newClassified.setId(newRandom);
         newClassified.setTitle("TestClassified");
+        User newUser = new User();
+        newUser.setUsername("Tron");
+        newClassified.setCreator(newUser);
         classifieds.add(newClassified);
         // Makes sure we receive the right Classified
-        Mockito.when(classifiedAdsService.getClassifiedAds("", "", "1")).thenReturn(classifieds);
-        Mockito.when(classifiedAdsContentController.redirect()).thenReturn(new ModelAndView("redirect:classified_ads/all/1"));
-        // Now tests to make sure the redirection is there, if so it'll return a 302 Code instead of a 404 or 200
-        mockMvc.perform(MockMvcRequestBuilders.get("/classified_ads")).andExpect(MockMvcResultMatchers.status().is3xxRedirection()).andExpect(MockMvcResultMatchers.redirectedUrl("classified_ads/all/1"));
+        Mockito.when(classifiedAdsService.getClassifiedAdById(newRandom)).thenReturn(newClassified);
+        Mockito.when(newAuth.getName()).thenReturn("Tron");
+        classifiedAdsContentController.viewClassified(newRandom.toString(), newAuth);
+
+    }
+
+    @WithMockUser(value = "admin")
+    @Test
+    public void getViewNonUser() throws Exception
+    {
+        // Mocks our services
+        classifiedAdsService = Mockito.mock(ClassifiedAdsService.class);
+        classifiedAdsContentController = new ClassifiedAdsContentController(classifiedAdsService);
+        Authentication newAuth = Mockito.mock(Authentication.class);
+        // Creates new Classified
+        UUID newRandom = UUID.randomUUID();
+        List<ClassifiedAd> classifieds = new ArrayList<>();
+        ClassifiedAd newClassified = new ClassifiedAd();
+        newClassified.setId(newRandom);
+        newClassified.setTitle("TestClassified");
+        User newUser = new User();
+        newUser.setUsername("Tron");
+        newClassified.setCreator(newUser);
+        classifieds.add(newClassified);
+        // Makes sure we receive the right Classified
+        Mockito.when(classifiedAdsService.getClassifiedAdById(newRandom)).thenReturn(newClassified);
+        Mockito.when(newAuth.getName()).thenReturn("Dave");
+        classifiedAdsContentController.viewClassified(newRandom.toString(), newAuth);
 
     }
 
@@ -79,21 +105,41 @@ class ClassifiedAdsContentControllerTest
     {
         // Mocks our services
         classifiedAdsService = Mockito.mock(ClassifiedAdsService.class);
-        classifiedAdsContentController = Mockito.mock(ClassifiedAdsContentController.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(classifiedAdsContentController).build();
+        classifiedAdsContentController = new ClassifiedAdsContentController(classifiedAdsService);
+        Authentication newAuth = Mockito.mock(Authentication.class);
         // Creates new Classified
         UUID newRandom = UUID.randomUUID();
         List<ClassifiedAd> classifieds = new ArrayList<>();
         ClassifiedAd newClassified = new ClassifiedAd();
         newClassified.setId(newRandom);
         newClassified.setTitle("TestClassified");
+        User newUser = new User();
+        newUser.setUsername("Tron");
+        newClassified.setCreator(newUser);
         classifieds.add(newClassified);
-        // Makes sure we receive the right Classified
-        Mockito.when(classifiedAdsService.getClassifiedAds("goats", "", "1")).thenReturn(classifieds);
-        Mockito.when(classifiedAdsContentController.classifieds("goats", "1", "")).thenReturn(new ModelAndView("redirect:classified_ads/goats/1"));
-        // Now tests to make sure the redirection is there, if so it'll return a 302 Code instead of a 404 or 200
-        mockMvc.perform(MockMvcRequestBuilders.get("/classified_ads/goats/1").param("search", "")).andExpect(MockMvcResultMatchers.status().is3xxRedirection()).andExpect(MockMvcResultMatchers.redirectedUrl("classified_ads/goats/1"));
+        Mockito.when(classifiedAdsService.getClassifiedAds("", "", "1")).thenReturn(classifieds);
+        classifiedAdsContentController.classifieds(null, "1", null);
+    }
 
+    @WithMockUser(value = "admin")
+    @Test
+    public void getMainPage2() throws Exception
+    {
+        // Mocks our services
+        classifiedAdsService = Mockito.mock(ClassifiedAdsService.class);
+        classifiedAdsContentController = new ClassifiedAdsContentController(classifiedAdsService);
+        Authentication newAuth = Mockito.mock(Authentication.class);
+        // Creates new Classified
+        UUID newRandom = UUID.randomUUID();
+        List<ClassifiedAd> classifieds = new ArrayList<>();
+        ClassifiedAd newClassified = new ClassifiedAd();
+        newClassified.setId(newRandom);
+        newClassified.setTitle("TestClassified");
+        User newUser = new User();
+        newUser.setUsername("Tron");
+        newClassified.setCreator(newUser);
+        classifieds.add(newClassified);
+        classifiedAdsContentController.redirect();
     }
 
     @WithMockUser(value = "admin")
@@ -102,200 +148,48 @@ class ClassifiedAdsContentControllerTest
     {
         // Mocks our services
         classifiedAdsService = Mockito.mock(ClassifiedAdsService.class);
-        classifiedAdsContentController = Mockito.mock(ClassifiedAdsContentController.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(classifiedAdsContentController).build();
+        classifiedAdsContentController = new ClassifiedAdsContentController(classifiedAdsService);
+        Authentication newAuth = Mockito.mock(Authentication.class);
         // Creates new Classified
         UUID newRandom = UUID.randomUUID();
-        Authentication testAuth = new Authentication()
-        {
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getCredentials()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getDetails()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getPrincipal()
-            {
-                return null;
-            }
-
-            @Override
-            public boolean isAuthenticated()
-            {
-                return false;
-            }
-
-            @Override
-            public void setAuthenticated(boolean b) throws IllegalArgumentException
-            {
-
-            }
-
-            @Override
-            public String getName()
-            {
-                return null;
-            }
-        };
         List<ClassifiedAd> classifieds = new ArrayList<>();
         ClassifiedAd newClassified = new ClassifiedAd();
         newClassified.setId(newRandom);
         newClassified.setTitle("TestClassified");
+        User newUser = new User();
+        newUser.setUsername("Tron");
+        newClassified.setCreator(newUser);
         classifieds.add(newClassified);
-        // Makes sure we receive the right Classified
-        Mockito.when(classifiedAdsService.getClassifiedAds("goats", "", "1")).thenReturn(classifieds);
-        Mockito.when(classifiedAdsContentController.classifiedsForm(newRandom.toString(), testAuth)).thenReturn(new ModelAndView("/classifieds/edit_classified"));
-        // Now tests to make sure the authentication is legit; we are looking for a success
-        mockMvc.perform(MockMvcRequestBuilders.get("/classified_ads/new", newRandom.toString(), testAuth)).andExpect(MockMvcResultMatchers.status().isOk());
-
+        Mockito.when(newAuth.getName()).thenReturn("Tron");
+        Mockito.when(newAuth.getAuthorities()).thenReturn(new ArrayList<>());
+        Mockito.when(classifiedAdsService.getClassifiedAdById(newRandom)).thenReturn(newClassified);
+        classifiedAdsContentController.classifiedsForm(newRandom.toString(), newAuth);
     }
 
     @WithMockUser(value = "admin")
     @Test
-    public void classifiedsForm2() throws Exception
+    public void classifiedsFormNotCreator() throws Exception
     {
         // Mocks our services
         classifiedAdsService = Mockito.mock(ClassifiedAdsService.class);
-        classifiedAdsContentController = Mockito.mock(ClassifiedAdsContentController.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(classifiedAdsContentController).build();
+        classifiedAdsContentController = new ClassifiedAdsContentController(classifiedAdsService);
+        Authentication newAuth = Mockito.mock(Authentication.class);
         // Creates new Classified
         UUID newRandom = UUID.randomUUID();
-        Authentication testAuth = new Authentication()
-        {
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getCredentials()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getDetails()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getPrincipal()
-            {
-                return null;
-            }
-
-            @Override
-            public boolean isAuthenticated()
-            {
-                return false;
-            }
-
-            @Override
-            public void setAuthenticated(boolean b) throws IllegalArgumentException
-            {
-
-            }
-
-            @Override
-            public String getName()
-            {
-                return null;
-            }
-        };
         List<ClassifiedAd> classifieds = new ArrayList<>();
         ClassifiedAd newClassified = new ClassifiedAd();
         newClassified.setId(newRandom);
         newClassified.setTitle("TestClassified");
+        User newUser = new User();
+        newUser.setUsername("Tron");
+        newClassified.setCreator(newUser);
         classifieds.add(newClassified);
-        // Makes sure we receive the right Classified
-        Mockito.when(classifiedAdsService.getClassifiedAds("goats", "", "1")).thenReturn(classifieds);
-        Mockito.when(classifiedAdsContentController.classifiedsForm(newRandom.toString(), testAuth)).thenReturn(new ModelAndView("/classifieds/edit_classified"));
-        // Now tests to make sure the authentication is legit; we are looking for a success
-        mockMvc.perform(MockMvcRequestBuilders.get("/classified_ads/edit/" + newRandom, newRandom.toString(), testAuth)).andExpect(MockMvcResultMatchers.status().isOk());
-
+        Mockito.when(newAuth.getName()).thenReturn("Dave");
+        Mockito.when(newAuth.getAuthorities()).thenReturn(new ArrayList<>());
+        Mockito.when(classifiedAdsService.getClassifiedAdById(newRandom)).thenReturn(newClassified);
+        classifiedAdsContentController.classifiedsForm(newRandom.toString(), newAuth);
     }
 
-    @WithMockUser(value = "admin")
-    @Test
-    public void viewClassified() throws Exception
-    {
-        // Mocks our services
-        classifiedAdsService = Mockito.mock(ClassifiedAdsService.class);
-        classifiedAdsContentController = Mockito.mock(ClassifiedAdsContentController.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(classifiedAdsContentController).build();
-        // Creates new Classified
-        UUID newRandom = UUID.randomUUID();
-        Authentication testAuth = new Authentication()
-        {
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getCredentials()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getDetails()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getPrincipal()
-            {
-                return null;
-            }
-
-            @Override
-            public boolean isAuthenticated()
-            {
-                return false;
-            }
-
-            @Override
-            public void setAuthenticated(boolean b) throws IllegalArgumentException
-            {
-
-            }
-
-            @Override
-            public String getName()
-            {
-                return null;
-            }
-        };
-        List<ClassifiedAd> classifieds = new ArrayList<>();
-        ClassifiedAd newClassified = new ClassifiedAd();
-        newClassified.setId(newRandom);
-        newClassified.setTitle("TestClassified");
-        classifieds.add(newClassified);
-        // Makes sure we receive the right Classified
-        Mockito.when(classifiedAdsService.getClassifiedAds("goats", "", "1")).thenReturn(classifieds);
-        Mockito.when(classifiedAdsContentController.viewClassified(newRandom.toString(), testAuth)).thenReturn(new ModelAndView("/classifieds/view_classified"));
-        // Now tests to make sure the authentication is legit; we are looking for a success so we can view the page
-        mockMvc.perform(MockMvcRequestBuilders.get("/classified_ads/view/" + newRandom, testAuth)).andExpect(MockMvcResultMatchers.status().isOk());
-
-    }
     //endregion
 
     //region POST tests
@@ -305,66 +199,20 @@ class ClassifiedAdsContentControllerTest
     {
         // Mocks our services
         classifiedAdsService = Mockito.mock(ClassifiedAdsService.class);
-        classifiedAdsContentController = Mockito.mock(ClassifiedAdsContentController.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(classifiedAdsContentController).build();
+        classifiedAdsContentController = new ClassifiedAdsContentController(classifiedAdsService);
+        Authentication newAuth = Mockito.mock(Authentication.class);
         // Creates new Classified
-        Authentication testAuth = new Authentication()
-        {
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getCredentials()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getDetails()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getPrincipal()
-            {
-                return null;
-            }
-
-            @Override
-            public boolean isAuthenticated()
-            {
-                return false;
-            }
-
-            @Override
-            public void setAuthenticated(boolean b) throws IllegalArgumentException
-            {
-
-            }
-
-            @Override
-            public String getName()
-            {
-                return null;
-            }
-        };
         UUID newRandom = UUID.randomUUID();
         List<ClassifiedAd> classifieds = new ArrayList<>();
         ClassifiedAd newClassified = new ClassifiedAd();
         newClassified.setId(newRandom);
         newClassified.setTitle("TestClassified");
+        User newUser = new User();
+        newUser.setUsername("Tron");
+        newClassified.setCreator(newUser);
         classifieds.add(newClassified);
-        // Makes sure we receive the right Classified
-        Mockito.when(classifiedAdsService.getClassifiedAds("", "", "1")).thenReturn(classifieds);
-        Mockito.when(classifiedAdsContentController.addTag(newClassified, "testTag")).thenReturn(new ModelAndView("classifieds/edit_classified::#tags"));
-        // Now tests to make sure we get a success back from the server
-        mockMvc.perform(MockMvcRequestBuilders.post("/add_tag", newClassified).param("tag", "testTag"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
 
+        classifiedAdsContentController.addTag(newClassified, "Cars");
     }
 
     @WithMockUser(value = "admin")
@@ -373,65 +221,20 @@ class ClassifiedAdsContentControllerTest
     {
         // Mocks our services
         classifiedAdsService = Mockito.mock(ClassifiedAdsService.class);
-        classifiedAdsContentController = Mockito.mock(ClassifiedAdsContentController.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(classifiedAdsContentController).build();
+        classifiedAdsContentController = new ClassifiedAdsContentController(classifiedAdsService);
+        Authentication newAuth = Mockito.mock(Authentication.class);
         // Creates new Classified
-        Authentication testAuth = new Authentication()
-        {
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getCredentials()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getDetails()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getPrincipal()
-            {
-                return null;
-            }
-
-            @Override
-            public boolean isAuthenticated()
-            {
-                return false;
-            }
-
-            @Override
-            public void setAuthenticated(boolean b) throws IllegalArgumentException
-            {
-
-            }
-
-            @Override
-            public String getName()
-            {
-                return null;
-            }
-        };
         UUID newRandom = UUID.randomUUID();
         List<ClassifiedAd> classifieds = new ArrayList<>();
         ClassifiedAd newClassified = new ClassifiedAd();
         newClassified.setId(newRandom);
         newClassified.setTitle("TestClassified");
+        User newUser = new User();
+        newUser.setUsername("Tron");
+        newClassified.setCreator(newUser);
         classifieds.add(newClassified);
-        // Makes sure we receive the right Classified
-        Mockito.when(classifiedAdsService.getClassifiedAds("", "", "1")).thenReturn(classifieds);
-        Mockito.when(classifiedAdsContentController.deleteClassified(newClassified, testAuth)).thenReturn(new ModelAndView("redirect:/classified_ads/all/1"));
-        // Now tests to make sure we get a success back from the server
-        mockMvc.perform(MockMvcRequestBuilders.post("/delete_classified", newClassified, testAuth)).andExpect(MockMvcResultMatchers.status().isOk());
 
+        //classifiedAdsContentController.deleteClassified(newClassified, newAuth);
     }
 
     @WithMockUser(value = "admin")
@@ -440,23 +243,27 @@ class ClassifiedAdsContentControllerTest
     {
         // Mocks our services
         classifiedAdsService = Mockito.mock(ClassifiedAdsService.class);
-        classifiedAdsContentController = Mockito.mock(ClassifiedAdsContentController.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(classifiedAdsContentController).build();
+        classifiedAdsContentController = new ClassifiedAdsContentController(classifiedAdsService);
+        Authentication newAuth = Mockito.mock(Authentication.class);
         // Creates new Classified
-        MockMultipartFile newMulti = new MockMultipartFile("data", "filename.png", "image/plain", "115601654".getBytes());
         UUID newRandom = UUID.randomUUID();
         List<ClassifiedAd> classifieds = new ArrayList<>();
         ClassifiedAd newClassified = new ClassifiedAd();
         newClassified.setId(newRandom);
         newClassified.setTitle("TestClassified");
+        User newUser = new User();
+        newUser.setUsername("Tron");
+        newClassified.setCreator(newUser);
         classifieds.add(newClassified);
-        // Makes sure we receive the right Classified
-        Mockito.when(classifiedAdsContentController.postClassifieds(newClassified, newMulti)).thenReturn(new ModelAndView("redirect:classified_ads/all/1"));
-        // Now tests to make sure the redirection is there, if so it'll return a 302 Code instead of a 404 or 200
-        //mockMvc.perform(MockMvcRequestBuilders.multipart("/classified_ads").file(newMulti)
-                //.param("classifiedAd", String.valueOf(newClassified)))
-                //.andExpect(MockMvcResultMatchers.status().is3xxRedirection()).andExpect(MockMvcResultMatchers.redirectedUrl("classified_ads/all/1"));
+        MultipartFile newFile = Mockito.mock(MultipartFile.class);
+        ItemImage newImage = Mockito.mock(ItemImage.class);
+        Mockito.when(newImage.getFileName()).thenReturn("whoops");
+        Mockito.when(newFile.getOriginalFilename()).thenReturn("whoops");
+        Item newItem = new Item();
+        newItem.setItemImage(newImage);
+        newClassified.setItem(newItem);
 
+        //classifiedAdsContentController.postClassifieds(newClassified, newFile);
     }
     //endregion
 }
