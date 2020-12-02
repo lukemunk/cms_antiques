@@ -97,15 +97,15 @@ public class PostContentController
             {
                 username = principal.toString();
             }
+
             
            try {
         	   
            
 			post.setCreator(postsService.findById(post.getId().toString()).getCreator());
 			
-			 
-			// Checks to make sure this is the post creator
-            if (username.equals(post.getCreator().getUsername()) || authorities.contains("Admin"))
+          // Checks to make sure this is the post creator
+            if (username.equals(post.getCreator().getUsername()) || authorities.contains("Admin_Permissions"))
             {
             	
             	

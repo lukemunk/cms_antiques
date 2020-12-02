@@ -9,9 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.ZonedDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class UserService implements UserDetailsService {
 
@@ -35,7 +33,7 @@ public class UserService implements UserDetailsService {
 
     public User saveUser(User userToSave, boolean encodePassword){
 
-        User userFromDb = userRepository.getUserByUserName(userToSave.getUsername());
+        User userFromDb = userRepository.findUserByUserName(userToSave.getUsername());
 
         if(userFromDb.getId() != null){ //check to see if user is already in database
             userToSave.setId(userFromDb.getId()); //set the users id to that of user in database to prevent multiples
@@ -72,6 +70,32 @@ public class UserService implements UserDetailsService {
         return newUser;
     }
 
+    public void saveUserWithRolesFromUserDataDto(UserDataDto user){
+        User userFromDb;
+        if(user.getId().equals("0")){
+            userFromDb = new User();
+            userFromDb.setId(UUID.randomUUID());
+            userFromDb.setCreatedOn(ZonedDateTime.now());
+        }
+        else{
+            userFromDb = getUserById(user.getId());
+            userRepository.deleteUser_Role(user.getId());
+        }
+        userFromDb.setFirstName(user.getfName());
+        userFromDb.setLastName(user.getlName());
+        userFromDb.setEmail(user.getEmail());
+        userFromDb.setUsername(user.getUsername());
+        userFromDb.setPassword(passwordEncoder.encode(user.getPassword()));
+        userFromDb.setLocked(user.isLockedUnlocked());
+        userFromDb.setModifiedOn(ZonedDateTime.now());
+
+        User savedUser = userRepository.save(userFromDb);
+        for(String role_id: user.getUserRoles()){
+            userRepository.addToUser_Role(user.getId(), role_id);
+        }
+
+    }
+
     public User saveDefaultAdminUser(User user){
         Map<UUID, Role> adminRole = new LinkedHashMap<>();
         Role role = roleSerivce.findRoleByName("ROLE_Admin");
@@ -88,12 +112,12 @@ public class UserService implements UserDetailsService {
         User userToAddRole;
 
         if(user != null && user.getId() != null){
-            return userRepository.addUserRoles(user, role);
+            return userRepository.addRoles(user, role);
         }
         if(user != null){
-            userToAddRole = userRepository.getUserByUserName(user.getUsername());
+            userToAddRole = userRepository.findUserByUserName(user.getUsername());
             if(userToAddRole != null){
-                return userRepository.addUserRoles(userToAddRole, role);
+                return userRepository.addRoles(userToAddRole, role);
             }
         }
 
@@ -102,7 +126,7 @@ public class UserService implements UserDetailsService {
 
     public boolean checkForDuplicateUser(String username){
 
-        User user = userRepository.getUserByUserName(username);
+        User user = userRepository.findUserByUserName(username);
 
         if(user.getId() == null){
             return false;
@@ -113,7 +137,7 @@ public class UserService implements UserDetailsService {
     public void resetUserPassword(UserPasswordDto userPasswordDto){
 
         if(userPasswordDto != null && userPasswordDto.getPassword() != null){
-            userRepository.updateUserPassword(userPasswordDto.getUserName(),
+            userRepository.updatePassword(userPasswordDto.getUserName(),
                     passwordEncoder.encode(userPasswordDto.getPassword()));
         }
         return;
@@ -121,7 +145,7 @@ public class UserService implements UserDetailsService {
 
     public UserProfileDto getUserWithProfileInfo(String username){
         UserProfileDto userProfileDto = new UserProfileDto();
-        User user = userRepository.getUserAndAddressAndCityAndStateByUserName(username);
+        User user = userRepository.findUserAndAddressAndCityAndStateByUserName(username);
         userProfileDto.setFirstName(user.getFirstName());
         userProfileDto.setLastName(user.getLastName());
         userProfileDto.setUserName(user.getUsername());
@@ -150,7 +174,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User saveUserProfile(UserProfileDto userProfileDto){
-        User userToSave = userRepository.getUserAndAddressAndCityAndStateByUserName(userProfileDto.getOlduserName());
+        User userToSave = userRepository.findUserAndAddressAndCityAndStateByUserName(userProfileDto.getOlduserName());
         State stateFromDb;
         City cityToSave = new City();
         Address addressToSave = new Address();
@@ -178,17 +202,57 @@ public class UserService implements UserDetailsService {
        return userRepository.save(userToSave);
     }
 
+    public List<UserDataDto> getUsersData(){
+        List<UserDataDto> userDataDtoList = new ArrayList<>();
+        for(User user: userRepository.findAllUsers()){
+            userDataDtoList.add(
+                new UserDataDto(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNum(),
+                        user.getCreatedOn(), user.isLocked())
+            );
+        }
+        return userDataDtoList;
+    }
+
     public User getUserFromUserDetails(UserDetails userDetails){
-        User user = userRepository.getUserByUserName(userDetails.getUsername());
+        User user = userRepository.findUserByUserName(userDetails.getUsername());
         if(user.getId() != null){
             return user;
         }
         return null;
     }
 
+    public User getUserById(String id){
+
+        User userFromDb = userRepository.findUserById(id);
+        if(userFromDb.getId() != null){
+            return userFromDb;
+        }
+        return null;
+    }
+
+    public UserDataDto getUserDataDtoByUser(String id){
+
+        User userFromDb = userRepository.findUserById(id);
+        if(userFromDb.getId() != null){
+            return new UserDataDto(userFromDb.getId(), userFromDb.getFirstName(), userFromDb.getLastName(),
+                    userFromDb.getUsername(), userFromDb.getEmail(), userFromDb.getCreatedOn(),
+                    userFromDb.isLocked(), userFromDb.getRoles());
+        }
+        return null;
+    }
+
+    public boolean deleteUserFromDbById(String id){
+        if(userRepository.deleteUserById(id) > 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails user = userRepository.getUserByUserName(username);
+        UserDetails user = userRepository.findUserByUserName(username);
         if(user.getUsername() == null){
             throw new UsernameNotFoundException("User not found using username " + username);
         }

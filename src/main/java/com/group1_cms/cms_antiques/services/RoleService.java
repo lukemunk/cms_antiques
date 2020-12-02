@@ -2,10 +2,13 @@ package com.group1_cms.cms_antiques.services;
 
 import com.group1_cms.cms_antiques.models.Permission;
 import com.group1_cms.cms_antiques.models.Role;
+import com.group1_cms.cms_antiques.models.RoleDto;
 import com.group1_cms.cms_antiques.repositories.PermissionRepository;
 import com.group1_cms.cms_antiques.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,13 +31,73 @@ public class RoleService {
         return roleRepository.getRoleByName(name);
     }
 
-    public Role saveRole(Role role){
-        Role roleToSave = findRoleByName(role.getName()); //Get the role from the database by name
-        if(roleToSave == null){                           //roleToSave will be null if the roll isn't in database
-            role.setId(UUID.randomUUID());
-            roleToSave = roleRepository.save(role);       //save the Role to database
+    public List<RoleDto> getAllRoles(){
+        List<RoleDto> roleDtoList = new ArrayList<>();
+        for(Role role : roleRepository.getRoles()){
+            roleDtoList.add(new RoleDto(role.getId(), role.getName(), role.getCreatedOn(), role.getModifiedOn()));
         }
-        return roleToSave;
+        return roleDtoList;
+    }
+
+    public Role findRoleById(String id){
+
+        Role roleFromDb = roleRepository.findRoleById(id);
+        if(roleFromDb.getId() != null){
+            return roleFromDb;
+        }
+        return null;
+    }
+
+    public RoleDto findRoleDtoFromRole(String id){
+
+        Role roleFromDb = roleRepository.findRoleById(id);
+        if(roleFromDb.getId() != null){
+            return new RoleDto(roleFromDb.getId(), roleFromDb.getName(), roleFromDb.getCreatedOn(), roleFromDb.getModifiedOn(), roleFromDb.getPermissions());
+        }
+        return null;
+    }
+
+    public Role saveRole(Role role){
+        Role roleFromDb = findRoleByName(role.getName()); //Get the role from the database by name
+        if(roleFromDb == null){                           //roleToSave will be null if the roll isn't in database
+            role.setId(UUID.randomUUID());
+            role.setCreatedOn(ZonedDateTime.now());
+            role.setModifiedOn(ZonedDateTime.now());//save the Role to database
+        }
+        else{
+            role.setId(roleFromDb.getId());
+            role.setModifiedOn(ZonedDateTime.now());
+        }
+        return roleRepository.save(role);
+    }
+
+    public void saveRoleWithPermissionsFromRoleDto(RoleDto role){
+        Role roleFromDb;
+
+        if(role.getId().equals("0")){
+            roleFromDb = new Role();
+            roleFromDb.setId(UUID.randomUUID());
+            roleFromDb.setCreatedOn(ZonedDateTime.now());
+        }
+        else{
+            roleFromDb = findRoleById(role.getId());
+            roleRepository.deleteRole_Permission(role.getId());
+        }
+        roleFromDb.setName("ROLE_".concat(role.getRoleName()));
+        roleFromDb.setModifiedOn(ZonedDateTime.now());
+        roleRepository.save(roleFromDb);
+        for(String permission_id: role.getRolePermissions()){
+            permissionRepository.addToRole_Permission(permission_id, role.getId());
+        }
+    }
+
+    public boolean deleteRoleFromDbById(String id){
+        if(roleRepository.deleteRoleById(id) > 0){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     public void addPermissionsToRole(Role role, List<Permission> permissionList){

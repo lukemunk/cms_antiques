@@ -10,11 +10,14 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class UserRowCallBackHandler implements RowCallbackHandler {
 
     private User user;
+    private List<User> userList = new ArrayList<>();
     private boolean processedLocked = false;
     private boolean processEnabled = false;
     private boolean processedCredentialsExpired = false;
@@ -22,8 +25,13 @@ public class UserRowCallBackHandler implements RowCallbackHandler {
 
     @Override
     public void processRow(ResultSet rs) throws SQLException {
-        if(user == null){
+        if(user == null || user.getId().compareTo(getUUIDFromResultSet(rs, "user_id")) != 0){
             user = new User();
+            userList.add(user);
+            processedLocked = false;
+            processEnabled = false;
+            processedCredentialsExpired = false;
+            processedExpiredOn = false;
         }
         if(user.getId() == null){
             user.setId(getUUIDFromResultSet(rs, "user_id"));
@@ -102,10 +110,15 @@ public class UserRowCallBackHandler implements RowCallbackHandler {
         return null;
     }
 
+    public List<User> getUserList(){
+        return userList;
+    }
+
     public User getUser(){
         if(user == null){
             user = new User();
         }
         return user;
     }
+
 }

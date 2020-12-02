@@ -1,6 +1,7 @@
 package com.group1_cms.cms_antiques.repositories;
 
 import com.group1_cms.cms_antiques.models.*;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -112,10 +113,15 @@ public class UserRepository {
             "LEFT JOIN State s ON c.state_id = s.id " +
             "WHERE 1 = 1";
 
+    private static final String REMOVE_FROM_USER_ROLES = "DELETE FROM User_Role " +
+            "WHERE user_id = UUID_TO_BIN(:user_id, 1)";
+
+    private static final String DELETE_USER_BY_ID = "DELETE FROM User " +
+            "WHERE id = UUID_TO_BIN(" + USER_ID_BINDING_KEY + ", 1)";
+
     private static final String WHERE_USERNAME_OR_EMAIL_EQUALS_USERNAME = "u.username = " + USERNAME_BINDING_KEY + " OR u.email = " + EMAIL_BINDING_KEY;
     private static final String UPDATE_USER_PASSWORD = "UPDATE User SET password = :password WHERE username = " + USERNAME_BINDING_KEY + " OR email = " + EMAIL_BINDING_KEY;
-    private static final String SET_ADDRESS_ID_TO_NULL_ON_ADDRESS_DELETE =
-            "UPDATE User SET address_id = null WHERE username = " + USERNAME_BINDING_KEY + " OR email = " + EMAIL_BINDING_KEY;
+    private static final String WHERE_IDS_ARE_EQUAL = "u.id = UUID_TO_BIN(" + USER_ID_BINDING_KEY + ", 1)";
 
     public UserRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate){
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
@@ -176,7 +182,7 @@ public class UserRepository {
         return user;
     }
 
-    public User addUserRoles(User user, Role role){
+    public User addRoles(User user, Role role){
         List<String> sqlColumns = new ArrayList<>();
         Map<String, String> columnNameToBindingValue = new LinkedHashMap<>();
         MapSqlParameterSource bindingValues = new MapSqlParameterSource();
@@ -188,7 +194,30 @@ public class UserRepository {
         return user;
     }
 
-    public User getUserByUserName(String username){
+    public void addToUser_Role(String user_id, String role_id){
+        String sql = "INSERT INTO User_Role (user_id, role_id) " +
+                "VALUES (UUID_TO_BIN(:user_id, 1), UUID_TO_BIN(:role_id, 1))";
+        MapSqlParameterSource bindingValues = new MapSqlParameterSource();
+        bindingValues.addValue("user_id", user_id);
+        bindingValues.addValue("role_id", role_id);
+        namedParameterJdbcTemplate.update(sql, bindingValues);
+    }
+
+    public User findUserById(String id){
+        String sql = SELECT_USER_W_ROLES + " AND " + WHERE_IDS_ARE_EQUAL;
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue(USER_ID_KEY, id);
+        UserRowCallBackHandler callBackHandler = new UserRowCallBackHandler();
+        try{
+            namedParameterJdbcTemplate.query(sql, parameterSource, callBackHandler);
+            return callBackHandler.getUser();
+        }
+        catch(EmptyResultDataAccessException e){
+            return null;
+        }
+    }
+
+    public User findUserByUserName(String username){
         String sql = SELECT_USER_W_ROLES + " AND " + WHERE_USERNAME_OR_EMAIL_EQUALS_USERNAME;
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue(USERNAME_KEY, username);
@@ -198,16 +227,27 @@ public class UserRepository {
         return callBackHandler.getUser();
     }
 
-    public User getUserAndAddressAndCityAndStateByUserName(String username){
+    public List<User> findAllUsers(){
+        UserRowCallBackHandler callBackHandler = new UserRowCallBackHandler();
+        namedParameterJdbcTemplate.query(SELECT_USER_W_ROLES, callBackHandler);
+        return callBackHandler.getUserList();
+    }
+
+    public User findUserAndAddressAndCityAndStateByUserName(String username){
         String sql = SELECT_USER_WITH_ADDRESS_AND_IMAGE_FILEPATH + " AND " + WHERE_USERNAME_OR_EMAIL_EQUALS_USERNAME;
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue(USERNAME_KEY, username);
         parameterSource.addValue(EMAIL_KEY, username);
-        UserAddressMapper userAddressMapper = new UserAddressMapper();
-        return namedParameterJdbcTemplate.queryForObject(sql, parameterSource, userAddressMapper);
+        UserAddressRowMapper userAddressRowMapper = new UserAddressRowMapper();
+        try{
+            return namedParameterJdbcTemplate.queryForObject(sql, parameterSource, userAddressRowMapper);
+        }
+        catch (EmptyResultDataAccessException ex){
+            return null;
+        }
     }
 
-    public void updateUserPassword(String username, String password){
+    public void updatePassword(String username, String password){
         String sql = UPDATE_USER_PASSWORD;
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource
@@ -216,15 +256,18 @@ public class UserRepository {
                 .addValue(EMAIL_KEY, username);
         namedParameterJdbcTemplate.update(sql, parameterSource);
     }
-    /*
-    public void setUserAddressIdToNullOnAddressDelete(String username){
-        String sql = SET_ADDRESS_ID_TO_NULL_ON_ADDRESS_DELETE;
+
+    public void deleteUser_Role(String user_id){
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-        parameterSource
-                .addValue(USERNAME_KEY, username)
-                .addValue(EMAIL_KEY, username);
-        namedParameterJdbcTemplate.update(sql, parameterSource);
-    }*/
+        parameterSource.addValue("user_id", user_id);
+        namedParameterJdbcTemplate.update(REMOVE_FROM_USER_ROLES, parameterSource);
+    }
+
+    public int deleteUserById(String user_id){
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue(USER_ID_KEY, user_id);
+        return namedParameterJdbcTemplate.update(DELETE_USER_BY_ID, parameterSource);
+    }
 
     private void addSqlItem(List<String> columns, Map<String, String> sqlValues, MapSqlParameterSource bindingValues,
                             String columnName, String bindingKey, Object value){
@@ -282,7 +325,7 @@ public class UserRepository {
         return insertStatement;
     }
 
-    private static final class UserAddressMapper implements RowMapper<User> {
+    private static final class UserAddressRowMapper implements RowMapper<User> {
 
         @Override
         public User mapRow(ResultSet rs, int i) throws SQLException {
