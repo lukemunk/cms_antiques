@@ -55,9 +55,9 @@ public class ViewController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/")
     public ModelAndView publicHomePage(){
-      //  List<Post> postList = postsService.getPosts("all", null, 0);
+        List<Post> postList = postsService.getPosts("all", "",1);
         ModelAndView modelAndView = new ModelAndView("index");
-      //  modelAndView.addObject("posts",postList);
+        modelAndView.addObject("posts",postList);
         return modelAndView;
     }
 
