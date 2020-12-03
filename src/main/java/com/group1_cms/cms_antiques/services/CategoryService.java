@@ -38,7 +38,7 @@ public class CategoryService {
 
     public Category saveCategory(CategoryDto category){
         Category categoryFromDb;
-        if(category.getId().equals("0")){
+        if(category.getId() == null){
             categoryFromDb = new Category();
             categoryFromDb.setId(UUID.randomUUID());
             categoryFromDb.setName(category.getCategoryName());

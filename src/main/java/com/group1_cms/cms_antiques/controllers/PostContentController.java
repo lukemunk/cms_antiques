@@ -45,16 +45,18 @@ public class PostContentController
         String currentPrincipalName = authentication.getName();
         //System.out.println("\n\n\n\n\n\n\n"+post.getCreator().getUsername()+"\n"+authentication.getName()+"\n"+authentication.getAuthorities()+"\n\n\n\n\n");
 
+
+        if (post == null) {
+            // Handle no post found
+            return new ModelAndView("redirect:/posts/all/1");
+        }
+
         // Redirects them to edit page if they are the creator or an Admin
         if (post.getCreator().getUsername().equals(authentication.getName()) || authentication.getAuthorities().contains("Modify_Posts"))
         {
             newView = new ModelAndView("posts/editpost");
         }
 
-        if (post == null) {
-            // Handle no post found
-            return new ModelAndView("redirect:/posts/all/1");
-        }
         
         newView.addObject("post", post);
         newView.addObject("username", currentPrincipalName);

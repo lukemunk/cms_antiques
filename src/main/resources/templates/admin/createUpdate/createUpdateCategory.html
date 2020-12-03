@@ -18,7 +18,7 @@
         <div class="col-md-10 mx-auto mt-4 text-center">
             <div class="h1 form-heading" th:text="${updateCategoryForm.id != null} ? 'Update Category' : 'Create New Category'"></div>
             <div class="col-8 my-3 mx-auto border">
-                <form action="#" th:action="@{/admin/createUpdate/category{id}(id = ${updateCategoryForm.id})}" th:object="${updateCategoryForm}" method="post">
+                <form action="#" th:action="@{/admin/createUpdate/category/{id}(id = ${updateCategoryForm.id})}" th:object="${updateCategoryForm}" method="post">
                     <div class="form-group">
                         <label class="col-form-label" th:for="*{categoryName}">Category Name</label>
                         <input type="text" class="form-control" th:value="*{categoryName}" th:field="*{categoryName}"/>

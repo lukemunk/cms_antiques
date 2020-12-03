@@ -18,7 +18,7 @@
         <div class="col-md-10 mx-auto mt-4 text-center">
             <div class="h1 form-heading" th:text="${updateStateForm.id != null} ? 'Update State' : 'Create New State'"></div>
             <div class="col-8 my-3 mx-auto border">
-                <form action="#" th:action="@{/admin/createUpdate/state{id}(id = ${updateStateForm.id})}" th:object="${updateStateForm}" method="post">
+                <form action="#" th:action="@{/admin/createUpdate/state/{id}(id = ${updateStateForm.id})}" th:object="${updateStateForm}" method="post">
                     <div class="form-group">
                         <label class="col-form-label" th:for="*{stateName}">Role Name</label>
                         <input type="text" class="form-control" th:value="*{stateName}" th:field="*{stateName}"/>
