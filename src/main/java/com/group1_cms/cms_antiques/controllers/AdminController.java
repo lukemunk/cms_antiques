@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class AdminController {
@@ -140,9 +141,13 @@ public class AdminController {
         return modelAndView;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value= "/admin/createUpdate/role/{id}")
-    public ModelAndView saveUpdatedRole(@PathVariable("id")String id, @ModelAttribute("updateRoleForm")RoleDto role, BindingResult bindingResult){
-        role.setId(id);
+    @RequestMapping(method = RequestMethod.POST, value= {"/admin/createUpdate/role","/admin/createUpdate/role/{id}"})
+    public ModelAndView saveUpdatedRole(@PathVariable(value = "id", required = false)String id, @ModelAttribute("updateRoleForm")RoleDto role, BindingResult bindingResult){
+
+        if(id != null){
+            role.setId(id);
+        }
+
         updateRoleFormValidator.validate(role, bindingResult);
         if(bindingResult.hasErrors()){
             return new ModelAndView("/admin/createUpdate/createUpdateRole").addObject("permissions", permissionService.getAllPermissions());
@@ -182,9 +187,12 @@ public class AdminController {
         return modelAndView;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value= "/admin/createUpdate/permission/{id}")
-    public ModelAndView saveUpdatedPermission(@PathVariable("id")String id, @ModelAttribute("updatePermissionForm")PermissionDto permission, BindingResult bindingResult){
-        permission.setId(id);
+    @RequestMapping(method = RequestMethod.POST, value= {"/admin/createUpdate/permission", "/admin/createUpdate/permission/{id}"})
+    public ModelAndView saveUpdatedPermission(@PathVariable(value = "id", required = false)String id, @ModelAttribute("updatePermissionForm")PermissionDto permission, BindingResult bindingResult){
+
+        if(id != null){
+            permission.setId(id);
+        }
         updatePermissionFormValidator.validate(permission, bindingResult);
         if(bindingResult.hasErrors()){
             return new ModelAndView("admin/createUpdate/createUpdatePermission").addObject("roles",roleService.getAllRoles());
@@ -220,9 +228,12 @@ public class AdminController {
         return modelAndView;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value= "/admin/createUpdate/state/{id}")
-    public ModelAndView saveUpdatedState(@PathVariable("id")String id, @ModelAttribute("updateStateForm") StateDto state, BindingResult bindingResult){
-        state.setId(id);
+    @RequestMapping(method = RequestMethod.POST, value= {"/admin/createUpdate/state", "/admin/createUpdate/state/{id}"})
+    public ModelAndView saveUpdatedState(@PathVariable(value = "id", required = false)String id, @ModelAttribute("updateStateForm") StateDto state, BindingResult bindingResult){
+
+        if(id != null){
+            state.setId(id);
+        }
         updateStateFormValidator.validate(state, bindingResult);
 
         if(bindingResult.hasErrors()){
@@ -260,9 +271,12 @@ public class AdminController {
         return modelAndView;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value= "/admin/createUpdate/category/{id}")
-    public ModelAndView saveUpdatedCategory(@PathVariable("id") String id, @ModelAttribute("updateCategoryForm")CategoryDto category, BindingResult bindingResult){
-        category.setId(id);
+    @RequestMapping(method = RequestMethod.POST, value= {"/admin/createUpdate/category", "/admin/createUpdate/category/{id}"} )
+    public ModelAndView saveUpdatedCategory(@PathVariable(value = "id", required = false)String id, @ModelAttribute("updateCategoryForm")CategoryDto category, BindingResult bindingResult){
+
+        if(id != null){
+            category.setId(id);
+        }
         updateCategoryFormValidator.validate(category, bindingResult);
 
         if(bindingResult.hasErrors()){

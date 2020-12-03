@@ -74,7 +74,7 @@ public class RoleService {
     public void saveRoleWithPermissionsFromRoleDto(RoleDto role){
         Role roleFromDb;
 
-        if(role.getId().equals("0")){
+        if(role.getId() == null){
             roleFromDb = new Role();
             roleFromDb.setId(UUID.randomUUID());
             roleFromDb.setCreatedOn(ZonedDateTime.now());
@@ -87,7 +87,7 @@ public class RoleService {
         roleFromDb.setModifiedOn(ZonedDateTime.now());
         roleRepository.save(roleFromDb);
         for(String permission_id: role.getRolePermissions()){
-            permissionRepository.addToRole_Permission(permission_id, role.getId());
+            permissionRepository.addToRole_Permission(permission_id, roleFromDb.getId().toString());
         }
     }
 

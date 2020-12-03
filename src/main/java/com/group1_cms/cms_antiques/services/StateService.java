@@ -43,8 +43,8 @@ public class StateService {
     }
 
     public State saveState(StateDto state){
-        State stateFromDb = stateRepository.getStateByName(state.getStateName());
-        if(stateFromDb == null){
+        State stateFromDb;
+        if(state.getId() == null){
             stateFromDb = new State();
             stateFromDb.setId(UUID.randomUUID());
             stateFromDb.setName(state.getStateName());
@@ -52,6 +52,7 @@ public class StateService {
             stateFromDb.setModifiedOn(ZonedDateTime.now());
         }
         else{
+            stateFromDb = stateRepository.getStateById(state.getId());
             stateFromDb.setName(state.getStateName());
             stateFromDb.setModifiedOn(ZonedDateTime.now());
         }

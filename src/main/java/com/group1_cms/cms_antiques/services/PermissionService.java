@@ -52,7 +52,8 @@ public class PermissionService {
 
     public void savePermissionWithRoles(PermissionDto permission){
         Permission permissionFromDb;
-        if(permission.getId().equals("0")){
+
+        if(permission.getId() == null){
             permissionFromDb = new Permission();
             permissionFromDb.setId(UUID.randomUUID());
             permissionFromDb.setCreatedOn(ZonedDateTime.now());
@@ -66,7 +67,7 @@ public class PermissionService {
 
         permissionRepository.save(permissionFromDb);
         for(String role_id: permission.getPermissionRoles()){
-            permissionRepository.addToRole_Permission(permission.getId(), role_id);
+            permissionRepository.addToRole_Permission(permissionFromDb.getId().toString(), role_id);
         }
     }
 

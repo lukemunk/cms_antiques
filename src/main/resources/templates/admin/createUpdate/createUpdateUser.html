@@ -18,7 +18,7 @@
         <div class="col-md-10 mx-auto mt-4 text-center">
             <div class="h1 form-heading" th:text="${updateUserForm.id != null} ? 'Update User' : 'Create New User'"></div>
             <div class="col-8 my-3 mx-auto border">
-                <form action="#" th:action="@{/admin/createUpdate/user{id}(id = ${updateUserForm.id})}" th:object="${updateUserForm}" method="post">
+                <form action="#" th:action="@{/admin/createUpdate/user/{id}(id = ${updateUserForm.id})}" th:object="${updateUserForm}" method="post">
                     <div class="form-group">
                         <label class="col-form-label" th:for="*{fName}">First Name</label>
                         <input type="text" class="form-control" th:value="*{fName}"/>

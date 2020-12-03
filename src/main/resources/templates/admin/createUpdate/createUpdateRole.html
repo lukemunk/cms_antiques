@@ -18,7 +18,7 @@
         <div class="col-md-10 mx-auto mt-4 text-center">
             <div class="h1 form-heading" th:text="${updateRoleForm.id != null} ? 'Update Role' : 'Create New Role'"></div>
             <div class="col-8 my-3 mx-auto border">
-                <form action="#" th:action="@{/admin/createUpdate/role{id}(id = ${updateRoleForm.id})}" th:object="${updateRoleForm}" method="post">
+                <form action="#" th:action="@{/admin/createUpdate/role/{id}(id = ${updateRoleForm.id})}" th:object="${updateRoleForm}" method="post">
                     <div class="form-group">
                         <label class="col-form-label" th:for="*{roleName}">Role Name</label>
                         <input type="text" class="form-control" th:value="*{roleName}" th:field="*{roleName}"/>
