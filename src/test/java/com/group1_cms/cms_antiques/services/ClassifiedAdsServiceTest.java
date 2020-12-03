@@ -35,7 +35,7 @@ class ClassifiedAdsServiceTest {
 	
 	private ClassifiedAdsRepository classifiedAdsRepository;
 	
-	List<ClassifiedAd> classifieds;
+	private List<ClassifiedAd> classifieds;
 	
 	@BeforeEach
 	public void setup() {
