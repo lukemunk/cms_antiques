@@ -210,6 +210,7 @@ public class PostsRepository
 					 jdbcTemplate.update(savePostTag+DUPLICATE+doNothing, parameters);
 			 }
 		}
+		
 	}
 
 	public void deletePost(Post post)

@@ -117,26 +117,11 @@ public class ClassifiedAdsContentController {
 		return newView;
 	}
 	
-	@RequestMapping(value="/add_tag", method = RequestMethod.POST)
-	public ModelAndView addTag(@ModelAttribute("classifiedAd") ClassifiedAd classifiedAd, @ModelAttribute("tag") String tag) {
-		ModelAndView newView = new ModelAndView("classifieds/edit_classified::#tags");
-		classifiedAd.getTags().add(tag);
-		newView.addObject(classifiedAd);
-		
-		return newView;
-	}
 	
-	@RequestMapping(value="/remove_tag", method = RequestMethod.POST)
-	public ModelAndView removeTag(@ModelAttribute("classifiedAd") ClassifiedAd classifiedAd, @RequestParam("removeTag") int index) {
-		ModelAndView newView = new ModelAndView("classifieds/edit_classified::#tags");
-		classifiedAd.getTags().remove(index);
-		newView.addObject(classifiedAd);
-		return newView;
-	}
 	
 	
 	@RequestMapping(value={"classified_ads/new", "classified_ads/edit/{id}"}, method = RequestMethod.GET )
-	public ModelAndView classifiedsForum(@PathVariable(required=false) String id, Authentication authentication) {
+	public ModelAndView classifiedsForm(@PathVariable(required=false) String id, Authentication authentication) {
 		ModelAndView newView = new ModelAndView("classifieds/edit_classified");
 		if(id == null) {
 			ClassifiedAd classifiedAd = new ClassifiedAd();
@@ -177,6 +162,24 @@ public class ClassifiedAdsContentController {
 		newView.addObject("username", authentication.getName());
 		newView.addObject("isAdmin", authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equalsIgnoreCase("Admin_Permissions")));
 		newView.addObject("categories",  classifiedAdsService.getAllCategories());
+		return newView;
+	}
+	
+	
+	@RequestMapping(value="/add_tag", method = RequestMethod.POST)
+	public ModelAndView addTag(@ModelAttribute("classifiedAd") ClassifiedAd classifiedAd, @ModelAttribute("tag") String tag) {
+		ModelAndView newView = new ModelAndView("classifieds/edit_classified::#tags");
+		classifiedAd.getTags().add(tag);
+		newView.addObject(classifiedAd);
+		
+		return newView;
+	}
+	
+	@RequestMapping(value="/remove_tag", method = RequestMethod.POST)
+	public ModelAndView removeTag(@ModelAttribute("classifiedAd") ClassifiedAd classifiedAd, @RequestParam("removeTag") int index) {
+		ModelAndView newView = new ModelAndView("classifieds/edit_classified::#tags");
+		classifiedAd.getTags().remove(index);
+		newView.addObject(classifiedAd);
 		return newView;
 	}
 	

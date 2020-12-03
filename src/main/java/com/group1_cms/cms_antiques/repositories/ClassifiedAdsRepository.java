@@ -122,7 +122,7 @@ public class ClassifiedAdsRepository {
 	private static final String deleteClassifiedAdWithIdSql = "DELETE FROM Classified WHERE id = UUID_TO_BIN(:classifiedAdId)";
 	private static final String deleteItemWithIdSql = "DELETE FROM Item WHERE id = UUID_TO_BIN(:itemId)";
 	private static final String deleteItemImageWithIdSql = "DELETE FROM Item_Image WHERE id = UUID_TO_BIN(:imageId)";
-	private static final String deleteClassifiedAdTag = "DELETE FROM Classified_Tag WHERE classified_id = (UUID_TO_BIN(:classifiedAdId)) AND tag_id = (UUID_TO_BIN(:tagId))";
+	//private static final String deleteClassifiedAdTag = "DELETE FROM Classified_Tag WHERE classified_id = (UUID_TO_BIN(:classifiedAdId)) AND tag_id = (UUID_TO_BIN(:tagId))";
 	private static final String deleteAllClassifiedAdTags = "DELETE FROM Classified_Tag WHERE classified_id = (UUID_TO_BIN(:classifiedAdId))";
 
 	
