@@ -23,10 +23,10 @@
                                 <a class="nav-link dropdown-toggle text-white" data-toggle="dropdown" href="#">
                                     Account
                                 </a>
-                                <ul class="dropdown-menu">
-                                    <li class="dropdown-item"><a href="#">Profile</a></li>
-                                    <li class="dropdown-item"><a th:href="@{member/resetPassword}">Reset Password</a></li>
-                                    <li class="dropdown-item"><a href="#">Close Account</a></li>
+                                 <ul class="dropdown-menu">
+                                    <li class="dropdown-item"><a th:href="@{/member/accountProfile}">Profile</a></li>
+                                    <li class="dropdown-item"><a th:href="@{/member/resetPassword}">Reset Password</a></li>
+                                   <!-- <li class="dropdown-item"><a href="#">Close Account</a></li> -->
                                 </ul>
                             </li>
                             <li class="nav-item">
@@ -79,12 +79,11 @@
                                         Admin
                                     </a>
                                     <ul class="dropdown-menu">
-
-                                        <li class="dropdown-item"><a href="#" >Add/Remove Category</a></li>
-                                        <li class="dropdown-item"><a href="#">Add/Remove Post</a></li>
-                                        <li class="dropdown-item"><a href="#">Add/Remove Classified</a></li>
-
-
+                                        <li class="dropdown-item"><a th:href="@{/admin/viewRestricted/viewUsers}">View Users</a></li>
+                                        <li class="dropdown-item"><a th:href="@{/admin/viewRestricted/viewRoles}">View Roles</a></li>
+                                        <li class="dropdown-item"><a th:href="@{/admin/viewRestricted/viewPermissions}">View Permissions</a></li>
+                                        <li class="dropdown-item"><a th:href="@{/admin/viewRestricted/viewCategories}" >View Categories</a></li>
+                                        <li class="dropdown-item"><a th:href="@{/admin/viewRestricted/viewStates}">View States</a></li>
                                     </ul>
                                 </li>
                             </div>

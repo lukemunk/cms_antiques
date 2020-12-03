@@ -25,7 +25,7 @@ public class ClassifiedAdsService {
 	public List<ClassifiedAd> getClassifiedAds(String category, String search, String page){
 		int offset;
 	
-		if(Integer.parseInt(page) >=0) {
+		if(Integer.parseInt(page) >0) {
 			offset = Integer.parseInt(page);
 			offset = (offset-1)*5;
 		}else {
@@ -43,7 +43,7 @@ public class ClassifiedAdsService {
 	public int getNumberOfClassifiedPages(String category, String search) {
 		int results = classifiedAdsRepository.getTotalClassifiedAds(category, search);
 		int pages = results/ClassifiedAdsRepository.RESULTSPERPAGE;
-		if(results%5 != 0 || results <= 0)
+		if(results%ClassifiedAdsRepository.RESULTSPERPAGE != 0 || results <= 0)
 			pages++;
 		return pages;
 	}

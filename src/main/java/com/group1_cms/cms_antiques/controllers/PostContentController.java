@@ -168,7 +168,6 @@ public class PostContentController
     @RequestMapping(value="/posts")
     public ModelAndView posts(){
         // Gets the number of pages
-        int pages = (int)Math.ceil((double)postsService.getAllPostsCount("all", "") / 10);
 
             ModelAndView newView = new ModelAndView("redirect:posts/all/1");
 
@@ -185,17 +184,19 @@ public class PostContentController
         int pages = 0;
         String search = "";
         // Gets the number of pages
-        pages = (int)Math.ceil((double)postsService.getAllPostsCount(category, searchIN) / 10);
+        
+        
 
         if(category == null)
             category = "all";
 
-
+        int currentPage;
         try {
-            if(pages<=0)
-                pages = 1;
+        	currentPage = Integer.parseInt(page);
+            if(currentPage<=0)
+                currentPage = 1;
         } catch (NumberFormatException nfe) {
-            pages = 1;
+            currentPage = 1;
         }
 
         if (searchIN == null)
@@ -206,10 +207,11 @@ public class PostContentController
         {
             search = searchIN;
         }
-
+        
+        pages = (int)Math.ceil((double)postsService.getAllPostsCount(category, search) / 10);
         ModelAndView newView = new ModelAndView("public/posts.html");
-
-        newView.addObject("page", Integer.parseInt(page));
+        
+        newView.addObject("page", currentPage);
         newView.addObject("totalPages", pages);
         newView.addObject("search", search);
         newView.addObject("category", category.substring(0, 1).toUpperCase() + category.substring(1));
