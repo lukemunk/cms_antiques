@@ -19,18 +19,6 @@ public class ClassifiedAd {
 		tags = new ArrayList<String>();
 	}
 	
-	public ClassifiedAd(String title, String description, String price, Item item, User creator, LocalDateTime endDate) {
-		super();
-		this.title = title;
-		this.description = description;
-		this.price = price;
-		this.item = item;
-		this.creator = creator;
-		this.endDate = endDate;
-		
-		
-		
-	}
 
 	public List<String> getTags()
 	{

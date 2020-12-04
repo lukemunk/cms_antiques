@@ -10,12 +10,6 @@ public class Item {
 	
 	public Item() {}
 	
-	public Item(String name, String category) {
-		this.name = name;
-		this.category = category;
-	}
-	
-	
 
 	public UUID getId() {
 		return id;

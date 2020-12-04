@@ -37,8 +37,8 @@ public class PostsRepository
 			"	INNER JOIN Item i ON ca.item_id = i.id \r\n" +
 			"	INNER JOIN Category c ON i.category_id = c.id \r\n" +
 			"	INNER JOIN User u ON ca.user_id = u.id\r\n" +
-			"	LEFT JOIN Classified_Tag ct ON ca.id = ct.classified_id\r\n" + 
-			"	LEFT JOIN Tag t ON t.id = ct.tag_id\r\n"+
+			"	LEFT JOIN Post_Tag pt ON ca.id = pt.post_id\r\n" + 
+			"	LEFT JOIN Tag t ON t.id = pt.tag_id\r\n"+
 			"WHERE (ca.title LIKE :search\r\n" +
 			"	OR t.name LIKE :search\r\n" +
 			"	OR i.name LIKE :search	\r\n" +
