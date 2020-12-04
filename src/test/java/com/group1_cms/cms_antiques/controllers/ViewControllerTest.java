@@ -211,6 +211,7 @@ class ViewControllerTest
     //endregion
 
     //region POST tests
+    @WithMockUser("Admin")
     @Test
     void saveUserProfile() throws Exception
     {
@@ -231,15 +232,18 @@ class ViewControllerTest
         BindingResult newBinding = Mockito.mock(BindingResult.class);
         UserDetails newDeets = Mockito.mock(UserDetails.class);
         SecurityContext newContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder newContextHolder = Mockito.mock(SecurityContextHolder.class);
         Authentication newAuth = Mockito.mock(Authentication.class);
         Mockito.when(newContext.getAuthentication()).thenReturn(newAuth);
         Mockito.when(newContext.getAuthentication().getPrincipal()).thenReturn(newDeets);
+        newContextHolder.getContext().setAuthentication(newAuth);
+        //Mockito.when(newContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(newDeets);
         Mockito.when(newDeets.getUsername()).thenReturn("Tron");
         User newUser = new User();
         newUser.setUsername("Tron");
         Mockito.when(userService.getUserFromUserDetails(newDeets)).thenReturn(newUser);
 
-        //viewController.saveUserProfile(newUserDTO, newBinding);
+        viewController.saveUserProfile(newUserDTO, newBinding);
     }
 
     @Test
@@ -255,10 +259,26 @@ class ViewControllerTest
         stateService = Mockito.mock(StateService.class);
         postsService = Mockito.mock(PostsService.class);
         jwtTokenProvider = Mockito.mock(JwtTokenProvider.class);
+
         viewController = new ViewController(registrationFormValidator, passwordResetFormValidator, userProfileFormValidator,
                 userService, roleService, permissionService, stateService, postsService, jwtTokenProvider);
 
-        //viewController.saveResetPassword();
+        UserPasswordDto newPasswordDTO = Mockito.mock(UserPasswordDto.class);
+        BindingResult newBinding = Mockito.mock(BindingResult.class);
+        UserDetails newDeets = Mockito.mock(UserDetails.class);
+        SecurityContext newContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder newContextHolder = Mockito.mock(SecurityContextHolder.class);
+        Authentication newAuth = Mockito.mock(Authentication.class);
+        Mockito.when(newContext.getAuthentication()).thenReturn(newAuth);
+        Mockito.when(newContext.getAuthentication().getPrincipal()).thenReturn(newDeets);
+        newContextHolder.getContext().setAuthentication(newAuth);
+        //Mockito.when(newContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(newDeets);
+        Mockito.when(newDeets.getUsername()).thenReturn("Tron");
+        User newUser = new User();
+        newUser.setUsername("Tron");
+        Mockito.when(userService.getUserFromUserDetails(newDeets)).thenReturn(newUser);
+
+        viewController.saveResetPassword(newPasswordDTO, newBinding);
     }
 
     @WithMockUser("admin")
@@ -278,7 +298,7 @@ class ViewControllerTest
         viewController = new ViewController(registrationFormValidator, passwordResetFormValidator, userProfileFormValidator,
                 userService, roleService, permissionService, stateService, postsService, jwtTokenProvider);
 
-        //viewController.closeAccount();
+        viewController.closeAccount(UUID.randomUUID());
     }
     //endregion
 }
