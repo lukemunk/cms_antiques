@@ -166,13 +166,9 @@ public class ClassifiedAdsRepository {
 	
 	public void saveClassifiedAd(ClassifiedAd classifiedAd) {
 		
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String username;
-		if(principal instanceof UserDetails) {
-			username = ((UserDetails)principal).getUsername();
-		} else {
-			username = principal.toString();
-		}
+		
+		 String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		 
 		 Map<String, Object> parameters = new HashMap<String, Object>();
 		 parameters.put("classifiedAdId", classifiedAd.getId().toString());
 		 parameters.put("title", classifiedAd.getTitle());
@@ -198,8 +194,7 @@ public class ClassifiedAdsRepository {
 		 
 		 for(String tag: classifiedAd.getTags()) {
 			 parameters.put("tag", tag);
-			 if(jdbcTemplate.query(getTagFromName, parameters, tagsResultSetExtractor).size() == 1)
-				 jdbcTemplate.update(saveClassifiedTag+onDuplicate+doNothing, parameters);
+			 jdbcTemplate.update(saveClassifiedTag+onDuplicate+doNothing, parameters);
 		 }
 		 
 	}
@@ -216,7 +211,6 @@ public class ClassifiedAdsRepository {
 		 jdbcTemplate.update(deleteItemImageWithIdSql, parameters);
 		 jdbcTemplate.update(deleteClassifiedAdWithIdSql, parameters);
 		 jdbcTemplate.update(deleteItemWithIdSql, parameters);
-		 jdbcTemplate.update(deleteAllClassifiedAdTags, parameters);
 	}
 	
 	public List<String> getAllCategories(){
@@ -227,19 +221,18 @@ public class ClassifiedAdsRepository {
 		return jdbcTemplate.query(getAllTags, new TagRowMapper());
 	}
 	
-	private class ClassifiedAdTotalRowMapper implements RowMapper<Integer>{
+	public class ClassifiedAdTotalRowMapper implements RowMapper<Integer>{
 
 		@Override
 		public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-			@SuppressWarnings("deprecation")
-			Integer integer = new Integer(rs.getInt("total"));
+			Integer integer = Integer.valueOf(rs.getInt("total"));
 			
 			return integer;
 		}
 		
 	}
 	
-	private class CategoryNameRowMapper implements RowMapper<String>{
+	public class CategoryNameRowMapper implements RowMapper<String>{
 
 		@Override
 		public String mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -249,7 +242,7 @@ public class ClassifiedAdsRepository {
 		
 	}
 	
-	private class TagRowMapper implements RowMapper<String>{
+	public class TagRowMapper implements RowMapper<String>{
 
 		@Override
 		public String mapRow(ResultSet rs, int rowNum) throws SQLException {
