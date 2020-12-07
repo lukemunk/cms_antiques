@@ -8,6 +8,7 @@ public class StateDto {
 
     private String id;
     private String stateName;
+    private String previousName;
     private String createdOn;
     private String modifiedOn;
 
@@ -16,6 +17,7 @@ public class StateDto {
     public StateDto(UUID id, String stateName, ZonedDateTime createdOn, ZonedDateTime modifiedOn){
         this.id = id.toString();
         this.stateName = stateName;
+        this.previousName = stateName;
         this.createdOn = createdOn.format(DateTimeFormatter.ofPattern("d MMM uuuu"));
         this.modifiedOn = modifiedOn.format(DateTimeFormatter.ofPattern("d MMM uuuu"));
     }
@@ -34,6 +36,14 @@ public class StateDto {
 
     public void setStateName(String stateName) {
         this.stateName = stateName;
+    }
+
+    public String getPreviousName() {
+        return previousName;
+    }
+
+    public void setPreviousName(String previousName) {
+        this.previousName = previousName;
     }
 
     public String getCreatedOn() {

@@ -8,6 +8,7 @@ public class RoleDto {
 
     private String id;
     private String roleName;
+    private String previousName;
     private String createdOn;
     private String modifiedOn;
     private List<String> rolePermissions;
@@ -17,7 +18,9 @@ public class RoleDto {
     public RoleDto(UUID id, String roleNameWithPrefix, ZonedDateTime createdOn, ZonedDateTime modifiedOn){
         this.id = id.toString();
         this.roleName = roleNameWithPrefix;
+        this.previousName = roleNameWithPrefix;
         roleName = roleName.substring(5, roleNameWithPrefix.length());
+        previousName = previousName.substring(5, roleNameWithPrefix.length());
         if(createdOn != null){
             this.createdOn = createdOn.format(DateTimeFormatter.ofPattern("d MMM uuuu"));
         }
@@ -46,6 +49,15 @@ public class RoleDto {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    public String getPreviousName() {
+        return previousName;
+    }
+
+    public void setPreviousName(String previousName) {
+
+        this.previousName = previousName;
     }
 
     public String getCreatedOn() {

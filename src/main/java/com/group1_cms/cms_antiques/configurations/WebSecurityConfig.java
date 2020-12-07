@@ -146,23 +146,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UpdateCategoryFormValidator getUpdateCategoryFormValidator(){
-        return new UpdateCategoryFormValidator();
+    public UpdateCategoryFormValidator getUpdateCategoryFormValidator(CategoryService categoryService){
+        return new UpdateCategoryFormValidator(categoryService);
     }
 
     @Bean
-    public UpdateStateFormValidator getUpdateStateFormValidator(){
-        return new UpdateStateFormValidator();
+    public UpdateStateFormValidator getUpdateStateFormValidator(StateService stateService){
+        return new UpdateStateFormValidator(stateService);
     }
 
     @Bean
-    public UpdateRoleFormValidator getUpdateRoleFormValidator(){
-        return new UpdateRoleFormValidator();
+    public UpdateRoleFormValidator getUpdateRoleFormValidator(RoleService roleService){
+        return new UpdateRoleFormValidator(roleService);
     }
 
     @Bean
-    public UpdatePermissionFormValidator getUpdatePermissionFormValidator(){
-        return new UpdatePermissionFormValidator();
+    public UpdatePermissionFormValidator getUpdatePermissionFormValidator(PermissionService permissionService){
+        return new UpdatePermissionFormValidator(permissionService);
     }
 
     @Bean

@@ -23,6 +23,14 @@ public class RoleService {
         this.permissionRepository = permissionRepository;
     }
 
+    public boolean checkForDuplicateName(String name){
+        String roleName = "ROLE_".concat(name);
+        if(findRoleByName(roleName) == null){
+            return false;
+        }
+        return true;
+    }
+
     public Role findRoleWithPermissionsByName(String name){
         return roleRepository.getRoleWithPermissionsByName(name);
     }

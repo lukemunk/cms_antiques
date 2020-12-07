@@ -67,6 +67,7 @@ class ClassifiedAdsServiceTest {
 		Mockito.when(classifiedAdsRepository.getClassifiedAds("all", "", 0)).thenReturn(classifieds.subList(0, 4));
 		Assert.assertEquals(classifieds.subList(0, 4),classifiedAdsService.getClassifiedAds("all", "", "0"));
 	}
+  
 	//Test getClassifiedAdById()
 	@Test
 	public void testGetClassifiedAdById() {
