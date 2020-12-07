@@ -100,9 +100,11 @@ public class AdminController {
         return modelAndView;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value= "/admin/createUpdate/user/{id}")
-    public ModelAndView saveUpdatedUser(@PathVariable("id")String id, @ModelAttribute("updateUserForm") UserDataDto user, BindingResult bindingResult){
-        user.setId(id);
+    @RequestMapping(method = RequestMethod.POST, value= {"/admin/createUpdate/user","/admin/createUpdate/user/{id}"})
+    public ModelAndView saveUpdatedUser(@PathVariable(value = "id", required = false)String id, @ModelAttribute("updateUserForm") UserDataDto user, BindingResult bindingResult){
+        if(id != null){
+            user.setId(id);
+        }
         updateUserFormValidator.validate(user, bindingResult);
         if(bindingResult.hasErrors()){
             return new ModelAndView("admin/createUpdate/createUpdateUser").addObject("roles", roleService.getAllRoles());
@@ -112,14 +114,15 @@ public class AdminController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/admin/delete/user/{id}")
-    public Map<String, String> deleteUser(@PathVariable("id") String id){
-        String successMessage = "User was succesfully deleted from the database.";
-        String failureMessage = "There was a problem deleting the user from the database.";
+    public Map<String, Boolean> deleteUser(@PathVariable("id") String id){
+        Boolean success = true;
+        Boolean failure = false;
+
         if(userService.deleteUserFromDbById(id)){
-            return Collections.singletonMap("response", successMessage);
+            return Collections.singletonMap("success", success);
         }
         else{
-            return Collections.singletonMap("response", failureMessage);
+            return Collections.singletonMap("success", failure);
         }
     }
 
@@ -157,14 +160,14 @@ public class AdminController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/admin/delete/role/{id}")
-    public Map<String, String> deleteRole(@PathVariable("id") String id){
-        String successMessage = "Role was succesfully deleted from the database.";
-        String failureMessage = "There was a problem deleting the role from the database.";
+    public Map<String, Boolean> deleteRole(@PathVariable("id") String id){
+        Boolean success = true;
+        Boolean failure = false;
         if(roleService.deleteRoleFromDbById(id)){
-            return Collections.singletonMap("response", successMessage);
+            return Collections.singletonMap("success", success);
         }
         else{
-            return Collections.singletonMap("response", failureMessage);
+            return Collections.singletonMap("success", failure);
         }
     }
 
@@ -202,14 +205,14 @@ public class AdminController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/admin/delete/permission/{id}")
-    public Map<String, String> deletePermission(@PathVariable("id") String id){
-        String successMessage = "Permission was succesfully deleted from the database.";
-        String failureMessage = "There was a problem deleting the permission from the database.";
+    public Map<String, Boolean> deletePermission(@PathVariable("id") String id){
+        Boolean success = true;
+        Boolean failure = false;
         if(permissionService.deletePermissionFromDbById(id)){
-            return Collections.singletonMap("response", successMessage);
+            return Collections.singletonMap("success", success);
         }
         else{
-            return Collections.singletonMap("response", failureMessage);
+            return Collections.singletonMap("success", failure);
         }
     }
 
@@ -244,14 +247,14 @@ public class AdminController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/admin/delete/state/{id}")
-    public Map<String, String> deleteState(@PathVariable("id") String id){
-        String successMessage = "State was succesfully deleted from the database.";
-        String failureMessage = "There was a problem deleting the state from the database.";
+    public Map<String, Boolean> deleteState(@PathVariable("id") String id){
+        Boolean success = true;
+        Boolean failure = false;
         if(stateService.deleteStateFromDbById(id)){
-            return Collections.singletonMap("response", successMessage);
+            return Collections.singletonMap("success", success);
         }
         else{
-            return Collections.singletonMap("response", failureMessage);
+            return Collections.singletonMap("success", failure);
         }
     }
 
@@ -287,14 +290,14 @@ public class AdminController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/admin/delete/category/{id}")
-    public Map<String, String> deleteCategory(@PathVariable("id") String id){
-        String successMessage = "Category was succesfully deleted from the database.";
-        String failureMessage = "There was a problem deleting the category from the database.";
+    public Map<String, Boolean> deleteCategory(@PathVariable("id") String id){
+        Boolean success = true;
+        Boolean failure = false;
         if(categoryService.deleteCategoryFromDbById(id)){
-            return Collections.singletonMap("response", successMessage);
+            return Collections.singletonMap("success", success);
         }
         else{
-            return Collections.singletonMap("response", failureMessage);
+            return Collections.singletonMap("success", failure);
         }
     }
 }

@@ -2,6 +2,7 @@ package com.group1_cms.cms_antiques.repositories;
 
 import com.group1_cms.cms_antiques.models.Category;
 import com.group1_cms.cms_antiques.models.City;
+import com.group1_cms.cms_antiques.models.Permission;
 import com.group1_cms.cms_antiques.models.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -50,6 +51,13 @@ public class CategoryRepository {
         "FROM Category " +
         "WHERE id = UUID_TO_BIN(" + CATEGORY_ID_BINDING_KEY + ", 1);";
 
+    private static final String SELECT_CATEGORY_BY_NAME = "SELECT BIN_TO_UUID(id, 1) as id, " +
+            "name, " +
+            "created_on, " +
+            "modified_on " +
+            "FROM Category " +
+            "WHERE name = " + NAME_BINDING_KEY;
+
     private static final String DELETE_CATEGORY_BY_ID = "DELETE FROM Category " +
             "WHERE id = UUID_TO_BIN(" + CATEGORY_ID_BINDING_KEY + ", 1)";
 
@@ -57,6 +65,17 @@ public class CategoryRepository {
     @Autowired
     public CategoryRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate){
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    }
+
+    public Category getCategoryByName(String name){
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue(NAME_KEY, name);
+        try{
+            return namedParameterJdbcTemplate.queryForObject(SELECT_CATEGORY_BY_NAME, parameterSource, new CategoryRowMapper());
+        }
+        catch(EmptyResultDataAccessException e){
+            return null;
+        }
     }
 
     public Category save(Category category){

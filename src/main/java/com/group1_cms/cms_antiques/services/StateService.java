@@ -29,6 +29,13 @@ public class StateService {
         return stateDtoList;
     }
 
+    public boolean checkForDuplicateName(String name){
+        if(findStateByName(name) == null){
+            return false;
+        }
+        return true;
+    }
+
     public State findStateByName(String name){
         return stateRepository.getStateByName(name);
     }

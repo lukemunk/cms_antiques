@@ -2,6 +2,7 @@ package com.group1_cms.cms_antiques.services;
 
 import com.group1_cms.cms_antiques.models.Category;
 import com.group1_cms.cms_antiques.models.CategoryDto;
+import com.group1_cms.cms_antiques.models.Permission;
 import com.group1_cms.cms_antiques.models.User;
 import com.group1_cms.cms_antiques.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,15 @@ public class CategoryService {
     public CategoryService(CategoryRepository categoryRepository){
         this.categoryRepository = categoryRepository;
     }
+
+    public boolean checkForDuplicateName(String name){
+        if(findCategoryByName(name) == null){
+            return false;
+        }
+        return true;
+    }
+
+    public Category findCategoryByName(String name){ return categoryRepository.getCategoryByName(name); }
 
     public List<CategoryDto> getAllCategories(){
         List<CategoryDto> categoryDtoList = new ArrayList<>();

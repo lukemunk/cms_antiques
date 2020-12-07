@@ -21,6 +21,14 @@ public class PermissionService {
         this.permissionRepository = permissionRepository;
     }
 
+    public boolean checkForDuplicateName(String name){
+        String permissionName = name.replaceAll("\\s+", "_");
+        if(findPermissionByName(permissionName) == null){
+            return false;
+        }
+        return true;
+    }
+
     public Permission findPermissionByName(String name){
         return permissionRepository.getPermissionByName(name);
     }

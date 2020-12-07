@@ -72,7 +72,7 @@ public class UserService implements UserDetailsService {
 
     public void saveUserWithRolesFromUserDataDto(UserDataDto user){
         User userFromDb;
-        if(user.getId().equals("0")){
+        if(user.getId() == null){
             userFromDb = new User();
             userFromDb.setId(UUID.randomUUID());
             userFromDb.setCreatedOn(ZonedDateTime.now());
@@ -91,7 +91,7 @@ public class UserService implements UserDetailsService {
 
         User savedUser = userRepository.save(userFromDb);
         for(String role_id: user.getUserRoles()){
-            userRepository.addToUser_Role(user.getId(), role_id);
+            userRepository.addToUser_Role(userFromDb.getId().toString(), role_id);
         }
 
     }

@@ -8,6 +8,7 @@ public class CategoryDto {
 
     private String id;
     private String categoryName;
+    private String previousName;
     private String createdOn;
     private String modifiedOn;
 
@@ -16,6 +17,7 @@ public class CategoryDto {
     public CategoryDto(UUID id, String categoryName, ZonedDateTime createdOn, ZonedDateTime modifiedOn){
         this.id = id.toString();
         this.categoryName = categoryName;
+        this.previousName = categoryName;
         this.createdOn = createdOn.format(DateTimeFormatter.ofPattern("d MMM uuuu"));
         this.modifiedOn = modifiedOn.format(DateTimeFormatter.ofPattern("d MMM uuuu"));
     }
@@ -34,6 +36,14 @@ public class CategoryDto {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public String getPreviousName() {
+        return previousName;
+    }
+
+    public void setPreviousName(String previousName) {
+        this.previousName = previousName;
     }
 
     public String getCreatedOn() {

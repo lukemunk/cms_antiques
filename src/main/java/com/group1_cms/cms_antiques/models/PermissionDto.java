@@ -11,6 +11,7 @@ public class PermissionDto {
 
     private String id;
     private String permissionName;
+    private String previousName;
     private String createdOn;
     private String modifiedOn;
     private List<String> permissionRoles;
@@ -20,6 +21,7 @@ public class PermissionDto {
     public PermissionDto(UUID id, String permissionName, ZonedDateTime createdOn, ZonedDateTime modifiedOn){
         this.id = id.toString();
         this.permissionName = permissionName.replace("_", " ");
+        this.previousName = permissionName.replace("_", " ");
         this.createdOn = createdOn.format(DateTimeFormatter.ofPattern("d MMM uuuu"));
         this.modifiedOn = modifiedOn.format(DateTimeFormatter.ofPattern("d MMM uuuu"));
     }
@@ -43,6 +45,14 @@ public class PermissionDto {
 
     public void setPermissionName(String permissionName) {
         this.permissionName = permissionName;
+    }
+
+    public String getPreviousName() {
+        return previousName;
+    }
+
+    public void setPreviousName(String previousName) {
+        this.previousName = previousName;
     }
 
     public String getCreatedOn() {
