@@ -2,7 +2,6 @@ package com.group1_cms.cms_antiques.repositories;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,10 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.group1_cms.cms_antiques.models.ClassifiedAd;
-import com.group1_cms.cms_antiques.models.Item;
 import com.group1_cms.cms_antiques.models.Post;
-import com.group1_cms.cms_antiques.models.User;
 
 @Repository
 public class PostsRepository
@@ -215,9 +211,11 @@ public class PostsRepository
 
 	public void deletePost(Post post)
 	{
+		
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("classifiedAdId", post.getId().toString());
+		parameters.put("postId", post.getId().toString());
 		parameters.put("itemId", post.getItem().getId().toString());
+		
 		jdbcTemplate.update(deleteAllPostTags, parameters);
 		jdbcTemplate.update(DELETEITEM, parameters);
 		jdbcTemplate.update(DELETEPOST, parameters);

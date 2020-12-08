@@ -157,7 +157,7 @@ public class PostContentController
     public ModelAndView deletePost(@PathVariable("id") String id, @ModelAttribute(value="post") Post post)
     {
         ModelAndView newView = new ModelAndView("redirect:/posts/all/1");
-
+        
         if (post == null) {
             // Handle no post found
             return new ModelAndView("redirect:/posts/all/1");
