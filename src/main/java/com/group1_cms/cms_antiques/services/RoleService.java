@@ -31,9 +31,9 @@ public class RoleService {
         return true;
     }
 
-    public Role findRoleWithPermissionsByName(String name){
+    /*public Role findRoleWithPermissionsByName(String name){
         return roleRepository.getRoleWithPermissionsByName(name);
-    }
+    }*/
 
     public Role findRoleByName(String name){
         return roleRepository.getRoleByName(name);
