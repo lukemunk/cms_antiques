@@ -18,7 +18,7 @@ security:
       secret-key: AScaklasdAS*(@#$!
       ttl: 30m
 server:
-  port: 8080
+  port: 8081
   error:
     whitelabel:
       enabled: false
