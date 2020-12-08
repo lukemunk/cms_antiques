@@ -37,6 +37,7 @@ public class UserService implements UserDetailsService {
 
         if(userFromDb.getId() != null){ //check to see if user is already in database
             userToSave.setId(userFromDb.getId()); //set the users id to that of user in database to prevent multiples
+            
             if(passwordEncoder.matches(userToSave.getPassword(), userFromDb.getPassword())){ //check if the password is the same
                 userToSave.setPassword(userFromDb.getPassword()); //if it is, then set it to the same encrypted password from database
             }
