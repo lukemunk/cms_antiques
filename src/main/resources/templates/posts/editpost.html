@@ -35,6 +35,7 @@
 
 <div class="container-body" sec:authorize="isAuthenticated()" id="editArea">
 	<form method="post" th:action="@{/posts/view/editpost_{id}(id=${post.id})}" th:object="${post}">
+		<input type="hidden" id="itemId" name="itemId" th:field="*{item.id}">
 		<label for="postTitle">Post title:</label>
 		<input type="text" id="postTitle" name="postTitle" th:field="${post.title}">
 		<br><br>

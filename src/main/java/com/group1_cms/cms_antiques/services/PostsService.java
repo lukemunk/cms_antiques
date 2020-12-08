@@ -43,7 +43,9 @@ public class PostsService {
 
     public void deletePost(Post post)
     {
+    	
     	postsRepository.deletePost(post);
+    	
     }
 
 	public List<String> getAllCategories()
