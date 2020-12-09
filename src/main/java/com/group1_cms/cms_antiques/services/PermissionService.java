@@ -32,14 +32,14 @@ public class PermissionService {
     public Permission findPermissionByName(String name){
         return permissionRepository.getPermissionByName(name);
     }
-
+/*
     public Permission findPermissionById(String id){
         Permission permissionFromDb = permissionRepository.getPermissionById(id);
         if(permissionFromDb.getId() != null){
             return permissionFromDb;
         }
         return null;
-    }
+    } */
 
     public PermissionDto findPermissionDtoFromPermission(String id){
         Permission permissionFromDb = permissionRepository.getPermissionById(id);
@@ -87,7 +87,7 @@ public class PermissionService {
             return false;
         }
     }
-
+/*
     public Permission savePermission(Permission permission){
         Permission permissionFromDb = findPermissionByName(permission.getName());
         if(permissionFromDb == null){
@@ -100,5 +100,5 @@ public class PermissionService {
             permission.setModifiedOn(ZonedDateTime.now());
         }
         return permissionRepository.save(permission);
-    }
+    }*/
 }
